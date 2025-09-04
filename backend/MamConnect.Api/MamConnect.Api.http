@@ -1,0 +1,6 @@
+@MamConnect.Api_HostAddress = http://localhost:5293
+
+GET {{MamConnect.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
