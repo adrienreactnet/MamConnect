@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ChildrenList from "./components/ChildrenList";
-import DailyReportPage from "./components/DailyReportPage";
+import ReportsPage from "./components/ReportsPage";
 import HomePage from "./components/HomePage";
 
 function getPageFromHash() {
@@ -33,7 +33,7 @@ function App() {
       </nav>
       {page === "home" && <HomePage />}
       {page === "children" && <ChildrenList />}
-      {page === "reports" && <DailyReportPage childId={1} />}
+      {page === "reports" && <ReportsPage />}
     </div>
   );
 }
