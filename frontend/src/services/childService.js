@@ -40,7 +40,7 @@ export async function updateChild(id, payload) {
         throw new Error("Erreur lors de la mise à jour de l'enfant");
     }
 
-    return await response.json();
+    return true;
 }
 
 export async function deleteChild(id) {
@@ -52,5 +52,5 @@ export async function deleteChild(id) {
         throw new Error("Erreur lors de la suppression de l'enfant");
     }
 
-    return await response.json();
+    return true;
 }
