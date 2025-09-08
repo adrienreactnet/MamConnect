@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { fetchChildren } from "../services/childService";
 import DailyReportForm from "./DailyReportForm";
 
-export default function ReportsPage() {
+export default function AddReports() {
     const [children, setChildren] = useState([]);
     const [error, setError] = useState("");
 
