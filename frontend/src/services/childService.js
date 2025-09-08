@@ -26,3 +26,31 @@ export async function addChild(child) {
 
     return await response.json();
 }
+
+export async function updateChild(id, payload) {
+    const response = await fetch(`${API_BASE_URL}/children/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour de l'enfant");
+    }
+
+    return await response.json();
+}
+
+export async function deleteChild(id) {
+    const response = await fetch(`${API_BASE_URL}/children/${id}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de l'enfant");
+    }
+
+    return await response.json();
+}
