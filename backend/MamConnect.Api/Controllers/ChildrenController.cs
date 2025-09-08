@@ -23,4 +23,27 @@ public class ChildrenController : ControllerBase
         await _db.SaveChangesAsync();
         return Created($"/children/{child.Id}", child);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(int id, Child input)
+    {
+        var child = await _db.Children.FindAsync(id);
+        if (child is null) return NotFound();
+
+        child.FirstName = input.FirstName;
+        child.BirthDate = input.BirthDate;
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var child = await _db.Children.FindAsync(id);
+        if (child is null) return NotFound();
+
+        _db.Children.Remove(child);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
 }
