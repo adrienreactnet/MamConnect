@@ -42,7 +42,11 @@ function App() {
     <div className="App">
       <AppBar position="static">
         <Toolbar>
-          <Tabs value={route.page}>
+          <Tabs
+            value={route.page}
+            textColor="inherit"
+            TabIndicatorProps={{ style: { backgroundColor: "#fff" } }}
+          >
             <Tab label="Accueil" value="home" href="#home" />
             <Tab label="Enfants" value="children" href="#children/list" />
             <Tab label="Rapports" value="reports" href="#reports/list" />
