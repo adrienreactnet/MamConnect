@@ -10,7 +10,7 @@ export default function ChildrenList() {
   const [editingChild, setEditingChild] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [birthDate, setBirthDate] = useState("");
-  
+
   const loadChildren = async () => {
     try {
       const data = await fetchChildren();
@@ -59,6 +59,7 @@ export default function ChildrenList() {
       <ul>
         {children.map((child) => (
           <li key={child.id}>
+            {/* Modification field */}
             {editingChild === child.id ? (
               <>
                 <input
@@ -77,6 +78,7 @@ export default function ChildrenList() {
               </>
             ) : (
               <>
+                {/* Children list */}
                 {child.firstName}
                 <IconButton aria-label="edit" onClick={() => startEditing(child)}>
                   <Edit />
