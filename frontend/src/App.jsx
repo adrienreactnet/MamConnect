@@ -60,7 +60,7 @@ function App() {
         </Tabs>
       )}
 
-      <Box sx={{ p: 2 }}>
+       <Box sx={{ color: 'primary.main', p: 2 }}>
 
         {route.page === "home" && <HomePage />}
         {route.page === "children" && route.subPage === "list" && <ChildrenList />}
