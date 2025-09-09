@@ -1,4 +1,12 @@
 import { useEffect, useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Tabs,
+  Tab,
+  Box,
+} from "@mui/material";
 import ChildrenList from "./components/ChildrenList";
 import HomePage from "./components/HomePage";
 import AddChild from "./components/AddChild";
@@ -32,27 +40,41 @@ function App() {
 
   return (
     <div className="App">
-      <h1>MamConnect Front</h1>
-      <nav>
-        <a href="#home">Accueil</a> | <a href="#children/list">Enfants</a> | <a href="#reports/list">Rapports</a>
-      </nav>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" href="#home">
+            Accueil
+          </Button>
+          <Button color="inherit" href="#children/list">
+            Enfants
+          </Button>
+          <Button color="inherit" href="#reports/list">
+            Rapports
+          </Button>
+        </Toolbar>
+      </AppBar>
 
       {route.page === "children" && (
-        <nav>
-          <a href="#children/list">Liste</a> | <a href="#children/add">Ajouter</a>
-        </nav>
+        <Tabs value={route.subPage}>
+          <Tab label="Liste" value="list" href="#children/list" />
+          <Tab label="Ajouter" value="add" href="#children/add" />
+        </Tabs>
       )}
       {route.page === "reports" && (
-        <nav>
-         <a href="#reports/list">Liste</a> | <a href="#reports/add">Ajouter</a>
-        </nav>
+        <Tabs value={route.subPage}>
+          <Tab label="Liste" value="list" href="#reports/list" />
+          <Tab label="Ajouter" value="add" href="#reports/add" />
+        </Tabs>
       )}
 
-      {route.page === "home" && <HomePage />}
-      {route.page === "children" && route.subPage === "list" && <ChildrenList />}
-      {route.page === "children" && route.subPage === "add" && <AddChild />}
-      {route.page === "reports" && route.subPage === "list" && <ReportsList />}
-      {route.page === "reports" && route.subPage === "add" && <AddReports />}
+      <Box sx={{ p: 2 }}>
+        <h1>MamConnect Front</h1>
+        {route.page === "home" && <HomePage />}
+        {route.page === "children" && route.subPage === "list" && <ChildrenList />}
+        {route.page === "children" && route.subPage === "add" && <AddChild />}
+        {route.page === "reports" && route.subPage === "list" && <ReportsList />}
+        {route.page === "reports" && route.subPage === "add" && <AddReports />}
+      </Box>
     </div>
   );
 }
