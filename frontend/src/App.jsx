@@ -42,15 +42,11 @@ function App() {
     <div className="App">
       <AppBar position="static">
         <Toolbar>
-          <Button color="inherit" href="#home">
-            Accueil
-          </Button>
-          <Button color="inherit" href="#children/list">
-            Enfants
-          </Button>
-          <Button color="inherit" href="#reports/list">
-            Rapports
-          </Button>
+          <Tabs value={route.page}>
+            <Tab label="Accueil" value="home" href="#home" />
+            <Tab label="Enfants" value="children" href="#children/list" />
+            <Tab label="Rapports" value="reports" href="#reports/list" />
+          </Tabs>
         </Toolbar>
       </AppBar>
 
