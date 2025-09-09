@@ -10,11 +10,19 @@ export default function ChildrenList() {
   const [editingChild, setEditingChild] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  
+  const loadChildren = async () => {
+    try {
+      const data = await fetchChildren();
+      setChildren(data);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   useEffect(() => {
-    fetchChildren()
-      .then(setChildren)
-      .catch((err) => setError(err.message));
+    loadChildren();
   }, []);
 
   const startEditing = (child) => {
@@ -25,8 +33,8 @@ export default function ChildrenList() {
 
   const handleUpdate = async (id) => {
     try {
-      const updated = await updateChild(id, { firstName, birthDate });
-      setChildren(children.map((c) => (c.id === id ? updated : c)));
+      await updateChild(id, { firstName, birthDate });
+      await loadChildren();
       setEditingChild(null);
       setFirstName("");
       setBirthDate("");
@@ -38,7 +46,7 @@ export default function ChildrenList() {
   const handleDelete = async (id) => {
     try {
       await deleteChild(id);
-      setChildren(children.filter((c) => c.id !== id));
+      await loadChildren();
     } catch (err) {
       setError(err.message);
     }
