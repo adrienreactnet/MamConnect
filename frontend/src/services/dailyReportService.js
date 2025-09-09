@@ -1,7 +1,17 @@
 // src/services/dailyReportService.js
 const API_BASE_URL = "http://localhost:5293";
 
-export async function fetchReports(childId) {
+export async function fetchReports() {
+    const response = await fetch(`${API_BASE_URL}/reports`);
+
+    if (!response.ok) {
+        throw new Error("Erreur lors du chargement des comptes rendus");
+    }
+
+    return await response.json();
+}
+
+export async function fetchChildReports(childId) {
     const response = await fetch(`${API_BASE_URL}/reports/children/${childId}`);
 
     if (!response.ok) {
