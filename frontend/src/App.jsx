@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  AppBar,
-  Toolbar,
-  Button,
-  Tabs,
-  Tab,
-  Box,
-} from "@mui/material";
+import { AppBar, Toolbar, Tabs, Tab, Box } from "@mui/material";
 import ChildrenList from "./components/ChildrenList";
 import HomePage from "./components/HomePage";
 import AddChild from "./components/AddChild";
@@ -40,12 +33,12 @@ function App() {
 
   return (
     <div className="App">
+      <h1>MamConnect Front</h1>
       <AppBar position="static">
         <Toolbar>
           <Tabs
             value={route.page}
             textColor="inherit"
-            TabIndicatorProps={{ style: { backgroundColor: "#fff" } }}
           >
             <Tab label="Accueil" value="home" href="#home" />
             <Tab label="Enfants" value="children" href="#children/list" />
@@ -68,7 +61,7 @@ function App() {
       )}
 
       <Box sx={{ p: 2 }}>
-        <h1>MamConnect Front</h1>
+
         {route.page === "home" && <HomePage />}
         {route.page === "children" && route.subPage === "list" && <ChildrenList />}
         {route.page === "children" && route.subPage === "add" && <AddChild />}
