@@ -24,5 +24,52 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasMany(u => u.Children)
             .WithMany(c => c.Parents)
             .UsingEntity(j => j.ToTable("ParentChildren"));
+
+        // Seed data for testing
+        modelBuilder.Entity<User>().HasData(
+            new User { Id = 1, Role = UserRole.Assistant },
+            new User { Id = 2, Role = UserRole.Assistant },
+            new User { Id = 3, Role = UserRole.Parent },
+            new User { Id = 4, Role = UserRole.Parent }
+        );
+
+        modelBuilder.Entity<Child>().HasData(
+            new Child
+            {
+                Id = 1,
+                FirstName = "Emeline",
+                BirthDate = new DateOnly(2020, 1, 1),
+                AssistantId = 1
+            },
+            new Child
+            {
+                Id = 2,
+                FirstName = "Alice",
+                BirthDate = new DateOnly(2020, 1, 1),
+                AssistantId = 2
+            }
+        );
+
+        modelBuilder.Entity<DailyReport>().HasData(
+            new DailyReport
+            {
+                Id = 1,
+                Content = "First report Emeline",
+                CreatedAt = new DateTime(2024, 1, 1),
+                ChildId = 1
+            },
+            new DailyReport
+            {
+                Id = 2,
+                Content = "First report Alice",
+                CreatedAt = new DateTime(2024, 1, 1),
+                ChildId = 2
+            }
+        );
+
+        modelBuilder.Entity("ChildUser").HasData(
+            new { ChildrenId = 1, ParentsId = 3 },
+            new { ChildrenId = 2, ParentsId = 4 }
+        );
     }
 }
