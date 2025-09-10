@@ -26,6 +26,22 @@ dotnet ef migrations list --project ./backend/MamConnect.Infrastructure/MamConne
 
 ---
 
+## Avoir une migration propre
+
+### 1. Supprimer les fichiers de migrations dans le dossier `Migrations`
+
+### 2. Drop de la BDD
+```powershell
+dotnet ef database drop --project ./backend/MamConnect.Infrastructure/MamConnect.Infrastructure.csproj --startup-project ./backend/MamConnect.Api/MamConnect.Api.csproj
+```
+
+### 3. Recrée une migration propre
+```powershell
+dotnet ef migrations add Init --project ./backend/MamConnect.Infrastructure/MamConnect.Infrastructure.csproj --startup-project ./backend/MamConnect.Api/MamConnect.Api.csproj
+dotnet ef database update --project ./backend/MamConnect.Infrastructure/MamConnect.Infrastructure.csproj --startup-project ./backend
+```
+
+
 ## Astuce Visual Studio
 - Ouvre **Package Manager Console**
 - Choisis `MamConnect.Infrastructure` comme projet par défaut

@@ -1,10 +1,13 @@
+using MamConnect.Domain.Entities;      // Child
+using MamConnect.Infrastructure.Data;   // AppDbContext
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MamConnect.Infrastructure.Data;   // AppDbContext
-using MamConnect.Domain.Entities;      // Child
+using System.Security.Claims;
 
 namespace MamConnect.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("children")]
 public class ChildrenController : ControllerBase
@@ -13,8 +16,29 @@ public class ChildrenController : ControllerBase
     public ChildrenController(AppDbContext db) => _db = db;
 
     [HttpGet]
-    public async Task<IEnumerable<Child>> Get() =>
-        await _db.Children.OrderBy(c => c.FirstName).ToListAsync();
+    public async Task<IEnumerable<Child>> Get()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var role = User.FindFirstValue(ClaimTypes.Role);
+
+        if (role == UserRole.Assistant.ToString())
+        {
+            return await _db.Children
+                             .Where(c => c.AssistantId == userId)
+                             .OrderBy(c => c.FirstName)
+                             .ToListAsync();
+        }
+
+        if (role == UserRole.Parent.ToString())
+        {
+            return await _db.Children
+                             .Where(c => c.Parents.Any(p => p.Id == userId))
+                             .OrderBy(c => c.FirstName)
+                             .ToListAsync();
+        }
+
+        return new List<Child>();
+    }
 
     [HttpPost]
     public async Task<IActionResult> Post(Child child)

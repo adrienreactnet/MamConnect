@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MamConnect.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250909144525_AddUserChildRelations")]
-    partial class AddUserChildRelations
+    [Migration("20250910071728_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,6 +85,8 @@ namespace MamConnect.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChildId");
+
                     b.ToTable("DailyReports");
                 });
 
@@ -126,6 +128,17 @@ namespace MamConnect.Infrastructure.Migrations
                         .HasForeignKey("AssistantId");
 
                     b.Navigation("Assistant");
+                });
+
+            modelBuilder.Entity("MamConnect.Domain.Entities.DailyReport", b =>
+                {
+                    b.HasOne("MamConnect.Domain.Entities.Child", "Child")
+                        .WithMany()
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Child");
                 });
 
             modelBuilder.Entity("MamConnect.Domain.Entities.User", b =>

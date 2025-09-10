@@ -1,21 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MamConnect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUserChildRelations : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "AssistantId",
-                table: "Children",
-                type: "int",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -27,6 +22,47 @@ namespace MamConnect.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Children",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    AssistantId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Children", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Children_Users_AssistantId",
+                        column: x => x.AssistantId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DailyReports",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ChildId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailyReports", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DailyReports_Children_ChildId",
+                        column: x => x.ChildId,
+                        principalTable: "Children",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,38 +95,30 @@ namespace MamConnect.Infrastructure.Migrations
                 column: "AssistantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DailyReports_ChildId",
+                table: "DailyReports",
+                column: "ChildId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ParentChildren_ParentsId",
                 table: "ParentChildren",
                 column: "ParentsId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Children_Users_AssistantId",
-                table: "Children",
-                column: "AssistantId",
-                principalTable: "Users",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Children_Users_AssistantId",
-                table: "Children");
+            migrationBuilder.DropTable(
+                name: "DailyReports");
 
             migrationBuilder.DropTable(
                 name: "ParentChildren");
 
             migrationBuilder.DropTable(
+                name: "Children");
+
+            migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Children_AssistantId",
-                table: "Children");
-
-            migrationBuilder.DropColumn(
-                name: "AssistantId",
-                table: "Children");
         }
     }
 }
