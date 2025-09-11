@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MamConnect.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250910071728_Init")]
+    [Migration("20250911073717_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -38,6 +38,18 @@ namespace MamConnect.Infrastructure.Migrations
                     b.HasIndex("ParentsId");
 
                     b.ToTable("ParentChildren", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ChildrenId = 1,
+                            ParentsId = 3
+                        },
+                        new
+                        {
+                            ChildrenId = 2,
+                            ParentsId = 4
+                        });
                 });
 
             modelBuilder.Entity("MamConnect.Domain.Entities.Child", b =>
@@ -63,6 +75,22 @@ namespace MamConnect.Infrastructure.Migrations
                     b.HasIndex("AssistantId");
 
                     b.ToTable("Children");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AssistantId = 1,
+                            BirthDate = new DateOnly(2020, 1, 1),
+                            FirstName = "Emeline"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AssistantId = 2,
+                            BirthDate = new DateOnly(2020, 1, 1),
+                            FirstName = "Alice"
+                        });
                 });
 
             modelBuilder.Entity("MamConnect.Domain.Entities.DailyReport", b =>
@@ -88,6 +116,22 @@ namespace MamConnect.Infrastructure.Migrations
                     b.HasIndex("ChildId");
 
                     b.ToTable("DailyReports");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ChildId = 1,
+                            Content = "First report Emeline",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ChildId = 2,
+                            Content = "First report Alice",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("MamConnect.Domain.Entities.User", b =>
@@ -98,12 +142,50 @@ namespace MamConnect.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "assistant1@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "assistant2@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "parent1@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
+                            Role = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Email = "parent2@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
+                            Role = 0
+                        });
                 });
 
             modelBuilder.Entity("ChildUser", b =>

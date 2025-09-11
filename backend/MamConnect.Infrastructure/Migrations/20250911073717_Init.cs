@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace MamConnect.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -17,6 +19,8 @@ namespace MamConnect.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -87,6 +91,44 @@ namespace MamConnect.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "PasswordHash", "Role" },
+                values: new object[,]
+                {
+                    { 1, "assistant1@example.com", "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea", 1 },
+                    { 2, "assistant2@example.com", "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea", 1 },
+                    { 3, "parent1@example.com", "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea", 0 },
+                    { 4, "parent2@example.com", "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea", 0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Children",
+                columns: new[] { "Id", "AssistantId", "BirthDate", "FirstName" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateOnly(2020, 1, 1), "Emeline" },
+                    { 2, 2, new DateOnly(2020, 1, 1), "Alice" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "DailyReports",
+                columns: new[] { "Id", "ChildId", "Content", "CreatedAt" },
+                values: new object[,]
+                {
+                    { 1, 1, "First report Emeline", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, "First report Alice", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ParentChildren",
+                columns: new[] { "ChildrenId", "ParentsId" },
+                values: new object[,]
+                {
+                    { 1, 3 },
+                    { 2, 4 }
                 });
 
             migrationBuilder.CreateIndex(

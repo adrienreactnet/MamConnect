@@ -139,6 +139,14 @@ namespace MamConnect.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
@@ -150,21 +158,29 @@ namespace MamConnect.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
+                            Email = "assistant1@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
                             Role = 1
                         },
                         new
                         {
                             Id = 2,
+                            Email = "assistant2@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
                             Role = 1
                         },
                         new
                         {
                             Id = 3,
+                            Email = "parent1@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
                             Role = 0
                         },
                         new
                         {
                             Id = 4,
+                            Email = "parent2@example.com",
+                            PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
                             Role = 0
                         });
                 });

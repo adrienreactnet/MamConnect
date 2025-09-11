@@ -26,12 +26,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .UsingEntity(j => j.ToTable("ParentChildren"));
 
         // Seed data for testing
+        const string passwordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea";
         modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Role = UserRole.Assistant },
-            new User { Id = 2, Role = UserRole.Assistant },
-            new User { Id = 3, Role = UserRole.Parent },
-            new User { Id = 4, Role = UserRole.Parent }
-        );
+            new User { Id = 1, Role = UserRole.Assistant, Email = "assistant1@example.com", PasswordHash = passwordHash },
+            new User { Id = 2, Role = UserRole.Assistant, Email = "assistant2@example.com", PasswordHash = passwordHash },
+            new User { Id = 3, Role = UserRole.Parent, Email = "parent1@example.com", PasswordHash = passwordHash },
+            new User { Id = 4, Role = UserRole.Parent, Email = "parent2@example.com", PasswordHash = passwordHash }
+        );        
 
         modelBuilder.Entity<Child>().HasData(
             new Child
