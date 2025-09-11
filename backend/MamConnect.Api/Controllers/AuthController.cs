@@ -32,13 +32,16 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponse>> Register(RegisterUserRequest request)
     {
-        if (await _db.Users.AnyAsync(u => u.Email == request.Email))
+        if (await _db.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber))
             return Conflict();
 
         var user = new User
         {
             Email = request.Email,
-            Role = UserRole.Parent
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            PhoneNumber = request.PhoneNumber,
+            Role = request.Role
         };
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
@@ -46,14 +49,14 @@ public class AuthController : ControllerBase
         await _db.SaveChangesAsync();
 
         var token = GenerateToken(user);
-        return new AuthResponse(user.Id, user.Role, token);
+        return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
     }
 
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(UserLoginRequest request)
     {
-        var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == request.Email);
+        var user = await _db.Users.SingleOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
         if (user is null)
             return Unauthorized();
 
@@ -62,7 +65,7 @@ public class AuthController : ControllerBase
             return Unauthorized();
 
         var token = GenerateToken(user);
-        return new AuthResponse(user.Id, user.Role, token);
+        return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
     }
 
     private string GenerateToken(User user)
