@@ -38,7 +38,7 @@ public class AuthController : ControllerBase
         var user = new User
         {
             Email = request.Email,
-            Role = request.Role
+            Role = UserRole.Parent
         };
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
