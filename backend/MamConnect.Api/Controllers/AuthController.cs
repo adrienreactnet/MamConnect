@@ -1,6 +1,7 @@
 ﻿using MamConnect.Api.Dtos;
 using MamConnect.Domain.Entities;
 using MamConnect.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ public class AuthController : ControllerBase
         _passwordHasher = passwordHasher;
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponse>> Register(RegisterUserRequest request)
     {
@@ -47,6 +49,7 @@ public class AuthController : ControllerBase
         return new AuthResponse(user.Id, user.Role, token);
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(UserLoginRequest request)
     {
