@@ -34,7 +34,16 @@ export async function login(phoneNumber, password) {
 
 export function saveAuth(auth) {
     localStorage.setItem("token", auth.token);
-    localStorage.setItem("user", JSON.stringify(auth.user));
+    localStorage.setItem(
+        "user",
+        JSON.stringify({
+            id: auth.id,
+            firstName: auth.firstName,
+            lastName: auth.lastName,
+            phoneNumber: auth.phoneNumber,
+            role: auth.role,
+        })
+    );
 }
 
 export function getAuth() {
