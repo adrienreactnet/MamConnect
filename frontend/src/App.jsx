@@ -5,6 +5,7 @@ import HomePage from "./components/HomePage";
 import AddChild from "./components/AddChild";
 import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
+import LoginPage from "./components/LoginPage";
 
 function getPageFromHash() {
   const hash = window.location.hash.slice(1); // Remove leading '#'

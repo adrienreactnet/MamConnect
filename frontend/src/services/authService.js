@@ -31,3 +31,17 @@ export async function login(phoneNumber, password) {
 
     throw new Error("Authentication failed");
 }
+
+export function saveAuth(auth) {
+    localStorage.setItem("token", auth.token);
+    localStorage.setItem("user", JSON.stringify(auth.user));
+}
+
+export function getAuth() {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (!token || !user) {
+        return null;
+    }
+    return { token, user: JSON.parse(user) };
+}

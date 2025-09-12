@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "../services/authService";
+import { login, saveAuth } from "../services/authService";
 
 export default function LoginPage() {
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -11,6 +11,8 @@ export default function LoginPage() {
         setError(null);
         try {
             const auth = await login(phoneNumber, password);
+            saveAuth(auth);
+            window.location.hash = "#home";
             console.log("Logged in", auth);
         } catch {
             setError("Échec de l'authentification");
