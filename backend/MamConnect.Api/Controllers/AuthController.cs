@@ -43,13 +43,10 @@ public class AuthController : ControllerBase
             PhoneNumber = request.PhoneNumber,
             Role = request.Role,
             PasswordHash = string.Empty
-        };
-        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+        };        
 
         _db.Users.Add(user);
-        await _db.SaveChangesAsync();
-
-        var token = GenerateToken(user);
+        await _db.SaveChangesAsync();        
         return NoContent();
     }
 
