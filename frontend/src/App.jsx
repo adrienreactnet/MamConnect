@@ -1,4 +1,3 @@
-import { getAuth } from "./services/authService";
 import { useEffect, useState } from "react";
 import { AppBar, Toolbar, Tabs, Tab, Box } from "@mui/material";
 import ChildrenList from "./components/ChildrenList";
@@ -7,6 +6,8 @@ import AddChild from "./components/AddChild";
 import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
 import LoginPage from "./components/LoginPage";
+import AdminPage from "./components/AdminPage";
+import { getAuth } from "./services/authService";
 
 function getPageFromHash() {
   const hash = window.location.hash.slice(1); // Remove leading '#'
@@ -21,14 +22,16 @@ function getPageFromHash() {
       return { page: "home" };
     case "login":
       return { page: "login" };
+    case "admin":
+      return { page: "admin" };
     default:
       return { page: "home" };
   }
 }
 
 function App() {
-  const auth = getAuth();
   const [route, setRoute] = useState(getPageFromHash());
+  const auth = getAuth();
 
   useEffect(() => {
     const onHashChange = () => setRoute(getPageFromHash());
@@ -48,6 +51,7 @@ function App() {
             <Tab label="Accueil" value="home" href="#home" />
             <Tab label="Enfants" value="children" href="#children/list" />
             <Tab label="Rapports" value="reports" href="#reports/list" />
+            {auth?.user.role === "Admin" && <Tab label="Admin" value="admin" href="#admin" />}
             <Tab label="Connexion" value="login" href="#login" />
           </Tabs>
         </Toolbar>
@@ -74,6 +78,7 @@ function App() {
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
         {route.page === "login" && <LoginPage />}
+        {route.page === "admin" && <AdminPage />}
       </Box>
     </div>
   );
