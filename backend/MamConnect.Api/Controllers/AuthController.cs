@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -43,10 +42,10 @@ public class AuthController : ControllerBase
             PhoneNumber = request.PhoneNumber,
             Role = request.Role,
             PasswordHash = string.Empty
-        };        
+        };
 
         _db.Users.Add(user);
-        await _db.SaveChangesAsync();        
+        await _db.SaveChangesAsync();
         return NoContent();
     }
 
@@ -61,6 +60,24 @@ public class AuthController : ControllerBase
         var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
         if (result == PasswordVerificationResult.Failed)
             return Unauthorized();
+
+        var token = GenerateToken(user);
+        return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("set-password")]
+    public async Task<ActionResult<AuthResponse>> SetPassword(SetPasswordRequest request)
+    {
+        var user = await _db.Users.SingleOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+        if (user is null)
+            return Unauthorized();
+
+        if (!string.IsNullOrEmpty(user.PasswordHash))
+            return Conflict();
+
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
+        await _db.SaveChangesAsync();
 
         var token = GenerateToken(user);
         return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
