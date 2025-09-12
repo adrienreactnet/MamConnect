@@ -1,3 +1,4 @@
+import { getAuth } from "./services/authService";
 import { useEffect, useState } from "react";
 import { AppBar, Toolbar, Tabs, Tab, Box } from "@mui/material";
 import ChildrenList from "./components/ChildrenList";
@@ -26,6 +27,7 @@ function getPageFromHash() {
 }
 
 function App() {
+  const auth = getAuth();
   const [route, setRoute] = useState(getPageFromHash());
 
   useEffect(() => {
