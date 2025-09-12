@@ -17,6 +17,8 @@ function getPageFromHash() {
       return { page: "reports", subPage: subPage || "list" };
     case "home":
       return { page: "home" };
+    case "login":
+      return { page: "login" };
     default:
       return { page: "home" };
   }
@@ -43,6 +45,7 @@ function App() {
             <Tab label="Accueil" value="home" href="#home" />
             <Tab label="Enfants" value="children" href="#children/list" />
             <Tab label="Rapports" value="reports" href="#reports/list" />
+            <Tab label="Connexion" value="login" href="#login" />
           </Tabs>
         </Toolbar>
       </AppBar>
@@ -60,13 +63,14 @@ function App() {
         </Tabs>
       )}
 
-       <Box>
+      <Box>
 
         {route.page === "home" && <HomePage />}
         {route.page === "children" && route.subPage === "list" && <ChildrenList />}
         {route.page === "children" && route.subPage === "add" && <AddChild />}
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
+        {route.page === "login" && <LoginPage />}
       </Box>
     </div>
   );
