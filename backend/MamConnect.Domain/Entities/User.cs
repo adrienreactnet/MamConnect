@@ -3,7 +3,8 @@
 public enum UserRole
 {
     Parent,
-    Assistant
+    Assistant,
+    Admin
 }
 
 public class User

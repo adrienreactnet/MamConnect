@@ -37,6 +37,13 @@ public class ChildrenController : ControllerBase
                              .ToListAsync();
         }
 
+        if (role == UserRole.Admin.ToString())
+        {
+            return await _db.Children
+                             .OrderBy(c => c.FirstName)
+                             .ToListAsync();
+        }
+
         return new List<Child>();
     }
 
