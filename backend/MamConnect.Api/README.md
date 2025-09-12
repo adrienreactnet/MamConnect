@@ -4,13 +4,16 @@
 
 ### `POST /auth/register`
 
-Registers a new user. The body should contain only an email and password:
+Creates a new user. This endpoint requires authorization.
 
 ```json
 {
   "email": "user@example.com",
-  "password": "string"
+  "firstName": "First",
+  "lastName": "Last",
+  "phoneNumber": "+1234567890",
+  "role": "Parent"
 }
 ```
 
-New accounts are created with the `Parent` role by default.
+Returns `204 No Content` on success.

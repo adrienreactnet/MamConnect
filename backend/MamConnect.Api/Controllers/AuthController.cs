@@ -28,9 +28,9 @@ public class AuthController : ControllerBase
         _passwordHasher = passwordHasher;
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpPost("register")]
-    public async Task<ActionResult<AuthResponse>> Register(RegisterUserRequest request)
+    public async Task<IActionResult> Register(CreateUserRequest request)
     {
         if (await _db.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber))
             return Conflict();
@@ -41,7 +41,8 @@ public class AuthController : ControllerBase
             FirstName = request.FirstName,
             LastName = request.LastName,
             PhoneNumber = request.PhoneNumber,
-            Role = request.Role
+            Role = request.Role,
+            PasswordHash = string.Empty
         };
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
@@ -49,7 +50,7 @@ public class AuthController : ControllerBase
         await _db.SaveChangesAsync();
 
         var token = GenerateToken(user);
-        return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
+        return NoContent();
     }
 
     [AllowAnonymous]
