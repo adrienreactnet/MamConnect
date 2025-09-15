@@ -7,6 +7,7 @@ import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
 import LoginPage from "./components/LoginPage";
 import AccountMenu from "./components/AccountMenu";
+import AssistantsPage from "./components/AssistantsPage";
 import { getAuth } from "./services/authService";
 
 function getPageFromHash() {
@@ -22,8 +23,8 @@ function getPageFromHash() {
       return { page: "home" };
     case "login":
       return { page: "login" };
-    case "admin":
-      return { page: "admin", subPage: subPage || "children" };
+    case "assistants":
+      return { page: "assistants" };
     default:
       return { page: "home" };
   }
@@ -49,16 +50,12 @@ function App() {
             value={route.page}
             textColor="inherit"
           >
-            {auth?.user.role !== "Admin" && (
-              <>
-                <Tab label="Accueil" value="home" href="#home" />
-                <Tab label="Enfants" value="children" href="#children/list" />
-                <Tab label="Rapports" value="reports" href="#reports/list" />
-              </>
-            )}
+            <Tab label="Accueil" value="home" href="#home" />
+            <Tab label="Enfants" value="children" href="#children/list" />
             {auth?.user.role === "Admin" && (
-              <Tab label="Admin" value="admin" href="#admin" />
+              <Tab label="Assistantes" value="assistants" href="#assistants" />
             )}
+            <Tab label="Rapports" value="reports" href="#reports/list" />
           </Tabs>
           <Box ml="auto">
             <AccountMenu auth={auth} setAuth={setAuth} />
@@ -77,12 +74,7 @@ function App() {
           <Tab label="Liste" value="list" href="#reports/list" />
           <Tab label="Ajouter" value="add" href="#reports/add" />
         </Tabs>
-      )}
-      {route.page === "admin" && (
-        <Tabs value={route.subPage}>
-          <Tab label="Enfants" value="children" href="#admin/children" />
-        </Tabs>
-      )}
+      )}     
 
       <Box>
 
@@ -92,7 +84,7 @@ function App() {
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
         {route.page === "login" && <LoginPage setAuth={setAuth} />}
-        {route.page === "admin" && route.subPage === "children" && <ChildrenList />}
+        {route.page === "assistants" && <AssistantsPage />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
     </div>

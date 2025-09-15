@@ -59,6 +59,9 @@ export default function ChildrenList() {
   return (
     <div>
       <h2>Liste des enfants</h2>
+      <IconButton aria-label="add" onClick={() => setOpen(true)}>
+        <Add />
+      </IconButton>
       {children.length === 0 && <p>Aucun enfant trouvé.</p>}
       <ul>
         {children.map((child) => (
@@ -96,9 +99,7 @@ export default function ChildrenList() {
         ))}
       </ul>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <IconButton aria-label="add" onClick={() => setOpen(true)}>
-        <Add />
-      </IconButton>
+
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>
           <AddChild
