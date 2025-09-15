@@ -1,8 +1,15 @@
 // src/services/childService.js
+import { getAuth } from "./authService";
+
 const API_BASE_URL = "http://localhost:5293";
 
 export async function fetchChildren() {
-    const response = await fetch(`${API_BASE_URL}/children`);
+    const token = getAuth()?.token;
+    const response = await fetch(`${API_BASE_URL}/children`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 
     if (!response.ok) {
         throw new Error("Erreur lors du chargement des enfants");
@@ -12,10 +19,12 @@ export async function fetchChildren() {
 }
 
 export async function addChild(child) {
+    const token = getAuth()?.token;
     const response = await fetch(`${API_BASE_URL}/children`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(child),
     });
@@ -28,10 +37,12 @@ export async function addChild(child) {
 }
 
 export async function updateChild(id, payload) {
+    const token = getAuth()?.token;
     const response = await fetch(`${API_BASE_URL}/children/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
     });
@@ -44,8 +55,12 @@ export async function updateChild(id, payload) {
 }
 
 export async function deleteChild(id) {
+    const token = getAuth()?.token;
     const response = await fetch(`${API_BASE_URL}/children/${id}`, {
         method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     });
 
     if (!response.ok) {
