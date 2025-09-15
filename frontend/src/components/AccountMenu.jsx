@@ -31,13 +31,13 @@ export default function AccountMenu({ auth, setAuth }) {
     );
   }
 
-  const displayName = `${auth.user.firstName ?? ""} ${auth.user.lastName ?? ""}`.trim();
+  const displayName = `${auth?.user?.firstName ?? ""} ${auth?.user?.lastName ?? ""}`.trim();
 
   return (
     <>
       <Tooltip title={displayName || "Compte"}>
         <IconButton onClick={handleOpen} color="inherit">
-          <Avatar>{auth.user.firstName ? auth.user.firstName[0] : ""}</Avatar>
+          <Avatar>{auth?.user?.firstName ? auth?.user?.firstName?.[0] : ""}</Avatar>
         </IconButton>
       </Tooltip>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
