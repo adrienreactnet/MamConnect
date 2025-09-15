@@ -84,7 +84,7 @@ function App() {
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
         {route.page === "login" && <LoginPage setAuth={setAuth} />}
-        {route.page === "assistants" && <AssistantsPage />}
+        {route.page === "assistants" && auth?.user.role === "Admin" && <AssistantsPage />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
     </div>
