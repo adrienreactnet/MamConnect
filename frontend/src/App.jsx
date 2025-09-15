@@ -6,7 +6,6 @@ import AddChild from "./components/AddChild";
 import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
 import LoginPage from "./components/LoginPage";
-import AdminPage from "./components/AdminPage";
 import AccountMenu from "./components/AccountMenu";
 import { getAuth } from "./services/authService";
 
@@ -24,7 +23,7 @@ function getPageFromHash() {
     case "login":
       return { page: "login" };
     case "admin":
-      return { page: "admin" };
+      return { page: "admin", subPage: subPage || "children" };
     default:
       return { page: "home" };
   }
@@ -79,6 +78,11 @@ function App() {
           <Tab label="Ajouter" value="add" href="#reports/add" />
         </Tabs>
       )}
+      {route.page === "admin" && (
+        <Tabs value={route.subPage}>
+          <Tab label="Enfants" value="children" href="#admin/children" />
+        </Tabs>
+      )}
 
       <Box>
 
@@ -88,7 +92,7 @@ function App() {
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
         {route.page === "login" && <LoginPage setAuth={setAuth} />}
-        {route.page === "admin" && <AdminPage />}
+        {route.page === "admin" && route.subPage === "children" && <ChildrenList />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
     </div>
