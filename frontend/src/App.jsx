@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AppBar, Toolbar, Tabs, Tab, Box } from "@mui/material";
+import { AppBar, Toolbar, Tabs, Tab, Box, Snackbar } from "@mui/material";
 import ChildrenList from "./components/ChildrenList";
 import HomePage from "./components/HomePage";
 import AddChild from "./components/AddChild";
@@ -32,6 +32,7 @@ function getPageFromHash() {
 function App() {
   const [route, setRoute] = useState(getPageFromHash());
   const auth = getAuth();
+  const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
     const onHashChange = () => setRoute(getPageFromHash());
@@ -60,6 +61,7 @@ function App() {
                 value="logout"
                 onClick={() => {
                   logout();
+                  setShowLogout(true);
                   window.location.hash = "#home";
                 }}
               />
@@ -91,6 +93,7 @@ function App() {
         {route.page === "login" && <LoginPage />}
         {route.page === "admin" && <AdminPage />}
       </Box>
+      <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
     </div>
   );
 }
