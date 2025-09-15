@@ -50,10 +50,16 @@ function App() {
             value={route.page}
             textColor="inherit"
           >
-            <Tab label="Accueil" value="home" href="#home" />
-            <Tab label="Enfants" value="children" href="#children/list" />
-            <Tab label="Rapports" value="reports" href="#reports/list" />
-            {auth?.user.role === "Admin" && <Tab label="Admin" value="admin" href="#admin" />}
+            {auth?.user.role !== "Admin" && (
+              <>
+                <Tab label="Accueil" value="home" href="#home" />
+                <Tab label="Enfants" value="children" href="#children/list" />
+                <Tab label="Rapports" value="reports" href="#reports/list" />
+              </>
+            )}
+            {auth?.user.role === "Admin" && (
+              <Tab label="Admin" value="admin" href="#admin" />
+            )}
           </Tabs>
           <Box ml="auto">
             <AccountMenu auth={auth} setAuth={setAuth} />
@@ -81,7 +87,7 @@ function App() {
         {route.page === "children" && route.subPage === "add" && <AddChild />}
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
-         {route.page === "login" && <LoginPage setAuth={setAuth} />}
+        {route.page === "login" && <LoginPage setAuth={setAuth} />}
         {route.page === "admin" && <AdminPage />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
