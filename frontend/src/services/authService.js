@@ -54,3 +54,8 @@ export function getAuth() {
     }
     return { token, user: JSON.parse(user) };
 }
+
+export function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+}

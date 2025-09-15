@@ -7,7 +7,7 @@ import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
 import LoginPage from "./components/LoginPage";
 import AdminPage from "./components/AdminPage";
-import { getAuth } from "./services/authService";
+import { getAuth, logout } from "./services/authService";
 
 function getPageFromHash() {
   const hash = window.location.hash.slice(1); // Remove leading '#'
@@ -52,7 +52,18 @@ function App() {
             <Tab label="Enfants" value="children" href="#children/list" />
             <Tab label="Rapports" value="reports" href="#reports/list" />
             {auth?.user.role === "Admin" && <Tab label="Admin" value="admin" href="#admin" />}
-            <Tab label="Connexion" value="login" href="#login" />
+            {auth === null ? (
+              <Tab label="Connexion" value="login" href="#login" />
+            ) : (
+              <Tab
+                label="Déconnexion"
+                value="logout"
+                onClick={() => {
+                  logout();
+                  window.location.hash = "#home";
+                }}
+              />
+            )}
           </Tabs>
         </Toolbar>
       </AppBar>
