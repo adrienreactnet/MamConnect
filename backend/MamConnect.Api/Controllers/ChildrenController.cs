@@ -63,6 +63,7 @@ public class ChildrenController : ControllerBase
 
         child.FirstName = input.FirstName;
         child.BirthDate = input.BirthDate;
+        child.AssistantId = input.AssistantId;
         await _db.SaveChangesAsync();
         return NoContent();
     }
