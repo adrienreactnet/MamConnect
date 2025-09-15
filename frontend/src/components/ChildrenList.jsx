@@ -1,7 +1,10 @@
 // src/components/ChildrenList.jsx
 import React, { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
-import { Edit, Delete, Check } from "@mui/icons-material";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import { Edit, Delete, Check, Add } from "@mui/icons-material";
+import AddChild from "./AddChild";
 import { fetchChildren, updateChild, deleteChild } from "../services/childService";
 
 export default function ChildrenList() {
@@ -10,6 +13,7 @@ export default function ChildrenList() {
   const [editingChild, setEditingChild] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [open, setOpen] = useState(false);
 
   const loadChildren = async () => {
     try {
@@ -92,6 +96,19 @@ export default function ChildrenList() {
         ))}
       </ul>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <IconButton aria-label="add" onClick={() => setOpen(true)}>
+        <Add />
+      </IconButton>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogContent>
+          <AddChild
+            onChildAdded={() => {
+              loadChildren();
+              setOpen(false);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

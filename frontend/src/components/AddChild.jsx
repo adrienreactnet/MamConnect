@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { addChild } from "../services/childService";
 
-export default function AddChild() {
+export default function AddChild({ onChildAdded }) {
     const [firstName, setFirstName] = useState("");
     const [birthDate, setBirthDate] = useState("");
     const [error, setError] = useState("");
@@ -17,6 +17,9 @@ export default function AddChild() {
             setFirstName("");
             setBirthDate("");
             setSuccess("Enfant ajouté !");
+            if (onChildAdded) {
+                onChildAdded();
+            }
         } catch (err) {
             setError(err.message);
         }
