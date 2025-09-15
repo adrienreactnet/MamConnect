@@ -7,7 +7,8 @@ import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
 import LoginPage from "./components/LoginPage";
 import AdminPage from "./components/AdminPage";
-import { getAuth, logout } from "./services/authService";
+import AccountMenu from "./components/AccountMenu";
+import { getAuth } from "./services/authService";
 
 function getPageFromHash() {
   const hash = window.location.hash.slice(1); // Remove leading '#'
@@ -31,7 +32,7 @@ function getPageFromHash() {
 
 function App() {
   const [route, setRoute] = useState(getPageFromHash());
-  const auth = getAuth();
+  const [auth, setAuth] = useState(getAuth());
   const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
@@ -53,20 +54,10 @@ function App() {
             <Tab label="Enfants" value="children" href="#children/list" />
             <Tab label="Rapports" value="reports" href="#reports/list" />
             {auth?.user.role === "Admin" && <Tab label="Admin" value="admin" href="#admin" />}
-            {auth === null ? (
-              <Tab label="Connexion" value="login" href="#login" />
-            ) : (
-              <Tab
-                label="Déconnexion"
-                value="logout"
-                onClick={() => {
-                  logout();
-                  setShowLogout(true);
-                  window.location.hash = "#home";
-                }}
-              />
-            )}
           </Tabs>
+          <Box ml="auto">
+            <AccountMenu auth={auth} setAuth={setAuth} />
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -90,7 +81,7 @@ function App() {
         {route.page === "children" && route.subPage === "add" && <AddChild />}
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
-        {route.page === "login" && <LoginPage />}
+         {route.page === "login" && <LoginPage setAuth={setAuth} />}
         {route.page === "admin" && <AdminPage />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
