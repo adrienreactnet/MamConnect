@@ -1,14 +1,18 @@
-using System.Text;
 using MamConnect.Domain.Entities;
 using MamConnect.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(opts =>
+        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Brancher EF Core + SQL Server (ici LocalDB)
 builder.Services.AddDbContext<AppDbContext>(opt =>

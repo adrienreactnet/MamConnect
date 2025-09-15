@@ -53,15 +53,15 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(UserLoginRequest request)
     {
-        var user = await _db.Users.SingleOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+        User? user = await _db.Users.SingleOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
         if (user is null)
             return Unauthorized();
 
-        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
+        PasswordVerificationResult result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
         if (result == PasswordVerificationResult.Failed)
             return Unauthorized();
 
-        var token = GenerateToken(user);
+        string token = GenerateToken(user);
         return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
     }
 
