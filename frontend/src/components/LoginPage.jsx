@@ -13,7 +13,7 @@ export default function LoginPage({ setAuth }) {
             const auth = await login(phoneNumber, password);
             saveAuth(auth);
             setAuth(getAuth());
-            window.location.hash = "#home";
+            window.location.hash = "#children";
             console.log("Logged in", auth);
         } catch {
             setError("Échec de l'authentification");

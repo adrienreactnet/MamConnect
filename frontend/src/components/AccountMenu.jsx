@@ -18,7 +18,7 @@ export default function AccountMenu({ auth, setAuth }) {
     logout();
     setAuth(null);
     handleClose();
-    window.location.hash = "#home";
+    window.location.hash = "#login";
   };
 
   if (!auth) {
