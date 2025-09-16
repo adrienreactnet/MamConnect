@@ -10,6 +10,7 @@ import AccountMenu from "./components/AccountMenu";
 import AssistantsPage from "./components/AssistantsPage";
 import AssignChildren from "./components/AssignChildren";
 import ParentsPage from "./components/ParentsPage";
+import ChildrenRelationsPage from "./components/ChildrenRelationsPage";
 import { getAuth } from "./services/authService";
 
 function getPageFromHash() {
@@ -31,6 +32,8 @@ function getPageFromHash() {
       return { page: "parents" };
     case "assign":
       return { page: "assign" };
+    case "relations":
+      return { page: "relations" };
     default:
       return { page: "home" };
   }
@@ -67,6 +70,9 @@ function App() {
             {auth?.user.role === "Admin" && (
               <Tab label="Affectations" value="assign" href="#assign" />
             )}
+            {auth?.user.role === "Admin" && (
+              <Tab label="Relations" value="relations" href="#relations" />
+            )}
             <Tab label="Rapports" value="reports" href="#reports/list" />
           </Tabs>
           <Box ml="auto">
@@ -99,6 +105,7 @@ function App() {
         {route.page === "assistants" && auth?.user.role === "Admin" && <AssistantsPage />}
         {route.page === "parents" && auth?.user.role === "Admin" && <ParentsPage />}
         {route.page === "assign" && auth?.user.role === "Admin" && <AssignChildren />}
+        {route.page === "relations" && auth?.user.role === "Admin" && <ChildrenRelationsPage />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
     </div>
