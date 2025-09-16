@@ -12,6 +12,7 @@ import AssignChildren from "./components/AssignChildren";
 import ParentsPage from "./components/ParentsPage";
 import ChildrenRelationsPage from "./components/ChildrenRelationsPage";
 import { getAuth } from "./services/authService";
+import { LOGOUT_EVENT_NAME } from "./services/authEvents";
 
 function getPageFromHash() {
   const hash = window.location.hash.slice(1); // Remove leading '#'
@@ -48,6 +49,17 @@ function App() {
     const onHashChange = () => setRoute(getPageFromHash());
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  // Quand mon appli démarre, je me mets à l’écoute d’un événement global LOGOUT_EVENT_NAME. Si quelqu’un déclenche cet événement n’importe où dans l’app, je vide l’utilisateur (setAuth(null)) et j’affiche un message (‘Vous êtes déconnecté’). Quand je quitte l’app, j’arrête d’écouter cet événement.
+  useEffect(() => {
+    const handleLogoutEvent = () => {
+      setAuth(null);
+      setShowLogout(true);
+    };
+
+    window.addEventListener(LOGOUT_EVENT_NAME, handleLogoutEvent);
+    return () => window.removeEventListener(LOGOUT_EVENT_NAME, handleLogoutEvent);
   }, []);
 
   return (

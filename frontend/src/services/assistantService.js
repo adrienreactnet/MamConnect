@@ -1,15 +1,10 @@
 // src/services/assistantService.js
-import { getAuth } from "./authService";
+import apiFetch from "./apiFetch";
 
 const API_BASE_URL = "http://localhost:5293";
 
 export async function fetchAssistants() {
-    const token = getAuth()?.token;
-    const response = await fetch(`${API_BASE_URL}/assistants`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const response = await apiFetch(`${API_BASE_URL}/assistants`);
 
     if (!response.ok) {
         throw new Error("Erreur lors du chargement des assistantes");
@@ -19,12 +14,10 @@ export async function fetchAssistants() {
 }
 
 export async function addAssistant(assistant) {
-    const token = getAuth()?.token;
-    const response = await fetch(`${API_BASE_URL}/assistants`, {
+    const response = await apiFetch(`${API_BASE_URL}/assistants`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(assistant),
     });
@@ -37,12 +30,10 @@ export async function addAssistant(assistant) {
 }
 
 export async function updateAssistant(id, payload) {
-    const token = getAuth()?.token;
-    const response = await fetch(`${API_BASE_URL}/assistants/${id}`, {
+    const response = await apiFetch(`${API_BASE_URL}/assistants/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
     });
@@ -55,12 +46,8 @@ export async function updateAssistant(id, payload) {
 }
 
 export async function deleteAssistant(id) {
-    const token = getAuth()?.token;
-    const response = await fetch(`${API_BASE_URL}/assistants/${id}`, {
+    const response = await apiFetch(`${API_BASE_URL}/assistants/${id}`, {
         method: "DELETE",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     });
 
     if (!response.ok) {

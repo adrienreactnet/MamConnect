@@ -1,8 +1,10 @@
 // src/services/dailyReportService.js
+import apiFetch from "./apiFetch";
+
 const API_BASE_URL = "http://localhost:5293";
 
 export async function fetchReports() {
-    const response = await fetch(`${API_BASE_URL}/reports`);
+    const response = await apiFetch(`${API_BASE_URL}/reports`);
 
     if (!response.ok) {
         throw new Error("Erreur lors du chargement des comptes rendus");
@@ -12,7 +14,7 @@ export async function fetchReports() {
 }
 
 export async function fetchChildReports(childId) {
-    const response = await fetch(`${API_BASE_URL}/reports/children/${childId}`);
+    const response = await apiFetch(`${API_BASE_URL}/reports/children/${childId}`);
 
     if (!response.ok) {
         throw new Error("Erreur lors du chargement des comptes rendus");
@@ -22,7 +24,7 @@ export async function fetchChildReports(childId) {
 }
 
 export async function createReport(childId, content) {
-    const response = await fetch(`${API_BASE_URL}/reports/children/${childId}`, {
+    const response = await apiFetch(`${API_BASE_URL}/reports/children/${childId}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

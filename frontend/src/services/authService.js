@@ -1,4 +1,14 @@
+import jwtDecode from "jwt-decode";
+
 const API_BASE_URL = "http://localhost:5293";
+
+function decodeJwtPayload(token) {
+    try {
+        return jwtDecode(token);
+    } catch {
+        return null;
+    }
+}
 
 export async function login(phoneNumber, password) {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -52,6 +62,18 @@ export function getAuth() {
     if (!token || !user) {
         return null;
     }
+
+    try {
+        const decoded = decodeJwtPayload(token);
+        if (decoded?.exp && decoded.exp * 1000 <= Date.now()) {
+            logout();
+            return null;
+        }
+    } catch {
+        logout();
+        return null;
+    }
+
     return { token, user: JSON.parse(user) };
 }
 
