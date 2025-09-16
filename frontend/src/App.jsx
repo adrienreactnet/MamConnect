@@ -9,6 +9,7 @@ import LoginPage from "./components/LoginPage";
 import AccountMenu from "./components/AccountMenu";
 import AssistantsPage from "./components/AssistantsPage";
 import AssignChildren from "./components/AssignChildren";
+import ParentsPage from "./components/ParentsPage";
 import { getAuth } from "./services/authService";
 
 function getPageFromHash() {
@@ -26,6 +27,8 @@ function getPageFromHash() {
       return { page: "login" };
     case "assistants":
       return { page: "assistants" };
+    case "parents":
+      return { page: "parents" };
     case "assign":
       return { page: "assign" };
     default:
@@ -57,6 +60,9 @@ function App() {
             <Tab label="Enfants" value="children" href="#children/list" />
             {auth?.user.role === "Admin" && (
               <Tab label="Assistantes" value="assistants" href="#assistants" />
+            )}
+            {auth?.user.role === "Admin" && (
+              <Tab label="Parents" value="parents" href="#parents" />
             )}
             {auth?.user.role === "Admin" && (
               <Tab label="Affectations" value="assign" href="#assign" />
@@ -91,6 +97,7 @@ function App() {
         {route.page === "reports" && route.subPage === "add" && <AddReports />}
         {route.page === "login" && <LoginPage setAuth={setAuth} />}
         {route.page === "assistants" && auth?.user.role === "Admin" && <AssistantsPage />}
+        {route.page === "parents" && auth?.user.role === "Admin" && <ParentsPage />}
         {route.page === "assign" && auth?.user.role === "Admin" && <AssignChildren />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
