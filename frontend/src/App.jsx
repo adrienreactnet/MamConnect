@@ -21,9 +21,7 @@ function getPageFromHash() {
     case "children":
       return { page: "children", subPage: subPage || "list" };
     case "reports":
-      return { page: "reports", subPage: subPage || "list" };
-    case "home":
-      return { page: "home" };
+      return { page: "reports", subPage: subPage || "list" };    
     case "login":
       return { page: "login" };
     case "assistants":
@@ -35,7 +33,7 @@ function getPageFromHash() {
     case "relations":
       return { page: "relations" };
     default:
-      return { page: "home" };
+      return { page: "login" };
   }
 }
 
@@ -75,8 +73,7 @@ function App() {
           <Tabs
             value={route.page}
             textColor="inherit"
-          >
-            <Tab label="Accueil" value="home" href="#home" />
+          >            
             <Tab label="Enfants" value="children" href="#children/list" />
             {auth?.user.role === "Admin" && (
               <Tab label="Assistantes" value="assistants" href="#assistants" />
