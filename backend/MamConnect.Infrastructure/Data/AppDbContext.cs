@@ -82,8 +82,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         );
 
         modelBuilder.Entity("ChildUser").HasData(
-            new { ChildrenId = 1, ParentsId = 3 },
-            new { ChildrenId = 2, ParentsId = 4 }
+            new { ChildrenId = 1, ParentsId = 4 },
+            new { ChildrenId = 2, ParentsId = 5 }
         );
     }
 }
