@@ -68,7 +68,7 @@ function App() {
       <h1>MamConnect Front</h1>
       <AppBar position="static">
         <Toolbar>
-          {auth && (
+          {auth && route.page !== "login" && (
             <Tabs
               value={route.page}
               textColor="inherit"
