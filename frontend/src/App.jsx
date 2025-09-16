@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { AppBar, Toolbar, Tabs, Tab, Box, Snackbar } from "@mui/material";
 import ChildrenList from "./components/ChildrenList";
-import HomePage from "./components/HomePage";
 import AddChild from "./components/AddChild";
 import ReportsList from "./components/ReportsList";
 import AddReports from "./components/AddReports";
@@ -113,8 +112,7 @@ function App() {
       )}
 
       <Box>
-
-        {route.page === "home" && <HomePage />}
+       
         {route.page === "children" && route.subPage === "list" && <ChildrenList />}
         {route.page === "children" && route.subPage === "add" && <AddChild />}
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
