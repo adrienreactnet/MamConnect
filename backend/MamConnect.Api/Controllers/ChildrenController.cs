@@ -1,5 +1,6 @@
-using MamConnect.Domain.Entities;      // Child
-using MamConnect.Infrastructure.Data;   // AppDbContext
+using MamConnect.Api.Dtos;               // ChildRelationsDto
+using MamConnect.Domain.Entities;        // Child
+using MamConnect.Infrastructure.Data;    // AppDbContext
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,22 @@ public class ChildrenController : ControllerBase
         }
 
         return new List<Child>();
+    }
+
+    [HttpGet("with-relations")]
+    [Authorize(Roles = nameof(UserRole.Admin))]
+    public async Task<IEnumerable<ChildRelationsDto>> GetWithRelations()
+    {
+        return await _db.Children
+                         .Include(c => c.Assistant)
+                         .Include(c => c.Parents)
+                         .OrderBy(c => c.FirstName)
+                         .Select(c => new ChildRelationsDto(
+                             c.FirstName,
+                             c.Assistant != null ? c.Assistant.FirstName + " " + c.Assistant.LastName : null,
+                             c.Parents.Select(p => p.FirstName + " " + p.LastName).ToList()
+                         ))
+                         .ToListAsync();
     }
 
     [HttpPost]
