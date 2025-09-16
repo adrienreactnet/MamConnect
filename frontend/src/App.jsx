@@ -21,7 +21,7 @@ function getPageFromHash() {
     case "children":
       return { page: "children", subPage: subPage || "list" };
     case "reports":
-      return { page: "reports", subPage: subPage || "list" };    
+      return { page: "reports", subPage: subPage || "list" };
     case "login":
       return { page: "login" };
     case "assistants":
@@ -70,25 +70,27 @@ function App() {
       <h1>MamConnect Front</h1>
       <AppBar position="static">
         <Toolbar>
-          <Tabs
-            value={route.page}
-            textColor="inherit"
-          >            
-            <Tab label="Enfants" value="children" href="#children/list" />
-            {auth?.user.role === "Admin" && (
-              <Tab label="Assistantes" value="assistants" href="#assistants" />
-            )}
-            {auth?.user.role === "Admin" && (
-              <Tab label="Parents" value="parents" href="#parents" />
-            )}
-            {auth?.user.role === "Admin" && (
-              <Tab label="Affectations" value="assign" href="#assign" />
-            )}
-            {auth?.user.role === "Admin" && (
-              <Tab label="Relations" value="relations" href="#relations" />
-            )}
-            <Tab label="Rapports" value="reports" href="#reports/list" />
-          </Tabs>
+          {auth && (
+            <Tabs
+              value={route.page}
+              textColor="inherit"
+            >
+              <Tab label="Enfants" value="children" href="#children/list" />
+              {auth?.user.role === "Admin" && (
+                <Tab label="Assistantes" value="assistants" href="#assistants" />
+              )}
+              {auth?.user.role === "Admin" && (
+                <Tab label="Parents" value="parents" href="#parents" />
+              )}
+              {auth?.user.role === "Admin" && (
+                <Tab label="Affectations" value="assign" href="#assign" />
+              )}
+              {auth?.user.role === "Admin" && (
+                <Tab label="Relations" value="relations" href="#relations" />
+              )}
+              <Tab label="Rapports" value="reports" href="#reports/list" />
+            </Tabs>
+          )}
           <Box ml="auto">
             <AccountMenu auth={auth} setAuth={setAuth} />
           </Box>
@@ -109,7 +111,7 @@ function App() {
       )}
 
       <Box>
-       
+
         {route.page === "children" && route.subPage === "list" && <ChildrenList />}
         {route.page === "children" && route.subPage === "add" && <AddChild />}
         {route.page === "reports" && route.subPage === "list" && <ReportsList />}
