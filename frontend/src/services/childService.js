@@ -18,6 +18,22 @@ export async function fetchChildren() {
     return await response.json();
 }
 
+export async function fetchChildrenWithRelations() {
+    const token = getAuth()?.token;
+    const response = await fetch(`${API_BASE_URL}/children/with-relations`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Erreur lors du chargement des enfants avec relations");
+    }
+
+    return await response.json();
+}
+
+
 export async function addChild(child) {
     const token = getAuth()?.token;
     const response = await fetch(`${API_BASE_URL}/children`, {
