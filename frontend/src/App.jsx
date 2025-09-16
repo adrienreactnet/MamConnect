@@ -46,6 +46,12 @@ function App() {
   const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
+    if (auth === null) {
+      window.location.hash = "#login";
+    }
+  }, [auth]);
+
+  useEffect(() => {
     const onHashChange = () => setRoute(getPageFromHash());
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
