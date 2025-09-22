@@ -10,8 +10,7 @@
             "name": "Lancer Chrome en utilisant localhost",
             "url": "http://localhost:5173",
             "webRoot": "${workspaceFolder}",
-            "preLaunchTask": "npm: dev (frontend)", // Pour démarrer le serveur de développement avant de lancer Chrome
-            "postDebugTask": "terminate npm: dev (frontend)" // Pour arrêter le serveur de développement après la session de débogage
+            "preLaunchTask": "npm: dev (frontend)", // Pour démarrer le serveur de développement avant de lancer Chrome            
         }
     ]
 }
