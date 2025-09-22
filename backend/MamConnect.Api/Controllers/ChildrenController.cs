@@ -90,7 +90,7 @@ public class ChildrenController : ControllerBase
     {
         Child? child = await _db.Children
             .Include(c => c.Parents)
-                .ThenInclude(p => p.Children)
+            .ThenInclude(p => p.Children)
             .FirstOrDefaultAsync(c => c.Id == id);
         if (child is null) return NotFound();
 
