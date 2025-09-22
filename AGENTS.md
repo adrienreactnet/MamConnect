@@ -28,3 +28,11 @@
 - `dotnet ef database update --project backend/MamConnect.Infrastructure --startup-project backend/MamConnect.Api`
 - `npm run lint`
 - `npm run build`
+
+## Style de code (C# Backend)
+- Toujours utiliser les types explicites (`int`, `string`, `List<User>`), jamais `var`.
+- PascalCase pour classes, méthodes, propriétés publiques.
+- camelCase pour variables locales et paramètres.
+- Ajouter des commentaires XML (`///`) pour les méthodes publiques.
+
+
