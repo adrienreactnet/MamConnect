@@ -6,7 +6,7 @@ import AddReports from "./AddReports";
 
 export default function ReportsList() {
     const [reports, setReports] = useState([]);
-    const [loading, setLoading] = useState(true);
+    
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
 
@@ -17,9 +17,7 @@ export default function ReportsList() {
                 setReports(data);
             } catch (error) {
                 setError(error.message);
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
 
         loadReports();
