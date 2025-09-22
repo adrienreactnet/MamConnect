@@ -11,10 +11,12 @@ import { fetchChildren } from "../services/childService";
 export default function ParentsPage() {
     const [parents, setParents] = useState([]);
     const [children, setChildren] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [open, setOpen] = useState(false);
 
     const load = async () => {
+        setLoading(true);
         try {
             const [p, c] = await Promise.all([fetchParents(), fetchChildren()]);
             setParents(p);
@@ -22,6 +24,8 @@ export default function ParentsPage() {
             setError("");
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -37,7 +41,7 @@ export default function ParentsPage() {
             <IconButton aria-label="add" onClick={() => setOpen(true)}>
                 <Add />
             </IconButton>
-            {parents.length === 0 && <p>Aucun parent trouvé.</p>}
+            {!loading && parents.length === 0 && <p>Aucun parent trouvé.</p>}
             <ul>
                 {parents.map((parent) => (
                     <li key={parent.id}>

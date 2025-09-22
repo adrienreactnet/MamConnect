@@ -13,6 +13,7 @@ import {
 
 export default function AssistantsPage() {
     const [assistants, setAssistants] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [editingAssistant, setEditingAssistant] = useState(null);
     const [firstName, setFirstName] = useState("");
@@ -22,12 +23,15 @@ export default function AssistantsPage() {
     const [open, setOpen] = useState(false);
 
     const loadAssistants = async () => {
+        setLoading(true);
         try {
             const data = await fetchAssistants();
             setAssistants(data);
             setError("");
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -78,7 +82,7 @@ export default function AssistantsPage() {
             <IconButton aria-label="add" onClick={() => setOpen(true)}>
                 <Add />
             </IconButton>
-            {assistants.length === 0 && <p>Aucune assistante trouvée.</p>}
+            {!loading && assistants.length === 0 && <p>Aucune assistante trouvée.</p>}
             <ul>
                 {assistants.map((assistant) => (
                     <li key={assistant.id}>

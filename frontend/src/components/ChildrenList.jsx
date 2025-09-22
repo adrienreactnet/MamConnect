@@ -9,6 +9,7 @@ import { fetchChildren, updateChild, deleteChild } from "../services/childServic
 
 export default function ChildrenList() {
   const [children, setChildren] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingChild, setEditingChild] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -16,12 +17,15 @@ export default function ChildrenList() {
   const [open, setOpen] = useState(false);
 
   const loadChildren = async () => {
+    setLoading(true);
     try {
       const data = await fetchChildren();
       setChildren(data);
       setError("");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -62,7 +66,7 @@ export default function ChildrenList() {
       <IconButton aria-label="add" onClick={() => setOpen(true)}>
         <Add />
       </IconButton>
-      {children.length === 0 && <p>Aucun enfant trouvé.</p>}
+      {!loading && children.length === 0 && <p>Aucun enfant trouvé.</p>}
       <ul>
         {children.map((child) => (
           <li key={child.id}>
