@@ -7,7 +7,17 @@
       "script": "dev",
       "path": "./",
       "isBackground": true,
-      "problemMatcher": "$tsc"
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE v",
+          "endsPattern": "ready in"
+        }
+      }
     }
   ]
 }
