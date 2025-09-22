@@ -88,10 +88,23 @@ public class ChildrenController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var child = await _db.Children.FindAsync(id);
+        Child? child = await _db.Children
+            .Include(c => c.Parents)
+                .ThenInclude(p => p.Children)
+            .FirstOrDefaultAsync(c => c.Id == id);
         if (child is null) return NotFound();
 
+        List<User> parentsToRemove = child.Parents
+            .Where(parent => parent.Children.Count == 1)
+            .ToList();
+
         _db.Children.Remove(child);
+
+        foreach (User parent in parentsToRemove)
+        {
+            _db.Users.Remove(parent);
+        }
+
         await _db.SaveChangesAsync();
         return NoContent();
     }
