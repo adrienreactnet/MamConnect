@@ -1,4 +1,5 @@
 ﻿# MamConnect API
+This is the application for Maison Assistante Maternelle.
 
 ## Authentication
 
