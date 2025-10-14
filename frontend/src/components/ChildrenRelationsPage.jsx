@@ -1,5 +1,5 @@
 // src/components/ChildrenRelationsPage.jsx
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Alert,
     Box,
@@ -9,17 +9,11 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     TextField,
     Typography,
 } from "@mui/material";
 import { addChild, fetchChildrenWithRelations } from "../services/childService";
+import DataTable from "./DataTable";
 
 export default function ChildrenRelationsPage() {
     const [relations, setRelations] = useState([]);
@@ -71,6 +65,31 @@ export default function ChildrenRelationsPage() {
         }
     };
 
+    const columns = useMemo(
+        () => [
+            { id: "child", label: "Enfant" },
+            { id: "assistant", label: "Assistante" },
+            { id: "parent1", label: "Parent 1" },
+            { id: "parent2", label: "Parent 2" },
+        ],
+        []
+    );
+
+    const rows = useMemo(
+        () =>
+            relations.map((relation, index) => {
+                const parents = relation.parentNames ?? [];
+                return {
+                    id: `${relation.childFirstName}-${index}`,
+                    child: relation.childFirstName,
+                    assistant: relation.assistantName ?? "",
+                    parent1: parents[0] ?? "",
+                    parent2: parents[1] ?? "",
+                };
+            }),
+        [relations]
+    );
+
     if (loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -94,38 +113,7 @@ export default function ChildrenRelationsPage() {
                 </Alert>
             )}
 
-            {relations.length === 0 ? (
-                <Typography>Aucune relation trouvée.</Typography>
-            ) : (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Enfant</TableCell>
-                                <TableCell>Assistante</TableCell>
-                                <TableCell>Parent 1</TableCell>
-                                <TableCell>Parent 2</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {relations.map((relation, index) => {
-                                const parents = relation.parentNames || [];
-                                const parent1 = parents[0] || "";
-                                const parent2 = parents.length > 1 ? parents[1] : "";
-
-                                return (
-                                    <TableRow key={`${relation.childFirstName}-${index}`}>
-                                        <TableCell>{relation.childFirstName}</TableCell>
-                                        <TableCell>{relation.assistantName || ""}</TableCell>
-                                        <TableCell>{parent1}</TableCell>
-                                        <TableCell>{parent2}</TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+            <DataTable columns={columns} rows={rows} emptyMessage="Aucune relation trouvée." />
 
             <Dialog open={isAddDialogOpen} onClose={handleDialogClose} fullWidth maxWidth="sm">
                 <form onSubmit={handleAddChild} noValidate>
