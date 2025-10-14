@@ -97,13 +97,13 @@ export default function ParentsPage() {
             {loading && <p>Chargement...</p>}
             {!loading && childGroups.length > 0 && (
                 <TableContainer component={Paper}>
-                    <Table>
+                    <Table stickyHeader>
                         <TableHead>
-                            <TableRow>
-                                <TableCell>Enfant</TableCell>
-                                <TableCell>Parent</TableCell>
-                                <TableCell>Téléphone</TableCell>
-                                <TableCell>Email</TableCell>
+                            <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                                <TableCell sx={{ fontWeight: "bold", textTransform: "uppercase" }}>Enfant</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textTransform: "uppercase" }}>Parent</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textTransform: "uppercase" }}>Téléphone</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textTransform: "uppercase" }}>Email</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
