@@ -41,13 +41,11 @@ export default function ParentsPage() {
         load();
     }, []);
 
-    const parentRows = useMemo(() => {
-        const rows = [];
-
-        children
+    const childGroups = useMemo(() => {
+        return children
             .slice()
             .sort((a, b) => a.firstName.localeCompare(b.firstName))
-            .forEach((child) => {
+            .map((child) => {
                 const relatedParents = parents
                     .filter((parent) => parent.childrenIds?.includes(child.id))
                     .slice()
@@ -60,28 +58,31 @@ export default function ParentsPage() {
                     });
 
                 if (relatedParents.length === 0) {
-                    rows.push({
-                        key: `child-${child.id}-no-parent`,
+                    return {
+                        childId: child.id,
                         childName: child.firstName,
-                        parentName: "—",
-                        phoneNumber: "—",
-                        email: "—",
-                    });
-                    return;
+                        rows: [
+                            {
+                                key: `child-${child.id}-no-parent`,
+                                parentName: "—",
+                                phoneNumber: "—",
+                                email: "—",
+                            },
+                        ],
+                    };
                 }
 
-                relatedParents.forEach((parent) => {
-                    rows.push({
+                return {
+                    childId: child.id,
+                    childName: child.firstName,
+                    rows: relatedParents.map((parent) => ({
                         key: `child-${child.id}-parent-${parent.id}`,
-                        childName: child.firstName,
                         parentName: `${parent.lastName} ${parent.firstName}`,
                         phoneNumber: parent.phoneNumber || "—",
                         email: parent.email || "—",
-                    });
-                });
+                    })),
+                };
             });
-
-        return rows;
     }, [children, parents]);
 
     return (
@@ -92,9 +93,9 @@ export default function ParentsPage() {
             <IconButton aria-label="add" onClick={() => setOpen(true)}>
                 <Add />
             </IconButton>
-            {!loading && parentRows.length === 0 && <p>Aucun parent trouvé.</p>}
+            {!loading && childGroups.length === 0 && <p>Aucun parent trouvé.</p>}
             {loading && <p>Chargement...</p>}
-            {!loading && parentRows.length > 0 && (
+            {!loading && childGroups.length > 0 && (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -106,14 +107,18 @@ export default function ParentsPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {parentRows.map((row) => (
-                                <TableRow key={row.key}>
-                                    <TableCell>{row.childName}</TableCell>
-                                    <TableCell>{row.parentName}</TableCell>
-                                    <TableCell>{row.phoneNumber}</TableCell>
-                                    <TableCell>{row.email}</TableCell>
-                                </TableRow>
-                            ))}
+                            {childGroups.map((group) =>
+                                group.rows.map((row, index) => (
+                                    <TableRow key={row.key}>
+                                        {index === 0 && (
+                                            <TableCell rowSpan={group.rows.length}>{group.childName}</TableCell>
+                                        )}
+                                        <TableCell>{row.parentName}</TableCell>
+                                        <TableCell>{row.phoneNumber}</TableCell>
+                                        <TableCell>{row.email}</TableCell>
+                                    </TableRow>
+                                )),
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -133,3 +138,4 @@ export default function ParentsPage() {
         </div>
     );
 }
+
