@@ -7,6 +7,7 @@ import { Add } from "@mui/icons-material";
 import AddParent from "./AddParent";
 import { fetchParents } from "../services/parentService";
 import { fetchChildren } from "../services/childService";
+import DataTable from "./DataTable";
 
 export default function ParentsPage() {
   const [parents, setParents] = useState([]);
@@ -96,81 +97,52 @@ export default function ParentsPage() {
       </IconButton>
 
       {loading && <p>Chargement...</p>}
-      {!loading && familyRows.length === 0 && <p>Aucun parent trouvé.</p>}
-
-      {!loading && familyRows.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}>
-          <thead>
-            <tr>
-              <th
-                style={{
-                  textAlign: "left",
-                  padding: "8px",
-                  borderBottom: "1px solid #ccc",
-                  textTransform: "uppercase",
-                }}
-              >
-                Enfant
-              </th>
-              <th
-                style={{
-                  textAlign: "left",
-                  padding: "8px",
-                  borderBottom: "1px solid #ccc",
-                  textTransform: "uppercase",
-                }}
-              >
-                Parent
-              </th>
-              <th
-                style={{
-                  textAlign: "left",
-                  padding: "8px",
-                  borderBottom: "1px solid #ccc",
-                  textTransform: "uppercase",
-                }}
-              >
-                Téléphone
-              </th>
-              <th
-                style={{
-                  textAlign: "left",
-                  padding: "8px",
-                  borderBottom: "1px solid #ccc",
-                  textTransform: "uppercase",
-                }}
-              >
-                Email
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {familyRows.map((row) => (
-              <tr key={row.key}>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee", verticalAlign: "top" }}>
-                  {row.childNames.map((name) => (
-                    <div key={name}>{name}</div>
-                  ))}
-                </td>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee", verticalAlign: "top" }}>
-                  {row.parents.length > 0
-                    ? row.parents.map((p) => <div key={`p-name-${p.id}`}>{p.name}</div>)
-                    : "—"}
-                </td>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee", verticalAlign: "top" }}>
-                  {row.parents.length > 0
-                    ? row.parents.map((p) => <div key={`p-phone-${p.id}`}>{p.phoneNumber}</div>)
-                    : "—"}
-                </td>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee", verticalAlign: "top" }}>
-                  {row.parents.length > 0
-                    ? row.parents.map((p) => <div key={`p-email-${p.id}`}>{p.email}</div>)
-                    : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {!loading && (
+        <DataTable
+          columns={[
+            {
+              id: "children",
+              label: "Enfant",
+              render: (row) =>
+                row.childNames.map((name) => (
+                  <div key={`${row.key}-child-${name}`}>{name}</div>
+                )),
+            },
+            {
+              id: "parent",
+              label: "Parent",
+              render: (row) =>
+                row.parents.length > 0
+                  ? row.parents.map((parent) => (
+                    <div key={`parent-name-${parent.id}`}>{parent.name}</div>
+                  ))
+                  : "—",
+            },
+            {
+              id: "phone",
+              label: "Téléphone",
+              render: (row) =>
+                row.parents.length > 0
+                  ? row.parents.map((parent) => (
+                    <div key={`parent-phone-${parent.id}`}>{parent.phoneNumber}</div>
+                  ))
+                  : "—",
+            },
+            {
+              id: "email",
+              label: "Email",
+              render: (row) =>
+                row.parents.length > 0
+                  ? row.parents.map((parent) => (
+                    <div key={`parent-email-${parent.id}`}>{parent.email}</div>
+                  ))
+                  : "—",
+            },
+          ]}
+          rows={familyRows}
+          getRowId={(row) => row.key}
+          emptyMessage="Aucun parent trouvé."
+        />
       )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}

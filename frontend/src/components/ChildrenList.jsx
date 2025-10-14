@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { Edit, Delete, Check, Add } from "@mui/icons-material";
 import AddChild from "./AddChild";
 import { fetchChildren, updateChild, deleteChild } from "../services/childService";
+import DataTable from "./DataTable";
 
 export default function ChildrenList() {
   const [children, setChildren] = useState([]);
@@ -66,69 +67,64 @@ export default function ChildrenList() {
       <IconButton aria-label="add" onClick={() => setOpen(true)}>
         <Add />
       </IconButton>
-      {!loading && children.length === 0 && <p>Aucun enfant trouvé.</p>}
       {loading ? (
         <p>Chargement...</p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ccc" }}>
-                Nom de l'enfant
-              </th>
-              <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ccc" }}>
-                Date de naissance
-              </th>
-              <th style={{ textAlign: "center", padding: "8px", borderBottom: "1px solid #ccc" }}>
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {children.map((child) => (
-              <tr key={child.id}>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
-                  {editingChild === child.id ? (
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(event) => setFirstName(event.target.value)}
-                    />
-                  ) : (
-                    child.firstName
-                  )}
-                </td>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
-                  {editingChild === child.id ? (
-                    <input
-                      type="date"
-                      value={birthDate}
-                      onChange={(event) => setBirthDate(event.target.value)}
-                    />
-                  ) : (
-                    child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
-                  )}
-                </td>
-                <td style={{ padding: "8px", borderBottom: "1px solid #eee", textAlign: "center" }}>
-                  {editingChild === child.id ? (
-                    <IconButton aria-label="validate" onClick={() => handleUpdate(child.id)}>
-                      <Check />
+         <DataTable
+          columns={[
+            {
+              id: "firstName",
+              label: "Nom de l'enfant",
+              render: (child) =>
+                editingChild === child.id ? (
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                  />
+                ) : (
+                  child.firstName
+                ),
+            },
+            {
+              id: "birthDate",
+              label: "Date de naissance",
+              render: (child) =>
+                editingChild === child.id ? (
+                  <input
+                    type="date"
+                    value={birthDate}
+                    onChange={(event) => setBirthDate(event.target.value)}
+                  />
+                ) : (
+                  child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
+                ),
+            },
+            {
+              id: "actions",
+              label: "Actions",
+              align: "center",
+              render: (child) =>
+                editingChild === child.id ? (
+                  <IconButton aria-label="validate" onClick={() => handleUpdate(child.id)}>
+                    <Check />
+                  </IconButton>
+                ) : (
+                  <>
+                    <IconButton aria-label="edit" onClick={() => startEditing(child)}>
+                      <Edit />
                     </IconButton>
-                  ) : (
-                    <>
-                      <IconButton aria-label="edit" onClick={() => startEditing(child)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(child.id)}>
-                        <Delete />
-                      </IconButton>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(child.id)}>
+                      <Delete />
+                    </IconButton>
+                  </>
+                ),
+            },
+          ]}
+          rows={children}
+          getRowId={(child) => child.id}
+          emptyMessage="Aucun enfant trouvé."
+        />
       )}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
