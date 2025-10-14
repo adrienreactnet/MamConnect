@@ -67,41 +67,69 @@ export default function ChildrenList() {
         <Add />
       </IconButton>
       {!loading && children.length === 0 && <p>Aucun enfant trouvé.</p>}
-      <ul>
-        {children.map((child) => (
-          <li key={child.id}>
-            {/* Modification field */}
-            {editingChild === child.id ? (
-              <>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-                <input
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                />
-                <IconButton aria-label="validate" onClick={() => handleUpdate(child.id)}>
-                  <Check />
-                </IconButton>
-              </>
-            ) : (
-              <>
-                {/* Children list */}
-                {child.firstName}
-                <IconButton aria-label="edit" onClick={() => startEditing(child)}>
-                  <Edit />
-                </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDelete(child.id)}>
-                  <Delete />
-                </IconButton>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <p>Chargement...</p>
+      ) : (
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ccc" }}>
+                Nom de l'enfant
+              </th>
+              <th style={{ textAlign: "left", padding: "8px", borderBottom: "1px solid #ccc" }}>
+                Date de naissance
+              </th>
+              <th style={{ textAlign: "center", padding: "8px", borderBottom: "1px solid #ccc" }}>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {children.map((child) => (
+              <tr key={child.id}>
+                <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                  {editingChild === child.id ? (
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(event) => setFirstName(event.target.value)}
+                    />
+                  ) : (
+                    child.firstName
+                  )}
+                </td>
+                <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                  {editingChild === child.id ? (
+                    <input
+                      type="date"
+                      value={birthDate}
+                      onChange={(event) => setBirthDate(event.target.value)}
+                    />
+                  ) : (
+                    child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
+                  )}
+                </td>
+                <td style={{ padding: "8px", borderBottom: "1px solid #eee", textAlign: "center" }}>
+                  {editingChild === child.id ? (
+                    <IconButton aria-label="validate" onClick={() => handleUpdate(child.id)}>
+                      <Check />
+                    </IconButton>
+                  ) : (
+                    <>
+                      <IconButton aria-label="edit" onClick={() => startEditing(child)}>
+                        <Edit />
+                      </IconButton>
+                      <IconButton aria-label="delete" onClick={() => handleDelete(child.id)}>
+                        <Delete />
+                      </IconButton>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <Dialog open={open} onClose={() => setOpen(false)}>
