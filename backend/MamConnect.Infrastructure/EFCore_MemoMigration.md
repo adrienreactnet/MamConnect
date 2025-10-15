@@ -38,7 +38,7 @@ dotnet ef database drop --project ./backend/MamConnect.Infrastructure/MamConnect
 ### 3. Recrée une migration propre
 ```powershell
 dotnet ef migrations add Init --project ./backend/MamConnect.Infrastructure/MamConnect.Infrastructure.csproj --startup-project ./backend/MamConnect.Api/MamConnect.Api.csproj
-dotnet ef database update --project ./backend/MamConnect.Infrastructure/MamConnect.Infrastructure.csproj --startup-project ./backend
+dotnet ef database update --project ./backend/MamConnect.Infrastructure/MamConnect.Infrastructure.csproj --startup-project ./backend/MamConnect.Api/MamConnect.Api.csproj
 ```
 
 

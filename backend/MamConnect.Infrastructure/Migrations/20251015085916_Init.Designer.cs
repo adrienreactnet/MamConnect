@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MamConnect.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250916075153_updateSeed")]
-    partial class updateSeed
+    [Migration("20251015085916_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -713,6 +713,71 @@ namespace MamConnect.Infrastructure.Migrations
                             PasswordHash = "a109e36947ad56de1dca1cc49f0ef8ac9ad9a7b1aa0df41fb3c4cb73c1ff01ea",
                             PhoneNumber = "0200000021",
                             Role = 0
+                        });
+                });
+
+            modelBuilder.Entity("MamConnect.Domain.Entities.Vaccine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AgesInMonths")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vaccines");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AgesInMonths = "2,4,11",
+                            Name = "DTP et Coqueluche"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AgesInMonths = "2,4,11",
+                            Name = "Hib"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AgesInMonths = "2,4,11",
+                            Name = "Hépatite B"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AgesInMonths = "2,4,11",
+                            Name = "Pneumocoque"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AgesInMonths = "12,16",
+                            Name = "ROR"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AgesInMonths = "6,12",
+                            Name = "Méningocoques ACWY"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AgesInMonths = "3,5,12",
+                            Name = "Méningocoque B"
                         });
                 });
 

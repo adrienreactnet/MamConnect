@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Child> Children => Set<Child>();
     public DbSet<DailyReport> DailyReports => Set<DailyReport>();
+    public DbSet<Vaccine> Vaccines => Set<Vaccine>();
     public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -107,6 +108,52 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 ChildId = 2
             }
         );
+
+        modelBuilder.Entity<Vaccine>().HasData(
+            new Vaccine
+            {
+                Id = 1,
+                Name = "DTP et Coqueluche",
+                AgesInMonths = "2,4,11"
+            },
+            new Vaccine
+            {
+                Id = 2,
+                Name = "Hib",
+                AgesInMonths = "2,4,11"
+            },
+            new Vaccine
+            {
+                Id = 3,
+                Name = "Hépatite B",
+                AgesInMonths = "2,4,11"
+            },
+            new Vaccine
+            {
+                Id = 4,
+                Name = "Pneumocoque",
+                AgesInMonths = "2,4,11"
+            },
+            new Vaccine
+            {
+                Id = 5,
+                Name = "ROR",
+                AgesInMonths = "12,16"
+            },
+            new Vaccine
+            {
+                Id = 6,
+                Name = "Méningocoques ACWY",
+                AgesInMonths = "6,12"
+            },
+            new Vaccine
+            {
+                Id = 7,
+                Name = "Méningocoque B",
+                AgesInMonths = "3,5,12"
+            }
+        );
+
 
         modelBuilder.Entity("ChildUser").HasData(
             new { ChildrenId = 1, ParentsId = 7 },

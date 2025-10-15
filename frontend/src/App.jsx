@@ -8,6 +8,7 @@ import AssistantsPage from "./components/AssistantsPage";
 import AssignChildren from "./components/AssignChildren";
 import ParentsPage from "./components/ParentsPage";
 import ChildrenRelationsPage from "./components/ChildrenRelationsPage";
+import VaccinesPage from "./components/VaccinesPage";
 import { getAuth } from "./services/authService";
 import { LOGOUT_EVENT_NAME } from "./services/authEvents";
 
@@ -30,6 +31,8 @@ function getPageFromHash() {
       return { page: "assign" };
     case "relations":
       return { page: "relations" };
+    case "vaccines":
+      return { page: "vaccines" };
     default:
       return { page: "login" };
   }
@@ -86,6 +89,9 @@ function App() {
               {auth?.user.role === "Admin" && (
                 <Tab label="Relations" value="relations" href="#relations" />
               )}
+              {auth?.user.role === "Admin" && (
+                <Tab label="Calendrier vaccinal" value="vaccines" href="#vaccines" />
+              )}
               <Tab label="Rapports" value="reports" href="#reports" />
             </Tabs>
           )}
@@ -103,6 +109,7 @@ function App() {
         {route.page === "parents" && auth?.user.role === "Admin" && <ParentsPage />}
         {route.page === "assign" && auth?.user.role === "Admin" && <AssignChildren />}
         {route.page === "relations" && auth?.user.role === "Admin" && <ChildrenRelationsPage />}
+        {route.page === "vaccines" && auth?.user.role === "Admin" && <VaccinesPage />}
       </Box>
       <Snackbar open={showLogout} autoHideDuration={4000} message="Vous êtes déconnecté" onClose={() => setShowLogout(false)} />
     </div>
