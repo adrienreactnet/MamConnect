@@ -8,4 +8,5 @@ public class Vaccine
     /// Liste des âges (en mois) où le vaccin est prévu (ex: "2,4,11").
     /// </summary>
     public string AgesInMonths { get; set; } = string.Empty;
+    public ICollection<ChildVaccine> ChildVaccines { get; set; } = new List<ChildVaccine>();
 }
