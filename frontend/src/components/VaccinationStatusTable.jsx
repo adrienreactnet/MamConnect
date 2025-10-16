@@ -74,17 +74,17 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                 );
             })
             .sort((a, b) => {
+                const ageCompare = a.ageInMonths - b.ageInMonths;
+                if (ageCompare !== 0) {
+                    return ageCompare;
+                }
+
                 const childCompare = a.childName.localeCompare(b.childName, "fr");
                 if (childCompare !== 0) {
                     return childCompare;
                 }
 
-                const vaccineCompare = a.vaccineName.localeCompare(b.vaccineName, "fr");
-                if (vaccineCompare !== 0) {
-                    return vaccineCompare;
-                }
-
-                return a.ageInMonths - b.ageInMonths;
+               return a.vaccineName.localeCompare(b.vaccineName, "fr");
             });
     }, [entries, search, statusFilter]);
 
