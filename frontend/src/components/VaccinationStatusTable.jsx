@@ -70,7 +70,7 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                 const query = search.toLowerCase();
                 return (
                     entry.childName.toLowerCase().includes(query) ||
-                    entry.vaccineName.toLowerCase().includes(query)
+                    entry.vaccineDisplayName.toLowerCase().includes(query)
                 );
             })
             .sort((a, b) => {
@@ -79,7 +79,12 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                     return childCompare;
                 }
 
-                return a.vaccineName.localeCompare(b.vaccineName, "fr");
+                const vaccineCompare = a.vaccineName.localeCompare(b.vaccineName, "fr");
+                if (vaccineCompare !== 0) {
+                    return vaccineCompare;
+                }
+
+                return a.ageInMonths - b.ageInMonths;
             });
     }, [entries, search, statusFilter]);
 
@@ -102,7 +107,7 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                         </Select>
                     </FormControl>
                     <TextField
-                        label="Rechercher (enfant ou vaccin)"
+                        label="Rechercher (enfant, vaccin ou âge)"
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         fullWidth
@@ -114,6 +119,7 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                             <TableRow>
                                 <TableCell>Enfant</TableCell>
                                 <TableCell>Vaccin</TableCell>
+                                <TableCell>Âge (mois)</TableCell>
                                 <TableCell>Statut</TableCell>
                                 <TableCell>Date planifiée</TableCell>
                                 <TableCell>Date d'administration</TableCell>
@@ -124,13 +130,13 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} align="center">
+                                    <TableCell colSpan={8} align="center">
                                         <CircularProgress size={24} />
                                     </TableCell>
                                 </TableRow>
                             ) : filteredEntries.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} align="center">
+                                    <TableCell colSpan={8} align="center">
                                         <Typography variant="body2">Aucun vaccin ne correspond à vos filtres.</Typography>
                                     </TableCell>
                                 </TableRow>
@@ -139,6 +145,7 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                                     <TableRow key={`${entry.childId}-${entry.vaccineId}`} hover>
                                         <TableCell>{entry.childName}</TableCell>
                                         <TableCell>{entry.vaccineName}</TableCell>
+                                        <TableCell>{entry.ageInMonths}</TableCell>
                                         <TableCell>
                                             <Chip
                                                 label={getStatusLabel(entry.status)}

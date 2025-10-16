@@ -68,6 +68,13 @@ export default function VaccinationStatusDialog({
         ],
         [],
     );
+    const vaccineLabel = entry
+        ? entry.vaccineDisplayName ??
+        `${entry.vaccineName}${entry.ageInMonths !== undefined && entry.ageInMonths !== null
+            ? ` (${entry.ageInMonths} mois)`
+            : ""
+        }`
+        : "";
 
     const validate = () => {
         if (!status) {
@@ -148,7 +155,7 @@ export default function VaccinationStatusDialog({
             <DialogContent>
                 <Stack spacing={2} mt={1}>
                     <DialogContentText>
-                        {entry ? `${entry.childName} — ${entry.vaccineName}` : ""}
+                        {entry ? `${entry.childName} — ${vaccineLabel}` : ""}
                     </DialogContentText>
                     <FormControl fullWidth>
                         <InputLabel id="vaccination-status-label">Statut</InputLabel>

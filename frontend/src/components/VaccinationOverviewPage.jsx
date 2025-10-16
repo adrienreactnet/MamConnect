@@ -28,6 +28,7 @@ function normalizeSchedule(schedule) {
         vaccines: schedule.vaccines.map((entry) => ({
             vaccineId: entry.vaccineId,
             vaccineName: entry.vaccineName,
+            ageInMonths: entry.ageInMonths,
             status: entry.status,
             scheduledDate: entry.scheduledDate ?? null,
             administrationDate: entry.administrationDate ?? null,
@@ -84,6 +85,8 @@ export default function VaccinationOverviewPage() {
                 birthDate: schedule.birthDate,
                 vaccineId: entry.vaccineId,
                 vaccineName: entry.vaccineName,
+                ageInMonths: entry.ageInMonths,
+                vaccineDisplayName: `${entry.vaccineName} (${entry.ageInMonths} mois)`,
                 status: entry.status,
                 scheduledDate: entry.scheduledDate,
                 administrationDate: entry.administrationDate,

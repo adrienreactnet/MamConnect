@@ -27,7 +27,7 @@ import {
 
 const INITIAL_FORM = {
     name: "",
-    agesInMonths: "",
+    ageInMonths: "",
 };
 
 export default function VaccinesPage() {
@@ -74,7 +74,7 @@ export default function VaccinesPage() {
         setEditingId(vaccine.id);
         setFormValues({
             name: vaccine.name,
-            agesInMonths: vaccine.agesInMonths,
+            ageInMonths: String(vaccine.ageInMonths ?? ""),
         });
         setFormError("");
         setDialogOpen(true);
@@ -82,25 +82,31 @@ export default function VaccinesPage() {
 
     const handleSubmit = async () => {
         const trimmedName = formValues.name.trim();
-        const trimmedAges = formValues.agesInMonths.trim();
+        const ageInput = typeof formValues.ageInMonths === "string"
+            ? formValues.ageInMonths.trim()
+            : String(formValues.ageInMonths ?? "").trim();
+        const parsedAge = Number(ageInput);
 
-        if (trimmedName.length === 0 || trimmedAges.length === 0) {
-            setFormError("Le nom et les âges en mois sont obligatoires");
+        if (trimmedName.length === 0 || ageInput.length === 0) {
+            setFormError("Le nom et l'âge en mois sont obligatoires.");
+            return;
+        }
+
+        if (!Number.isInteger(parsedAge) || parsedAge < 0) {
+            setFormError("L'âge en mois doit être un entier positif ou nul.");
             return;
         }
 
         try {
+            const payload = {
+                name: trimmedName,
+                ageInMonths: parsedAge,
+            };
+
             if (editingId === null) {
-                await createVaccine({
-                    name: trimmedName,
-                    agesInMonths: trimmedAges,
-                });
+                await createVaccine(payload);
             } else {
-                await updateVaccine(editingId, {
-                    id: editingId,
-                    name: trimmedName,
-                    agesInMonths: trimmedAges,
-                });
+                await updateVaccine(editingId, payload);
             }
             await loadVaccines();
             closeDialog();
@@ -148,7 +154,7 @@ export default function VaccinesPage() {
                     <TableHead>
                         <TableRow>
                             <TableCell>Nom du vaccin</TableCell>
-                            <TableCell>Âges (mois)</TableCell>
+                            <TableCell>Âge (mois)</TableCell>
                             <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -156,7 +162,7 @@ export default function VaccinesPage() {
                         {vaccines.map((vaccine) => (
                             <TableRow key={vaccine.id}>
                                 <TableCell>{vaccine.name}</TableCell>
-                                <TableCell>{vaccine.agesInMonths}</TableCell>
+                                <TableCell>{vaccine.ageInMonths}</TableCell>
                                 <TableCell align="right">
                                     <IconButton aria-label="modifier" onClick={() => openEditDialog(vaccine)}>
                                         <Edit />
@@ -182,11 +188,12 @@ export default function VaccinesPage() {
                             fullWidth
                         />
                         <TextField
-                            label="Âges en mois"
-                            helperText="Séparer les valeurs par une virgule (ex : 2,4,11)"
-                            value={formValues.agesInMonths}
+                            label="Âge (mois)"
+                            type="number"
+                            inputProps={{ min: 0, step: 1 }}
+                            value={formValues.ageInMonths}
                             onChange={(event) =>
-                                setFormValues({ ...formValues, agesInMonths: event.target.value })
+                                setFormValues({ ...formValues, ageInMonths: event.target.value })
                             }
                             fullWidth
                         />

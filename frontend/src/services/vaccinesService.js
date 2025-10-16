@@ -13,13 +13,20 @@ export async function getVaccines() {
     return await response.json();
 }
 
+function buildPayload(data) {
+    return {
+        name: data.name,
+        ageInMonths: Number(data.ageInMonths),
+    };
+}
+
 export async function createVaccine(data) {
     const response = await apiFetch(`${API_BASE_URL}/vaccines`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(buildPayload(data)),
     });
 
     if (!response.ok) {
@@ -35,7 +42,7 @@ export async function updateVaccine(id, data) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(buildPayload(data)),
     });
 
     if (!response.ok) {
