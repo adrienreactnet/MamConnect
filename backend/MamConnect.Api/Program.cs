@@ -1,5 +1,7 @@
 using MamConnect.Domain.Entities;
+using MamConnect.Domain.Services;
 using MamConnect.Infrastructure.Data;
+using MamConnect.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IVaccinationService, VaccinationService>();
 
 // Swagger pour tester facilement
 builder.Services.AddEndpointsApiExplorer();
