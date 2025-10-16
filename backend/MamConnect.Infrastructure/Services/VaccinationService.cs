@@ -31,9 +31,15 @@ public class VaccinationService : IVaccinationService
             return null;
         }
 
+        List<Vaccine> vaccines = await dbContext.Vaccines
+            .OrderBy(v => v.Id)
+            .ToListAsync(cancellationToken);
+
+        bool newEntriesCreated = EnsureChildHasAllVaccines(child, vaccines);
+
         bool hasChanges = RecalculateStatuses(child.ChildVaccines);
 
-        if (hasChanges)
+        if (newEntriesCreated || hasChanges)
         {
             await dbContext.SaveChangesAsync(cancellationToken);
         }
@@ -73,6 +79,10 @@ public class VaccinationService : IVaccinationService
 
     public async Task<VaccinationOverview> GetOverviewAsync(CancellationToken cancellationToken)
     {
+        List<Vaccine> vaccines = await dbContext.Vaccines
+            .OrderBy(v => v.Id)
+            .ToListAsync(cancellationToken);
+
         List<Child> children = await dbContext.Children
             .Include(c => c.ChildVaccines)
             .ToListAsync(cancellationToken);
@@ -81,8 +91,9 @@ public class VaccinationService : IVaccinationService
 
         foreach (Child child in children)
         {
+            bool newEntriesCreated = EnsureChildHasAllVaccines(child, vaccines);
             bool childChanged = RecalculateStatuses(child.ChildVaccines);
-            if (childChanged)
+            if (newEntriesCreated || childChanged)
             {
                 hasChanges = true;
             }
@@ -131,6 +142,37 @@ public class VaccinationService : IVaccinationService
         {
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+    }
+
+    private bool EnsureChildHasAllVaccines(Child child, IReadOnlyCollection<Vaccine> vaccines)
+    {
+        HashSet<int> existingVaccineIds = new HashSet<int>(child.ChildVaccines.Select(cv => cv.VaccineId));
+        bool newEntriesCreated = false;
+        DateTime now = DateTime.UtcNow;
+
+        foreach (Vaccine vaccine in vaccines)
+        {
+            if (existingVaccineIds.Contains(vaccine.Id))
+            {
+                continue;
+            }
+
+            ChildVaccine childVaccine = new ChildVaccine
+            {
+                ChildId = child.Id,
+                Child = child,
+                VaccineId = vaccine.Id,
+                Vaccine = vaccine,
+                Status = VaccineStatus.Scheduled,
+                CreatedAt = now
+            };
+
+            child.ChildVaccines.Add(childVaccine);
+            dbContext.ChildVaccines.Add(childVaccine);
+            newEntriesCreated = true;
+        }
+
+        return newEntriesCreated;
     }
 
     private bool RecalculateStatuses(IEnumerable<ChildVaccine> vaccinations)
