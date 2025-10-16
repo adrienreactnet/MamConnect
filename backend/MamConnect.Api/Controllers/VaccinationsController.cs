@@ -109,6 +109,7 @@ public class VaccinationsController : ControllerBase
             .Select(cv => new ChildVaccineEntryDto(
                 cv.VaccineId,
                 cv.Vaccine.Name,
+                cv.Vaccine.AgeInMonths,
                 cv.Status,
                 cv.ScheduledDate,
                 cv.AdministrationDate,

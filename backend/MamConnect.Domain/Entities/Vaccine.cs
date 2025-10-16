@@ -5,8 +5,8 @@ public class Vaccine
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     /// <summary>
-    /// Liste des âges (en mois) où le vaccin est prévu (ex: "2,4,11").
+    /// Âge (en mois) auquel cette dose de vaccin est prévue.
     /// </summary>
-    public string AgesInMonths { get; set; } = string.Empty;
+    public int AgeInMonths { get; set; }
     public ICollection<ChildVaccine> ChildVaccines { get; set; } = new List<ChildVaccine>();
 }

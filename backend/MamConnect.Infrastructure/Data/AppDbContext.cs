@@ -133,50 +133,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             }
         );
 
-        modelBuilder.Entity<Vaccine>().HasData(
-            new Vaccine
-            {
-                Id = 1,
-                Name = "DTP et Coqueluche",
-                AgesInMonths = "2,4,11"
-            },
-            new Vaccine
-            {
-                Id = 2,
-                Name = "Hib",
-                AgesInMonths = "2,4,11"
-            },
-            new Vaccine
-            {
-                Id = 3,
-                Name = "Hépatite B",
-                AgesInMonths = "2,4,11"
-            },
-            new Vaccine
-            {
-                Id = 4,
-                Name = "Pneumocoque",
-                AgesInMonths = "2,4,11"
-            },
-            new Vaccine
-            {
-                Id = 5,
-                Name = "ROR",
-                AgesInMonths = "12,16"
-            },
-            new Vaccine
-            {
-                Id = 6,
-                Name = "Méningocoques ACWY",
-                AgesInMonths = "6,12"
-            },
-            new Vaccine
-            {
-                Id = 7,
-                Name = "Méningocoque B",
-                AgesInMonths = "3,5,12"
-            }
-        );
+        Vaccine[] vaccineSeedData = new Vaccine[]
+        {
+            new Vaccine { Id = 1, Name = "DTP et Coqueluche", AgeInMonths = 2 },
+            new Vaccine { Id = 2, Name = "DTP et Coqueluche", AgeInMonths = 4 },
+            new Vaccine { Id = 3, Name = "DTP et Coqueluche", AgeInMonths = 11 },
+            new Vaccine { Id = 4, Name = "Hib", AgeInMonths = 2 },
+            new Vaccine { Id = 5, Name = "Hib", AgeInMonths = 4 },
+            new Vaccine { Id = 6, Name = "Hib", AgeInMonths = 11 },
+            new Vaccine { Id = 7, Name = "Hépatite B", AgeInMonths = 2 },
+            new Vaccine { Id = 8, Name = "Hépatite B", AgeInMonths = 4 },
+            new Vaccine { Id = 9, Name = "Hépatite B", AgeInMonths = 11 },
+            new Vaccine { Id = 10, Name = "Pneumocoque", AgeInMonths = 2 },
+            new Vaccine { Id = 11, Name = "Pneumocoque", AgeInMonths = 4 },
+            new Vaccine { Id = 12, Name = "Pneumocoque", AgeInMonths = 11 },
+            new Vaccine { Id = 13, Name = "ROR", AgeInMonths = 12 },
+            new Vaccine { Id = 14, Name = "ROR", AgeInMonths = 16 },
+            new Vaccine { Id = 15, Name = "Méningocoques ACWY", AgeInMonths = 6 },
+            new Vaccine { Id = 16, Name = "Méningocoques ACWY", AgeInMonths = 12 },
+            new Vaccine { Id = 17, Name = "Méningocoque B", AgeInMonths = 3 },
+            new Vaccine { Id = 18, Name = "Méningocoque B", AgeInMonths = 5 },
+            new Vaccine { Id = 19, Name = "Méningocoque B", AgeInMonths = 12 }
+        };
+
+        modelBuilder.Entity<Vaccine>().HasData(vaccineSeedData);
 
         List<ChildVaccine> childVaccineSeedData = new List<ChildVaccine>();
         int childVaccineId = 1;
@@ -204,7 +184,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             {
                 Id = childVaccineId,
                 ChildId = child.Id,
-                VaccineId = 2,
+                VaccineId = 5,
                 Status = isSecondDoseScheduled ? VaccineStatus.Scheduled : VaccineStatus.Completed,
                 ScheduledDate = secondDoseDate,
                 AdministrationDate = isSecondDoseScheduled ? null : secondDoseDate,
@@ -220,7 +200,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             {
                 Id = childVaccineId,
                 ChildId = child.Id,
-                VaccineId = 5,
+                VaccineId = 13,
                 Status = isBoosterOverdue ? VaccineStatus.Overdue : VaccineStatus.Scheduled,
                 ScheduledDate = boosterDoseDate,
                 AdministrationDate = null,

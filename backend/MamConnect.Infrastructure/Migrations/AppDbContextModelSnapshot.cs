@@ -430,7 +430,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2019, 9, 21),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -440,7 +440,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 5, 21),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -462,7 +462,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 7, 14),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -472,7 +472,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 3, 14),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -496,7 +496,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2021, 3, 2),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -507,7 +507,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2021, 11, 2),
                             Status = 2,
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -529,7 +529,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2018, 11, 9),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -539,7 +539,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2019, 7, 9),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -563,7 +563,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2019, 5, 30),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -573,7 +573,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 1, 30),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -595,7 +595,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 8, 18),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -606,7 +606,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2022, 4, 18),
                             Status = 2,
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -630,7 +630,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2021, 1, 5),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -640,7 +640,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 9, 5),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -662,7 +662,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2019, 4, 12),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -672,7 +672,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2019, 12, 12),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -696,7 +696,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2019, 10, 22),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -707,7 +707,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2020, 6, 22),
                             Status = 2,
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -729,7 +729,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 6, 11),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -739,7 +739,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 2, 11),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -763,7 +763,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2019, 2, 3),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -773,7 +773,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2019, 10, 3),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -795,7 +795,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 5, 27),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -806,7 +806,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2022, 1, 27),
                             Status = 2,
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -830,7 +830,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2019, 12, 15),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -840,7 +840,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 8, 15),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -862,7 +862,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 9, 16),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -872,7 +872,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 5, 16),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -896,7 +896,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2018, 8, 7),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -907,7 +907,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2019, 4, 7),
                             Status = 2,
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -929,7 +929,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 4, 1),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -939,7 +939,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2020, 12, 1),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -963,7 +963,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2020, 11, 19),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -973,7 +973,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2021, 7, 19),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -995,7 +995,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2022, 1, 23),
                             Status = 1,
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -1006,7 +1006,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2022, 9, 23),
                             Status = 2,
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 5
+                            VaccineId = 13
                         },
                         new
                         {
@@ -1030,7 +1030,7 @@ namespace MamConnect.Infrastructure.Migrations
                             ScheduledDate = new DateOnly(2018, 7, 13),
                             Status = 0,
                             UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            VaccineId = 2
+                            VaccineId = 5
                         },
                         new
                         {
@@ -1040,7 +1040,7 @@ namespace MamConnect.Infrastructure.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ScheduledDate = new DateOnly(2019, 3, 13),
                             Status = 1,
-                            VaccineId = 5
+                            VaccineId = 13
                         });
                 });
 
@@ -1401,9 +1401,8 @@ namespace MamConnect.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AgesInMonths")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AgeInMonths")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1417,43 +1416,115 @@ namespace MamConnect.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            AgesInMonths = "2,4,11",
+                            AgeInMonths = 2,
                             Name = "DTP et Coqueluche"
                         },
                         new
                         {
                             Id = 2,
-                            AgesInMonths = "2,4,11",
-                            Name = "Hib"
+                            AgeInMonths = 4,
+                            Name = "DTP et Coqueluche"
                         },
                         new
                         {
                             Id = 3,
-                            AgesInMonths = "2,4,11",
-                            Name = "Hépatite B"
+                            AgeInMonths = 11,
+                            Name = "DTP et Coqueluche"
                         },
                         new
                         {
                             Id = 4,
-                            AgesInMonths = "2,4,11",
-                            Name = "Pneumocoque"
+                            AgeInMonths = 2,
+                            Name = "Hib"
                         },
                         new
                         {
                             Id = 5,
-                            AgesInMonths = "12,16",
-                            Name = "ROR"
+                            AgeInMonths = 4,
+                            Name = "Hib"
                         },
                         new
                         {
                             Id = 6,
-                            AgesInMonths = "6,12",
-                            Name = "Méningocoques ACWY"
+                            AgeInMonths = 11,
+                            Name = "Hib"
                         },
                         new
                         {
                             Id = 7,
-                            AgesInMonths = "3,5,12",
+                            AgeInMonths = 2,
+                            Name = "Hépatite B"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AgeInMonths = 4,
+                            Name = "Hépatite B"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AgeInMonths = 11,
+                            Name = "Hépatite B"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AgeInMonths = 2,
+                            Name = "Pneumocoque"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AgeInMonths = 4,
+                            Name = "Pneumocoque"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AgeInMonths = 11,
+                            Name = "Pneumocoque"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AgeInMonths = 12,
+                            Name = "ROR"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AgeInMonths = 16,
+                            Name = "ROR"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AgeInMonths = 6,
+                            Name = "Méningocoques ACWY"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AgeInMonths = 12,
+                            Name = "Méningocoques ACWY"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AgeInMonths = 3,
+                            Name = "Méningocoque B"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AgeInMonths = 5,
+                            Name = "Méningocoque B"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            AgeInMonths = 12,
                             Name = "Méningocoque B"
                         });
                 });

@@ -14,6 +14,7 @@ public record ChildVaccinationScheduleDto(
 public record ChildVaccineEntryDto(
     int VaccineId,
     string VaccineName,
+    int AgeInMonths,
     VaccineStatus Status,
     DateOnly? ScheduledDate,
     DateOnly? AdministrationDate,

@@ -164,6 +164,7 @@ public class VaccinationService : IVaccinationService
                 VaccineId = vaccine.Id,
                 Vaccine = vaccine,
                 Status = VaccineStatus.Scheduled,
+                ScheduledDate = child.BirthDate.AddMonths(vaccine.AgeInMonths),
                 CreatedAt = now
             };
 

@@ -28,6 +28,7 @@ public class VaccinesController : ControllerBase
     {
         List<Vaccine> vaccines = await _dbContext.Vaccines
             .OrderBy(vaccine => vaccine.Name)
+            .ThenBy(vaccine => vaccine.AgeInMonths)
             .ToListAsync();
 
         List<VaccineDto> result = vaccines
@@ -43,7 +44,7 @@ public class VaccinesController : ControllerBase
         Vaccine vaccine = new Vaccine
         {
             Name = input.Name,
-            AgesInMonths = input.AgesInMonths
+            AgeInMonths = input.AgeInMonths
         };
 
         _dbContext.Vaccines.Add(vaccine);
@@ -65,7 +66,7 @@ public class VaccinesController : ControllerBase
         }
 
         vaccine.Name = input.Name;
-        vaccine.AgesInMonths = input.AgesInMonths;
+        vaccine.AgeInMonths = input.AgeInMonths;
 
         await _dbContext.SaveChangesAsync();
         return NoContent();
@@ -92,7 +93,7 @@ public class VaccinesController : ControllerBase
         return new VaccineDto(
             vaccine.Id,
             vaccine.Name,
-            vaccine.AgesInMonths
+            vaccine.AgeInMonths
         );
     }
 }

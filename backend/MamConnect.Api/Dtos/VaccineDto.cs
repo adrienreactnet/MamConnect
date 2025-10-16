@@ -3,5 +3,5 @@
 public record VaccineDto(
     int Id,
     string Name,
-    string AgesInMonths
+    int AgeInMonths
 );
