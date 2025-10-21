@@ -208,7 +208,7 @@ export default function VaccinationOverviewPage() {
                             <Grid item xs={12} sm={6} md={4}>
                                 <Paper sx={{ p: 2 }}>
                                     <Typography variant="subtitle2" color="text.secondary">
-                                        Vaccins planifiés
+                                        Vaccins préconisés
                                     </Typography>
                                     <Typography variant="h4">{overview.scheduledVaccinations}</Typography>
                                 </Paper>

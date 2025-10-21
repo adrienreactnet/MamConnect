@@ -99,25 +99,25 @@ export default function VaccinationStatusDialog({
 
         if (status === "Scheduled") {
             if (!scheduledDate) {
-                return "Veuillez indiquer une date de planification.";
+                return "Veuillez indiquer une date de préconisation.";
             }
 
             if (scheduledDate < today) {
-                return "La date planifiée doit être aujourd'hui ou plus tard.";
+                return "La date préconisée doit être aujourd'hui ou plus tard.";
             }
 
             if (administrationDate) {
-                return "Un vaccin planifié ne peut pas avoir de date d'administration.";
+                return "Un vaccin préconisé ne peut pas avoir de date d'administration.";
             }
         }
 
         if (status === "Overdue") {
             if (!scheduledDate) {
-                return "Veuillez indiquer la date de planification initiale.";
+                return "Veuillez indiquer la date de préconisation initiale.";
             }
 
             if (scheduledDate >= today) {
-                return "Un vaccin en retard doit avoir une date planifiée passée.";
+                return "Un vaccin en retard doit avoir une date préconisée passée.";
             }
 
             if (administrationDate) {
@@ -174,7 +174,7 @@ export default function VaccinationStatusDialog({
                         </Select>
                     </FormControl>
                     <TextField
-                        label="Date planifiée"
+                       label="Date préconisée"
                         type="date"
                         value={scheduledDate}
                         onChange={(event) => setScheduledDate(event.target.value)}

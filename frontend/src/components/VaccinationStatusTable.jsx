@@ -121,7 +121,7 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                                 <TableCell>Vaccin</TableCell>
                                 <TableCell>Âge (mois)</TableCell>
                                 <TableCell>Statut</TableCell>
-                                <TableCell>Date planifiée</TableCell>
+                                <TableCell>Date préconisée</TableCell>
                                 <TableCell>Date d'administration</TableCell>
                                 <TableCell>Commentaires</TableCell>
                                 <TableCell align="right">Actions</TableCell>
