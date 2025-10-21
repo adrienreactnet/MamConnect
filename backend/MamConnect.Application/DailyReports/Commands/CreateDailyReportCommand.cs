@@ -10,10 +10,10 @@ namespace MamConnect.Application.DailyReports.Commands;
 
 public class CreateDailyReportCommand
 {
-    private readonly GetAuthorizedChildIdsQuery _authorizedChildIdsQuery;
+    private readonly Queries.GetAuthorizedChildIdsQuery _authorizedChildIdsQuery;
     private readonly IDailyReportRepository _dailyReportRepository;
 
-    public CreateDailyReportCommand(GetAuthorizedChildIdsQuery authorizedChildIdsQuery, IDailyReportRepository dailyReportRepository)
+    public CreateDailyReportCommand(Queries.GetAuthorizedChildIdsQuery authorizedChildIdsQuery, IDailyReportRepository dailyReportRepository)
     {
         _authorizedChildIdsQuery = authorizedChildIdsQuery;
         _dailyReportRepository = dailyReportRepository;
