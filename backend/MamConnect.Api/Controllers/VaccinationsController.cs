@@ -17,17 +17,17 @@ namespace MamConnect.Api.Controllers;
 [Route("api/vaccinations")]
 public class VaccinationsController : ControllerBase
 {
-    private readonly IVaccinationService vaccinationService;
+    private readonly IVaccinationService _vaccinationService;
 
     public VaccinationsController(IVaccinationService vaccinationService)
     {
-        this.vaccinationService = vaccinationService;
+        this._vaccinationService = vaccinationService;
     }
 
     [HttpGet("children/{childId:int}")]
     public async Task<IActionResult> GetChildSchedule(int childId, CancellationToken cancellationToken)
     {
-        Child? child = await vaccinationService.GetChildScheduleAsync(childId, cancellationToken);
+        Child? child = await _vaccinationService.GetChildScheduleAsync(childId, cancellationToken);
 
         if (child == null)
         {
@@ -55,7 +55,7 @@ public class VaccinationsController : ControllerBase
             return BadRequest(validationProblem);
         }
 
-        ChildVaccine? updated = await vaccinationService.UpdateChildVaccineAsync(
+        ChildVaccine? updated = await _vaccinationService.UpdateChildVaccineAsync(
             childId,
             vaccineId,
             request.ScheduledDate,
@@ -73,7 +73,7 @@ public class VaccinationsController : ControllerBase
             return NotFound(problem);
         }
 
-        Child? child = await vaccinationService.GetChildScheduleAsync(childId, cancellationToken);
+        Child? child = await _vaccinationService.GetChildScheduleAsync(childId, cancellationToken);
         if (child == null)
         {
             ProblemDetails problem = CreateProblemDetails(
@@ -90,7 +90,7 @@ public class VaccinationsController : ControllerBase
     [HttpGet("overview")]
     public async Task<IActionResult> GetOverview(CancellationToken cancellationToken)
     {
-        VaccinationOverview overview = await vaccinationService.GetOverviewAsync(cancellationToken);
+        VaccinationOverview overview = await _vaccinationService.GetOverviewAsync(cancellationToken);
         VaccinationOverviewDto response = new VaccinationOverviewDto(
             overview.TotalChildren,
             overview.TotalVaccinations,
