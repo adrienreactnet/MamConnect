@@ -1,9 +1,11 @@
-using MamConnect.Api.Dtos;               // ChildRelationsDto
-using MamConnect.Domain.Entities;        // Child
-using MamConnect.Infrastructure.Data;    // AppDbContext
+using System;
+using System.Collections.Generic;
+using MamConnect.Application.Children.Commands;
+using MamConnect.Application.Children.Queries;
+using MamConnect.Application.Dtos;
+using MamConnect.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace MamConnect.Api.Controllers;
@@ -13,99 +15,78 @@ namespace MamConnect.Api.Controllers;
 [Route("children")]
 public class ChildrenController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public ChildrenController(AppDbContext db) => _db = db;
+    private readonly GetChildrenQuery _getChildrenQuery;
+    private readonly GetChildrenWithRelationsQuery _getChildrenWithRelationsQuery;
+    private readonly CreateChildCommand _createChildCommand;
+    private readonly UpdateChildCommand _updateChildCommand;
+    private readonly DeleteChildCommand _deleteChildCommand;
+
+    public ChildrenController(
+        GetChildrenQuery getChildrenQuery,
+        GetChildrenWithRelationsQuery getChildrenWithRelationsQuery,
+        CreateChildCommand createChildCommand,
+        UpdateChildCommand updateChildCommand,
+        DeleteChildCommand deleteChildCommand)
+    {
+        _getChildrenQuery = getChildrenQuery;
+        _getChildrenWithRelationsQuery = getChildrenWithRelationsQuery;
+        _createChildCommand = createChildCommand;
+        _updateChildCommand = updateChildCommand;
+        _deleteChildCommand = deleteChildCommand;
+    }
 
     [HttpGet]
     public async Task<IEnumerable<Child>> Get()
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var role = User.FindFirstValue(ClaimTypes.Role);
-
-        if (role == UserRole.Assistant.ToString())
+        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? roleValue = User.FindFirstValue(ClaimTypes.Role);
+        if (userIdValue == null || !Enum.TryParse<UserRole>(roleValue, out UserRole role))
         {
-            return await _db.Children
-                             .Where(c => c.AssistantId == userId)
-                             .OrderBy(c => c.FirstName)
-                             .ToListAsync();
+            List<Child> empty = new List<Child>();
+            return empty;
         }
 
-        if (role == UserRole.Parent.ToString())
-        {
-            return await _db.Children
-                             .Where(c => c.Parents.Any(p => p.Id == userId))
-                             .OrderBy(c => c.FirstName)
-                             .ToListAsync();
-        }
-
-        if (role == UserRole.Admin.ToString())
-        {
-            return await _db.Children
-                             .OrderBy(c => c.FirstName)
-                             .ToListAsync();
-        }
-
-        return new List<Child>();
+        int userId = int.Parse(userIdValue);
+        IReadOnlyCollection<Child> children = await _getChildrenQuery.ExecuteAsync(userId, role);
+        return children;
     }
 
     [HttpGet("with-relations")]
     [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IEnumerable<ChildRelationsDto>> GetWithRelations()
     {
-        return await _db.Children
-                         .Include(c => c.Assistant)
-                         .Include(c => c.Parents)
-                         .OrderBy(c => c.FirstName)
-                         .Select(c => new ChildRelationsDto(
-                             c.FirstName,
-                             c.Assistant != null ? c.Assistant.FirstName + " " + c.Assistant.LastName : null,
-                             c.Parents.Select(p => p.FirstName + " " + p.LastName).ToList()
-                         ))
-                         .ToListAsync();
+        IReadOnlyCollection<ChildRelationsDto> children = await _getChildrenWithRelationsQuery.ExecuteAsync();
+        return children;
     }
 
     [HttpPost]
     public async Task<IActionResult> Post(Child child)
     {
-        _db.Add(child);
-        await _db.SaveChangesAsync();
-        return Created($"/children/{child.Id}", child);
+        Child created = await _createChildCommand.ExecuteAsync(child);
+        return Created($"/children/{created.Id}", created);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Child input)
     {
-        var child = await _db.Children.FindAsync(id);
-        if (child is null) return NotFound();
+        bool updated = await _updateChildCommand.ExecuteAsync(id, input);
+        if (!updated)
+        {
+            return NotFound();
+        }
 
-        child.FirstName = input.FirstName;
-        child.BirthDate = input.BirthDate;
-        child.AssistantId = input.AssistantId;
-        await _db.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        Child? child = await _db.Children
-            .Include(c => c.Parents)
-            .ThenInclude(p => p.Children)
-            .FirstOrDefaultAsync(c => c.Id == id);
-        if (child is null) return NotFound();
-
-        List<User> parentsToRemove = child.Parents
-            .Where(parent => parent.Children.Count == 1)
-            .ToList();
-
-        _db.Children.Remove(child);
-
-        foreach (User parent in parentsToRemove)
+        bool deleted = await _deleteChildCommand.ExecuteAsync(id);
+        if (!deleted)
         {
-            _db.Users.Remove(parent);
+            return NotFound();
         }
 
-        await _db.SaveChangesAsync();
         return NoContent();
     }
 }

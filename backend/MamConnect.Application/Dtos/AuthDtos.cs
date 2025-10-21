@@ -1,6 +1,6 @@
-﻿namespace MamConnect.Api.Dtos;
-
 using MamConnect.Domain.Entities;
+
+namespace MamConnect.Application.Dtos;
 
 public record CreateUserRequest(string Email, string FirstName, string LastName, string PhoneNumber, UserRole Role);
 public record UserLoginRequest(string PhoneNumber, string Password);

@@ -1,9 +1,12 @@
-﻿using MamConnect.Api.Dtos;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MamConnect.Api.Dtos;
+using MamConnect.Application.Assistants.Commands;
+using MamConnect.Application.Assistants.Queries;
 using MamConnect.Domain.Entities;
-using MamConnect.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamConnect.Api.Controllers;
 
@@ -12,65 +15,76 @@ namespace MamConnect.Api.Controllers;
 [Route("assistants")]
 public class AssistantsController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public AssistantsController(AppDbContext db) => _db = db;
+    private readonly GetAssistantsQuery _getAssistantsQuery;
+    private readonly CreateAssistantCommand _createAssistantCommand;
+    private readonly UpdateAssistantCommand _updateAssistantCommand;
+    private readonly DeleteAssistantCommand _deleteAssistantCommand;
+
+    public AssistantsController(
+        GetAssistantsQuery getAssistantsQuery,
+        CreateAssistantCommand createAssistantCommand,
+        UpdateAssistantCommand updateAssistantCommand,
+        DeleteAssistantCommand deleteAssistantCommand)
+    {
+        _getAssistantsQuery = getAssistantsQuery;
+        _createAssistantCommand = createAssistantCommand;
+        _updateAssistantCommand = updateAssistantCommand;
+        _deleteAssistantCommand = deleteAssistantCommand;
+    }
 
     [HttpGet]
     public async Task<IEnumerable<AssistantDto>> Get()
     {
-        return await _db.Users
-            .Where(u => u.Role == UserRole.Assistant)
-            .OrderBy(u => u.FirstName)
-            .Select(u => ToDto(u))
-            .ToListAsync();
+        IReadOnlyCollection<User> assistants = await _getAssistantsQuery.ExecuteAsync();
+        IEnumerable<AssistantDto> result = assistants.Select(ToDto);
+        return result;
     }
 
     [HttpPost]
     public async Task<ActionResult<AssistantDto>> Post(AssistantDto dto)
     {
-        var user = new User
-        {
-            Email = dto.Email,
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            PhoneNumber = dto.PhoneNumber,
-            Role = UserRole.Assistant,
-            PasswordHash = string.Empty
-        };
+        User assistant = await _createAssistantCommand.ExecuteAsync(
+            dto.Email,
+            dto.FirstName,
+            dto.LastName,
+            dto.PhoneNumber);
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
-
-        var result = ToDto(user);
-        return Created($"/assistants/{user.Id}", result);
+        AssistantDto result = ToDto(assistant);
+        return Created($"/assistants/{assistant.Id}", result);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, AssistantDto input)
     {
-        var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == id && u.Role == UserRole.Assistant);
-        if (user is null) return NotFound();
+        bool updated = await _updateAssistantCommand.ExecuteAsync(
+            id,
+            input.Email,
+            input.FirstName,
+            input.LastName,
+            input.PhoneNumber);
+        if (!updated)
+        {
+            return NotFound();
+        }
 
-        user.Email = input.Email;
-        user.FirstName = input.FirstName;
-        user.LastName = input.LastName;
-        user.PhoneNumber = input.PhoneNumber;
-
-        await _db.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _db.Users.SingleOrDefaultAsync(u => u.Id == id && u.Role == UserRole.Assistant);
-        if (user is null) return NotFound();
+        bool deleted = await _deleteAssistantCommand.ExecuteAsync(id);
+        if (!deleted)
+        {
+            return NotFound();
+        }
 
-        _db.Users.Remove(user);
-        await _db.SaveChangesAsync();
         return NoContent();
     }
 
-    private static AssistantDto ToDto(User u) =>
-        new(u.Id, u.Email, u.FirstName, u.LastName, u.PhoneNumber);
+    private static AssistantDto ToDto(User user)
+    {
+        AssistantDto dto = new AssistantDto(user.Id, user.Email, user.FirstName, user.LastName, user.PhoneNumber);
+        return dto;
+    }
 }

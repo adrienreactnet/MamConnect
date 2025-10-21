@@ -1,10 +1,13 @@
-﻿using MamConnect.Domain.Entities;
-using MamConnect.Infrastructure.Data;   // AppDbContext
-using Microsoft.AspNetCore.Authorization;      // DailyReport
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using MamConnect.Application.DailyReports.Commands;
+using MamConnect.Application.DailyReports.Queries;
+using MamConnect.Application.Dtos;
+using MamConnect.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MamConnect.Api.Controllers;
 
@@ -13,69 +16,70 @@ namespace MamConnect.Api.Controllers;
 [Route("reports")]
 public class DailyReportsController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public DailyReportsController(AppDbContext db) => _db = db;
+    private readonly GetDailyReportsQuery _getDailyReportsQuery;
+    private readonly GetChildDailyReportsQuery _getChildDailyReportsQuery;
+    private readonly CreateDailyReportCommand _createDailyReportCommand;
+
+    public DailyReportsController(
+        GetDailyReportsQuery getDailyReportsQuery,
+        GetChildDailyReportsQuery getChildDailyReportsQuery,
+        CreateDailyReportCommand createDailyReportCommand)
+    {
+        _getDailyReportsQuery = getDailyReportsQuery;
+        _getChildDailyReportsQuery = getChildDailyReportsQuery;
+        _createDailyReportCommand = createDailyReportCommand;
+    }
 
     [HttpGet]
     public async Task<IEnumerable<DailyReport>> GetAll()
     {
-        var authorizedIds = await GetAuthorizedChildIds();
-        return await _db.DailyReports
-                        .Where(r => authorizedIds.Contains(r.ChildId))
-                        .OrderByDescending(r => r.CreatedAt)
-                        .ToListAsync();
+        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdValue == null)
+        {
+            List<DailyReport> emptyReports = new List<DailyReport>();
+            return emptyReports;
+        }
+
+        int userId = int.Parse(userIdValue);
+        IReadOnlyCollection<DailyReport> reports = await _getDailyReportsQuery.ExecuteAsync(userId);
+        return reports;
     }
 
     [HttpGet("children/{childId}")]
     public async Task<ActionResult<IEnumerable<DailyReport>>> GetByChild(int childId)
     {
-        var authorizedIds = await GetAuthorizedChildIds();
-        if (!authorizedIds.Contains(childId))
+        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdValue == null)
+        {
             return Forbid();
+        }
 
-        var reports = await _db.DailyReports
-                               .Where(r => r.ChildId == childId)
-                               .OrderByDescending(r => r.CreatedAt)
-                               .ToListAsync();
-        return reports;
+        int userId = int.Parse(userIdValue);
+        GetChildDailyReportsQuery.Result result = await _getChildDailyReportsQuery.ExecuteAsync(userId, childId);
+        if (!result.IsAuthorized)
+        {
+            return Forbid();
+        }
+
+        return Ok(result.Reports);
     }
-
-    public record DailyReportInput(string Content);
 
     [HttpPost("children/{childId}")]
-    public async Task<IActionResult> Post(int childId, DailyReportInput input)
+    public async Task<IActionResult> Post(int childId, CreateDailyReportRequest input)
     {
-        var authorizedIds = await GetAuthorizedChildIds();
-        if (!authorizedIds.Contains(childId))
-            return Forbid();
-
-        var report = new DailyReport
+        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdValue == null)
         {
-            ChildId = childId,
-            Content = input.Content,
-            CreatedAt = DateTime.UtcNow
-        };
-        _db.Add(report);
-        await _db.SaveChangesAsync();
-        return Created($"/reports/{report.Id}", report);
-    }
+            return Forbid();
+        }
 
-    private async Task<List<int>> GetAuthorizedChildIds()
-    {
-        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userIdClaim is null)
-            return new();
+        int userId = int.Parse(userIdValue);
+        CreateDailyReportCommand.Result result = await _createDailyReportCommand.ExecuteAsync(userId, childId, input);
+        if (!result.IsAuthorized || result.Report == null)
+        {
+            return Forbid();
+        }
 
-        var userId = int.Parse(userIdClaim);
-        var user = await _db.Users
-                            .Include(u => u.Children)
-                            .Include(u => u.AssignedChildren)
-                            .SingleOrDefaultAsync(u => u.Id == userId);
-
-        return user is null
-            ? new()
-            : user.Children.Select(c => c.Id)
-                   .Concat(user.AssignedChildren.Select(c => c.Id))
-                   .ToList();
+        return Created($"/reports/{result.Report.Id}", result.Report);
     }
 }
