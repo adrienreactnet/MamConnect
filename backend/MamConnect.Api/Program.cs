@@ -1,4 +1,6 @@
 using MamConnect.Api.Services;
+using MamConnect.Application.Assistants.Commands;
+using MamConnect.Application.Assistants.Queries;
 using MamConnect.Application.Auth.Commands;
 using MamConnect.Application.Auth.Queries;
 using MamConnect.Application.Children.Commands;
@@ -6,6 +8,8 @@ using MamConnect.Application.Children.Queries;
 using MamConnect.Application.Common.Interfaces;
 using MamConnect.Application.DailyReports.Commands;
 using MamConnect.Application.DailyReports.Queries;
+using MamConnect.Application.Parents.Commands;
+using MamConnect.Application.Parents.Queries;
 using MamConnect.Domain.Entities;
 using MamConnect.Domain.Services;
 using MamConnect.Infrastructure.Data;
@@ -65,6 +69,15 @@ builder.Services.AddScoped<CreateDailyReportCommand>();
 builder.Services.AddScoped<RegisterUserCommand>();
 builder.Services.AddScoped<LoginUserQuery>();
 builder.Services.AddScoped<SetPasswordCommand>();
+builder.Services.AddScoped<GetAssistantsQuery>();
+builder.Services.AddScoped<CreateAssistantCommand>();
+builder.Services.AddScoped<UpdateAssistantCommand>();
+builder.Services.AddScoped<DeleteAssistantCommand>();
+builder.Services.AddScoped<GetParentsQuery>();
+builder.Services.AddScoped<CreateParentCommand>();
+builder.Services.AddScoped<UpdateParentCommand>();
+builder.Services.AddScoped<DeleteParentCommand>();
+builder.Services.AddScoped<SetParentChildrenCommand>();
 
 // Swagger pour tester facilement
 builder.Services.AddEndpointsApiExplorer();

@@ -53,6 +53,15 @@ public class ChildrenRepository : IChildrenRepository
         return children;
     }
 
+    public async Task<IReadOnlyCollection<Child>> GetChildrenByIdsAsync(IReadOnlyCollection<int> childIds)
+    {
+        List<Child> children = await _dbContext.Children
+            .Where(child => childIds.Contains(child.Id))
+            .OrderBy(child => child.FirstName)
+            .ToListAsync();
+        return children;
+    }
+
     public async Task<Child?> FindByIdAsync(int id)
     {
         Child? child = await _dbContext.Children.FindAsync(id);
