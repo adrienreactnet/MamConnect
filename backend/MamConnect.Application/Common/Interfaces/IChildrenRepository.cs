@@ -10,6 +10,7 @@ public interface IChildrenRepository
     Task<IReadOnlyCollection<Child>> GetChildrenByParentIdAsync(int parentId);
     Task<IReadOnlyCollection<Child>> GetAllChildrenAsync();
     Task<IReadOnlyCollection<Child>> GetChildrenWithRelationsAsync();
+    Task<IReadOnlyCollection<Child>> GetChildrenByIdsAsync(IReadOnlyCollection<int> childIds);
     Task<Child?> FindByIdAsync(int id);
     Task<Child?> GetChildWithParentsAsync(int id);
     Task AddAsync(Child child);
