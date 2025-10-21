@@ -1,6 +1,15 @@
+using MamConnect.Api.Services;
+using MamConnect.Application.Auth.Commands;
+using MamConnect.Application.Auth.Queries;
+using MamConnect.Application.Children.Commands;
+using MamConnect.Application.Children.Queries;
+using MamConnect.Application.Common.Interfaces;
+using MamConnect.Application.DailyReports.Commands;
+using MamConnect.Application.DailyReports.Queries;
 using MamConnect.Domain.Entities;
 using MamConnect.Domain.Services;
 using MamConnect.Infrastructure.Data;
+using MamConnect.Infrastructure.Repositories;
 using MamConnect.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +49,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
+builder.Services.AddScoped<IDailyReportRepository, DailyReportRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<GetChildrenQuery>();
+builder.Services.AddScoped<GetChildrenWithRelationsQuery>();
+builder.Services.AddScoped<CreateChildCommand>();
+builder.Services.AddScoped<UpdateChildCommand>();
+builder.Services.AddScoped<DeleteChildCommand>();
+builder.Services.AddScoped<GetAuthorizedChildIdsQuery>();
+builder.Services.AddScoped<GetDailyReportsQuery>();
+builder.Services.AddScoped<GetChildDailyReportsQuery>();
+builder.Services.AddScoped<CreateDailyReportCommand>();
+builder.Services.AddScoped<RegisterUserCommand>();
+builder.Services.AddScoped<LoginUserQuery>();
+builder.Services.AddScoped<SetPasswordCommand>();
 
 // Swagger pour tester facilement
 builder.Services.AddEndpointsApiExplorer();

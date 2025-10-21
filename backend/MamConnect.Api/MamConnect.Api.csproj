@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MamConnect.Application\MamConnect.Application.csproj" />
     <ProjectReference Include="..\MamConnect.Domain\MamConnect.Domain.csproj" />
     <ProjectReference Include="..\MamConnect.Infrastructure\MamConnect.Infrastructure.csproj" />
   </ItemGroup>

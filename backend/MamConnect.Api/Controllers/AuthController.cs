@@ -1,14 +1,9 @@
-﻿using MamConnect.Api.Dtos;
-using MamConnect.Domain.Entities;
-using MamConnect.Infrastructure.Data;
+using System.Threading.Tasks;
+using MamConnect.Application.Auth.Commands;
+using MamConnect.Application.Auth.Queries;
+using MamConnect.Application.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace MamConnect.Api.Controllers;
 
@@ -16,36 +11,30 @@ namespace MamConnect.Api.Controllers;
 [Route("auth")]
 public class AuthController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    private readonly IConfiguration _config;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly RegisterUserCommand _registerUserCommand;
+    private readonly LoginUserQuery _loginUserQuery;
+    private readonly SetPasswordCommand _setPasswordCommand;
 
-    public AuthController(AppDbContext db, IConfiguration config, IPasswordHasher<User> passwordHasher)
+    public AuthController(
+        RegisterUserCommand registerUserCommand,
+        LoginUserQuery loginUserQuery,
+        SetPasswordCommand setPasswordCommand)
     {
-        _db = db;
-        _config = config;
-        _passwordHasher = passwordHasher;
+        _registerUserCommand = registerUserCommand;
+        _loginUserQuery = loginUserQuery;
+        _setPasswordCommand = setPasswordCommand;
     }
 
     [Authorize]
     [HttpPost("register")]
     public async Task<IActionResult> Register(CreateUserRequest request)
     {
-        if (await _db.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber))
-            return Conflict();
-
-        var user = new User
+        bool created = await _registerUserCommand.ExecuteAsync(request);
+        if (!created)
         {
-            Email = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            PhoneNumber = request.PhoneNumber,
-            Role = request.Role,
-            PasswordHash = string.Empty
-        };
+            return Conflict();
+        }
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
         return NoContent();
     }
 
@@ -53,51 +42,30 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(UserLoginRequest request)
     {
-        User? user = await _db.Users.SingleOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
-        if (user is null)
+        AuthResponse? response = await _loginUserQuery.ExecuteAsync(request);
+        if (response == null)
+        {
             return Unauthorized();
+        }
 
-        PasswordVerificationResult result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
-        if (result == PasswordVerificationResult.Failed)
-            return Unauthorized();
-
-        string token = GenerateToken(user);
-        return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
+        return response;
     }
 
     [AllowAnonymous]
     [HttpPost("set-password")]
     public async Task<ActionResult<AuthResponse>> SetPassword(SetPasswordRequest request)
     {
-        var user = await _db.Users.SingleOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
-        if (user is null)
-            return Unauthorized();
-
-        if (!string.IsNullOrEmpty(user.PasswordHash))
-            return Conflict();
-
-        user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
-        await _db.SaveChangesAsync();
-
-        var token = GenerateToken(user);
-        return new AuthResponse(user.Id, user.FirstName, user.LastName, user.PhoneNumber, user.Role, token);
-    }
-
-    private string GenerateToken(User user)
-    {
-        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!);
-        var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
-        var claims = new[]
+        SetPasswordCommand.Result result = await _setPasswordCommand.ExecuteAsync(request);
+        if (result.Status == SetPasswordCommand.ResultStatus.UserNotFound)
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
-        };
+            return Unauthorized();
+        }
 
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: creds);
+        if (result.Status == SetPasswordCommand.ResultStatus.AlreadyInitialized)
+        {
+            return Conflict();
+        }
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return result.Response!;
     }
 }
