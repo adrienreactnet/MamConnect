@@ -218,15 +218,15 @@ public class VaccinationService : IVaccinationService
 
         int dayOffset = scheduledDate.DayNumber - today.DayNumber;
 
-        if (dayOffset > 30)
-        {
-            return VaccineStatus.ToSchedule;
-        }
-
-        if (dayOffset >= -30)
+        if (dayOffset > 30) // before 30 days
         {
             return VaccineStatus.Pending;
         }
+
+        if (dayOffset >= 0) // Between 30 days and 0 day before
+        {
+            return VaccineStatus.ToSchedule;
+        }        
 
         return VaccineStatus.Overdue;
     }

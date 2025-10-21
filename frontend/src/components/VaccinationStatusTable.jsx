@@ -31,8 +31,8 @@ const STATUS_LABELS = {
 
 const STATUS_COLORS = {
     Completed: "success",
-    Pending: "warning",
-    ToSchedule: "info",
+    Pending: "info",
+    ToSchedule: "warning",
     Overdue: "error",
 };
 
