@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace MamConnect.Api.Dtos;
+namespace MamConnect.Application.Dtos;
 
 public record ChildRelationsDto(
     string ChildFirstName,
