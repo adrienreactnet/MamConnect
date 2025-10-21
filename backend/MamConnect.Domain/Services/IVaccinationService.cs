@@ -14,7 +14,7 @@ public interface IVaccinationService
         int vaccineId,
         DateOnly? scheduledDate,
         DateOnly? administrationDate,
-        VaccineStatus status,
+        VaccineStatus? status,
         string? comments,
         CancellationToken cancellationToken);
 
@@ -25,6 +25,7 @@ public record VaccinationOverview(
     int TotalChildren,
     int TotalVaccinations,
     int CompletedVaccinations,
-    int ScheduledVaccinations,
+    int PendingVaccinations,
+    int ToScheduleVaccinations,
     int OverdueVaccinations,
     int ChildrenWithOverdueVaccinations);

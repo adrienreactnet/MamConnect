@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Alert,
     Button,
@@ -7,17 +7,14 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
     Stack,
     TextField,
 } from "@mui/material";
 
 const STATUS_LABELS = {
     Completed: "Administré",
-    Scheduled: "Planifié",
+    Pending: "En attente",
+    ToSchedule: "À planifier",
     Overdue: "En retard",
 };
 
@@ -40,7 +37,6 @@ export default function VaccinationStatusDialog({
     onSave,
     isSaving = false,
 }) {
-    const [status, setStatus] = useState(entry?.status ?? "Scheduled");
     const [scheduledDate, setScheduledDate] = useState(formatDateForInput(entry?.scheduledDate));
     const [administrationDate, setAdministrationDate] = useState(
         formatDateForInput(entry?.administrationDate),
@@ -53,21 +49,12 @@ export default function VaccinationStatusDialog({
             return;
         }
 
-        setStatus(entry?.status ?? "Scheduled");
         setScheduledDate(formatDateForInput(entry?.scheduledDate));
         setAdministrationDate(formatDateForInput(entry?.administrationDate));
         setComments(entry?.comments ?? "");
         setError("");
     }, [entry, open]);
 
-    const statusOptions = useMemo(
-        () => [
-            { value: "Completed", label: STATUS_LABELS.Completed },
-            { value: "Scheduled", label: STATUS_LABELS.Scheduled },
-            { value: "Overdue", label: STATUS_LABELS.Overdue },
-        ],
-        [],
-    );
     const vaccineLabel = entry
         ? entry.vaccineDisplayName ??
         `${entry.vaccineName}${entry.ageInMonths !== undefined && entry.ageInMonths !== null
@@ -76,53 +63,13 @@ export default function VaccinationStatusDialog({
         }`
         : "";
 
-    const validate = () => {
-        if (!status) {
-            return "Veuillez sélectionner un statut.";
-        }
+    const currentStatusLabel = entry ? STATUS_LABELS[entry.status] ?? entry.status : "";
 
+    const validate = () => {
         const today = todayIso();
 
-        if (status === "Completed") {
-            if (!administrationDate) {
-                return "La date d'administration est obligatoire pour un vaccin administré.";
-            }
-
-            if (administrationDate > today) {
-                return "La date d'administration ne peut pas être dans le futur.";
-            }
-
-            if (scheduledDate && administrationDate < scheduledDate) {
-                return "La date d'administration doit être postérieure ou égale à la date prévue.";
-            }
-        }
-
-        if (status === "Scheduled") {
-            if (!scheduledDate) {
-                return "Veuillez indiquer une date de préconisation.";
-            }
-
-            if (scheduledDate < today) {
-                return "La date préconisée doit être aujourd'hui ou plus tard.";
-            }
-
-            if (administrationDate) {
-                return "Un vaccin préconisé ne peut pas avoir de date d'administration.";
-            }
-        }
-
-        if (status === "Overdue") {
-            if (!scheduledDate) {
-                return "Veuillez indiquer la date de préconisation initiale.";
-            }
-
-            if (scheduledDate >= today) {
-                return "Un vaccin en retard doit avoir une date préconisée passée.";
-            }
-
-            if (administrationDate) {
-                return "Un vaccin en retard ne peut pas avoir de date d'administration.";
-            }
+        if (administrationDate && administrationDate > today) {
+            return "La date d'administration ne peut pas être dans le futur.";
         }
 
         if (comments.length > 512) {
@@ -140,11 +87,14 @@ export default function VaccinationStatusDialog({
         }
 
         const payload = {
-            status,
             scheduledDate: scheduledDate || null,
             administrationDate: administrationDate || null,
             comments: comments.trim() ? comments.trim() : null,
         };
+
+        if (payload.administrationDate) {
+            payload.status = "Completed";
+        }
 
         onSave(payload);
     };
@@ -157,28 +107,18 @@ export default function VaccinationStatusDialog({
                     <DialogContentText>
                         {entry ? `${entry.childName} — ${vaccineLabel}` : ""}
                     </DialogContentText>
-                    <FormControl fullWidth>
-                        <InputLabel id="vaccination-status-label">Statut</InputLabel>
-                        <Select
-                            labelId="vaccination-status-label"
-                            label="Statut"
-                            value={status}
-                            onChange={(event) => setStatus(event.target.value)}
-                            disabled={isSaving}
-                        >
-                            {statusOptions.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    {entry && (
+                        <Alert severity="info" variant="outlined">
+                            Statut actuel&nbsp;: <strong>{currentStatusLabel}</strong>
+                        </Alert>
+                    )}
                     <TextField
-                       label="Date préconisée"
+                        label="Date préconisée"
                         type="date"
                         value={scheduledDate}
                         onChange={(event) => setScheduledDate(event.target.value)}
                         InputLabelProps={{ shrink: true }}
+                        helperText="Optionnel. Utilisé pour le calcul automatique du statut."
                         disabled={isSaving}
                     />
                     <TextField
@@ -187,6 +127,7 @@ export default function VaccinationStatusDialog({
                         value={administrationDate}
                         onChange={(event) => setAdministrationDate(event.target.value)}
                         InputLabelProps={{ shrink: true }}
+                        helperText="Renseignez cette date pour marquer le vaccin comme administré. Les dates antérieures à la préconisation sont acceptées."
                         disabled={isSaving}
                     />
                     <TextField

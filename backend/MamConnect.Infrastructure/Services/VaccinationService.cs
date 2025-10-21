@@ -52,7 +52,7 @@ public class VaccinationService : IVaccinationService
         int vaccineId,
         DateOnly? scheduledDate,
         DateOnly? administrationDate,
-        VaccineStatus status,
+        VaccineStatus? status,
         string? comments,
         CancellationToken cancellationToken)
     {
@@ -67,7 +67,10 @@ public class VaccinationService : IVaccinationService
 
         childVaccine.ScheduledDate = scheduledDate;
         childVaccine.AdministrationDate = administrationDate;
-        childVaccine.Status = status;
+        if (status.HasValue)
+        {
+            childVaccine.Status = status.Value;
+        }
         childVaccine.Comments = comments;
         childVaccine.UpdatedAt = DateTime.UtcNow;
 
@@ -111,17 +114,19 @@ public class VaccinationService : IVaccinationService
         int totalChildren = children.Count;
         int totalVaccinations = allVaccinations.Count;
         int completedVaccinations = allVaccinations.Count(cv => cv.Status == VaccineStatus.Completed);
-        int scheduledVaccinations = allVaccinations.Count(cv => cv.Status == VaccineStatus.Scheduled);
+        int pendingVaccinations = allVaccinations.Count(cv => cv.Status == VaccineStatus.Pending);
+        int toScheduleVaccinations = allVaccinations.Count(cv => cv.Status == VaccineStatus.ToSchedule);
         int overdueVaccinations = allVaccinations.Count(cv => cv.Status == VaccineStatus.Overdue);
         int childrenWithOverdueVaccinations = children.Count(c => c.ChildVaccines.Any(cv => cv.Status == VaccineStatus.Overdue));
 
         return new VaccinationOverview(
-            totalChildren,
-            totalVaccinations,
-            completedVaccinations,
-            scheduledVaccinations,
-            overdueVaccinations,
-            childrenWithOverdueVaccinations);
+             totalChildren,
+             totalVaccinations,
+             completedVaccinations,
+             pendingVaccinations,
+             toScheduleVaccinations,
+             overdueVaccinations,
+             childrenWithOverdueVaccinations);
     }
 
     private async Task RecalculateChildStatusesAsync(int childId, CancellationToken cancellationToken)
@@ -149,6 +154,7 @@ public class VaccinationService : IVaccinationService
         HashSet<int> existingVaccineIds = new HashSet<int>(child.ChildVaccines.Select(cv => cv.VaccineId));
         bool newEntriesCreated = false;
         DateTime now = DateTime.UtcNow;
+        DateOnly today = DateOnly.FromDateTime(now);
 
         foreach (Vaccine vaccine in vaccines)
         {
@@ -163,10 +169,11 @@ public class VaccinationService : IVaccinationService
                 Child = child,
                 VaccineId = vaccine.Id,
                 Vaccine = vaccine,
-                Status = VaccineStatus.Scheduled,
                 ScheduledDate = child.BirthDate.AddMonths(vaccine.AgeInMonths),
                 CreatedAt = now
             };
+
+            childVaccine.Status = GetComputedStatus(childVaccine, today);
 
             child.ChildVaccines.Add(childVaccine);
             dbContext.ChildVaccines.Add(childVaccine);
@@ -202,11 +209,25 @@ public class VaccinationService : IVaccinationService
             return VaccineStatus.Completed;
         }
 
-        if (vaccination.ScheduledDate.HasValue && vaccination.ScheduledDate.Value < today)
+        if (!vaccination.ScheduledDate.HasValue)
         {
-            return VaccineStatus.Overdue;
+            return VaccineStatus.ToSchedule;
         }
 
-        return VaccineStatus.Scheduled;
+        DateOnly scheduledDate = vaccination.ScheduledDate.Value;
+
+        int dayOffset = scheduledDate.DayNumber - today.DayNumber;
+
+        if (dayOffset > 30)
+        {
+            return VaccineStatus.ToSchedule;
+        }
+
+        if (dayOffset >= -30)
+        {
+            return VaccineStatus.Pending;
+        }
+
+        return VaccineStatus.Overdue;
     }
 }

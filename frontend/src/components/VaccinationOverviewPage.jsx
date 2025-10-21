@@ -95,6 +95,22 @@ export default function VaccinationOverviewPage() {
         );
     }, [schedules]);
 
+    const summaryItems = useMemo(() => {
+        if (!overview) {
+            return [];
+        }
+
+        return [
+            { label: "Enfants suivis", value: overview.totalChildren },
+            { label: "Vaccins total", value: overview.totalVaccinations },
+            { label: "Vaccins administrés", value: overview.completedVaccinations },
+            { label: "Vaccins en attente", value: overview.pendingVaccinations },
+            { label: "Vaccins à planifier", value: overview.toScheduleVaccinations },
+            { label: "Vaccins en retard", value: overview.overdueVaccinations },
+            { label: "Enfants concernés par un retard", value: overview.childrenWithOverdueVaccinations },
+        ];
+    }, [overview]);
+    
     const handleEditEntry = (entry) => {
         setSelectedEntry(entry);
         setDialogOpen(true);
@@ -181,54 +197,16 @@ export default function VaccinationOverviewPage() {
                 <>
                     {overview && (
                         <Grid container spacing={2} mb={3}>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Paper sx={{ p: 2 }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        Enfants suivis
-                                    </Typography>
-                                    <Typography variant="h4">{overview.totalChildren}</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Paper sx={{ p: 2 }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        Vaccins total
-                                    </Typography>
-                                    <Typography variant="h4">{overview.totalVaccinations}</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Paper sx={{ p: 2 }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        Vaccins administrés
-                                    </Typography>
-                                    <Typography variant="h4">{overview.completedVaccinations}</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Paper sx={{ p: 2 }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        Vaccins préconisés
-                                    </Typography>
-                                    <Typography variant="h4">{overview.scheduledVaccinations}</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Paper sx={{ p: 2 }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        Vaccins en retard
-                                    </Typography>
-                                    <Typography variant="h4">{overview.overdueVaccinations}</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Paper sx={{ p: 2 }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        Enfants concernés par un retard
-                                    </Typography>
-                                    <Typography variant="h4">{overview.childrenWithOverdueVaccinations}</Typography>
-                                </Paper>
-                            </Grid>
+                             {summaryItems.map((item) => (
+                                <Grid item xs={12} sm={6} md={4} key={item.label}>
+                                    <Paper sx={{ p: 2, height: "100%" }}>
+                                        <Typography variant="subtitle2" color="text.secondary">
+                                            {item.label}
+                                        </Typography>
+                                        <Typography variant="h4">{item.value}</Typography>
+                                    </Paper>
+                                </Grid>
+                            ))}
                         </Grid>
                     )}
 

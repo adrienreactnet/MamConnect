@@ -95,7 +95,8 @@ public class VaccinationsController : ControllerBase
             overview.TotalChildren,
             overview.TotalVaccinations,
             overview.CompletedVaccinations,
-            overview.ScheduledVaccinations,
+            overview.PendingVaccinations,
+            overview.ToScheduleVaccinations,
             overview.OverdueVaccinations,
             overview.ChildrenWithOverdueVaccinations);
         return Ok(response);
@@ -127,6 +128,22 @@ public class VaccinationsController : ControllerBase
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
 
+        if (request.Status.HasValue && request.Status.Value != VaccineStatus.Completed)
+        {
+            return CreateProblemDetails(
+                StatusCodes.Status400BadRequest,
+                "StatusChangeNotAllowed",
+                "Only the administered status can be selected manually.");
+        }
+
+        if (request.AdministrationDate.HasValue && (!request.Status.HasValue || request.Status.Value != VaccineStatus.Completed))
+        {
+            return CreateProblemDetails(
+                StatusCodes.Status400BadRequest,
+                "StatusRequiredForAdministration",
+                "An administration date requires selecting the administered status.");
+        }
+
         if (request.Status == VaccineStatus.Completed)
         {
             if (!request.AdministrationDate.HasValue)
@@ -134,7 +151,7 @@ public class VaccinationsController : ControllerBase
                 return CreateProblemDetails(
                     StatusCodes.Status400BadRequest,
                     "AdministrationDateRequired",
-                    "An administration date is required when marking a vaccine as completed.");
+                    "An administration date is required when marking a vaccine as administered.");
             }
 
             if (request.AdministrationDate.Value > today)
@@ -143,68 +160,6 @@ public class VaccinationsController : ControllerBase
                     StatusCodes.Status400BadRequest,
                     "AdministrationDateInFuture",
                     "The administration date cannot be set in the future.");
-            }
-
-            if (request.ScheduledDate.HasValue && request.AdministrationDate.Value < request.ScheduledDate.Value)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "AdministrationBeforeSchedule",
-                    "The administration date cannot be earlier than the scheduled date.");
-            }
-        }
-
-        if (request.Status == VaccineStatus.Scheduled)
-        {
-            if (!request.ScheduledDate.HasValue)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "ScheduledDateRequired",
-                    "A scheduled date is required when marking a vaccine as scheduled.");
-            }
-
-            if (request.ScheduledDate.Value < today)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "ScheduledDateInPast",
-                    "The scheduled date must be today or later for a scheduled vaccine.");
-            }
-
-            if (request.AdministrationDate.HasValue)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "AdministrationNotAllowed",
-                    "A scheduled vaccine cannot include an administration date until it is completed.");
-            }
-        }
-
-        if (request.Status == VaccineStatus.Overdue)
-        {
-            if (!request.ScheduledDate.HasValue)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "ScheduledDateRequired",
-                    "A scheduled date is required when marking a vaccine as overdue.");
-            }
-
-            if (request.ScheduledDate.Value >= today)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "ScheduledDateNotPast",
-                    "The scheduled date must be in the past for an overdue vaccine.");
-            }
-
-            if (request.AdministrationDate.HasValue)
-            {
-                return CreateProblemDetails(
-                    StatusCodes.Status400BadRequest,
-                    "AdministrationNotAllowed",
-                    "An overdue vaccine cannot have an administration date until it is completed.");
             }
         }
 

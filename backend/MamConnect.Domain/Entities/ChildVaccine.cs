@@ -20,6 +20,7 @@ public class ChildVaccine
 public enum VaccineStatus
 {
     Completed = 0,
-    Scheduled = 1,
-    Overdue = 2
+    Pending = 1,
+    ToSchedule = 2,
+    Overdue = 3
 }

@@ -24,7 +24,8 @@ public record VaccinationOverviewDto(
     int TotalChildren,
     int TotalVaccinations,
     int CompletedVaccinations,
-    int ScheduledVaccinations,
+    int PendingVaccinations,
+    int ToScheduleVaccinations,
     int OverdueVaccinations,
     int ChildrenWithOverdueVaccinations);
 
@@ -37,5 +38,5 @@ public class UpdateChildVaccineRequest
 
     public DateOnly? AdministrationDate { get; set; }
 
-    public VaccineStatus Status { get; set; }
+    public VaccineStatus? Status { get; set; }
 }

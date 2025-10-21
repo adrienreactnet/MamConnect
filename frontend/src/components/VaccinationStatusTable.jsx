@@ -24,14 +24,16 @@ import EditIcon from "@mui/icons-material/Edit";
 
 const STATUS_LABELS = {
     Completed: "Administré",
-    Scheduled: "Planifié",
+    Pending: "En attente",
+    ToSchedule: "À planifier",
     Overdue: "En retard",
 };
 
 const STATUS_COLORS = {
     Completed: "success",
-    Scheduled: "info",
-    Overdue: "warning",
+    Pending: "warning",
+    ToSchedule: "info",
+    Overdue: "error",
 };
 
 function formatDate(value) {
@@ -102,7 +104,8 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                         >
                             <MenuItem value="all">Tous les statuts</MenuItem>
                             <MenuItem value="Completed">Administré</MenuItem>
-                            <MenuItem value="Scheduled">Planifié</MenuItem>
+                            <MenuItem value="Pending">En attente</MenuItem>
+                            <MenuItem value="ToSchedule">À planifier</MenuItem>
                             <MenuItem value="Overdue">En retard</MenuItem>
                         </Select>
                     </FormControl>
@@ -149,7 +152,7 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                                         <TableCell>
                                             <Chip
                                                 label={getStatusLabel(entry.status)}
-                                                color={STATUS_COLORS[entry.status]}
+                                                color={STATUS_COLORS[entry.status] ?? "default"}
                                                 variant="outlined"
                                                 size="small"
                                             />
