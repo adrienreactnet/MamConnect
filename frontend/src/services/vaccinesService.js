@@ -1,7 +1,7 @@
 // src/services/vaccinesService.js
 import apiFetch from "./apiFetch";
 
-const API_BASE_URL = "http://localhost:5293/api";
+const API_BASE_URL = "http://localhost:5293";
 
 export async function getVaccines() {
     const response = await apiFetch(`${API_BASE_URL}/vaccines`);

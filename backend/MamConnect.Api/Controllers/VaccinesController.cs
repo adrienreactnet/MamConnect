@@ -1,36 +1,41 @@
-﻿using MamConnect.Api.Dtos;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MamConnect.Api.Dtos;
+using MamConnect.Application.Vaccines.Commands;
+using MamConnect.Application.Vaccines.Queries;
 using MamConnect.Domain.Entities;
-using MamConnect.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Threading.Tasks;
 
 namespace MamConnect.Api.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = nameof(UserRole.Admin))]
 [ApiController]
-[Route("api/vaccines")]
+[Route("vaccines")]
 public class VaccinesController : ControllerBase
 {
-    private readonly AppDbContext _dbContext;
+    private readonly GetVaccinesQuery _getVaccinesQuery;
+    private readonly CreateVaccineCommand _createVaccineCommand;
+    private readonly UpdateVaccineCommand _updateVaccineCommand;
+    private readonly DeleteVaccineCommand _deleteVaccineCommand;
 
-    public VaccinesController(AppDbContext dbContext)
+    public VaccinesController(
+        GetVaccinesQuery getVaccinesQuery,
+        CreateVaccineCommand createVaccineCommand,
+        UpdateVaccineCommand updateVaccineCommand,
+        DeleteVaccineCommand deleteVaccineCommand)
     {
-        _dbContext = dbContext;
+        _getVaccinesQuery = getVaccinesQuery;
+        _createVaccineCommand = createVaccineCommand;
+        _updateVaccineCommand = updateVaccineCommand;
+        _deleteVaccineCommand = deleteVaccineCommand;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VaccineDto>>> Get()
     {
-        List<Vaccine> vaccines = await _dbContext.Vaccines
-            .OrderBy(vaccine => vaccine.Name)
-            .ThenBy(vaccine => vaccine.AgeInMonths)
-            .ToListAsync();
-
+        IReadOnlyCollection<Vaccine> vaccines = await _getVaccinesQuery.ExecuteAsync();
         List<VaccineDto> result = vaccines
             .Select(vaccine => ToDto(vaccine))
             .ToList();
@@ -41,50 +46,32 @@ public class VaccinesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<VaccineDto>> Post(VaccineDto input)
     {
-        Vaccine vaccine = new Vaccine
-        {
-            Name = input.Name,
-            AgeInMonths = input.AgeInMonths
-        };
-
-        _dbContext.Vaccines.Add(vaccine);
-        await _dbContext.SaveChangesAsync();
-
+        Vaccine vaccine = await _createVaccineCommand.ExecuteAsync(input.Name, input.AgeInMonths);
         VaccineDto dto = ToDto(vaccine);
-        return Created($"/api/vaccines/{vaccine.Id}", dto);
+        return Created($"/vaccines/{vaccine.Id}", dto);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, VaccineDto input)
     {
-        ValueTask<Vaccine?> findTask = _dbContext.Vaccines.FindAsync(id);
-        Vaccine? vaccine = await findTask;
-
-        if (vaccine == null)
+        bool updated = await _updateVaccineCommand.ExecuteAsync(id, input.Name, input.AgeInMonths);
+        if (!updated)
         {
             return NotFound();
         }
 
-        vaccine.Name = input.Name;
-        vaccine.AgeInMonths = input.AgeInMonths;
-
-        await _dbContext.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        ValueTask<Vaccine?> findTask = _dbContext.Vaccines.FindAsync(id);
-        Vaccine? vaccine = await findTask;
-
-        if (vaccine == null)
+        bool deleted = await _deleteVaccineCommand.ExecuteAsync(id);
+        if (!deleted)
         {
             return NotFound();
         }
 
-        _dbContext.Vaccines.Remove(vaccine);
-        await _dbContext.SaveChangesAsync();
         return NoContent();
     }
 

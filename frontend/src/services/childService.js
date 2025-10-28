@@ -41,7 +41,9 @@ export async function addChild(child) {
                 if (payload?.message) {
                     message = payload.message;
                 }
-            } catch (err) { }
+            } catch {
+                // Ignorer l'erreur de parsing pour conserver le message par défaut.
+            }
             throw new Error(message);
         }
         throw new Error("Erreur lors de l'ajout de l'enfant");

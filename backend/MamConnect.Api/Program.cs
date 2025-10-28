@@ -10,6 +10,8 @@ using MamConnect.Application.DailyReports.Commands;
 using MamConnect.Application.DailyReports.Queries;
 using MamConnect.Application.Parents.Commands;
 using MamConnect.Application.Parents.Queries;
+using MamConnect.Application.Vaccines.Commands;
+using MamConnect.Application.Vaccines.Queries;
 using MamConnect.Domain.Entities;
 using MamConnect.Domain.Services;
 using MamConnect.Infrastructure.Data;
@@ -57,6 +59,7 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
 builder.Services.AddScoped<IDailyReportRepository, DailyReportRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
 builder.Services.AddScoped<GetChildrenQuery>();
 builder.Services.AddScoped<GetChildrenWithRelationsQuery>();
 builder.Services.AddScoped<CreateChildCommand>();
@@ -78,6 +81,10 @@ builder.Services.AddScoped<CreateParentCommand>();
 builder.Services.AddScoped<UpdateParentCommand>();
 builder.Services.AddScoped<DeleteParentCommand>();
 builder.Services.AddScoped<SetParentChildrenCommand>();
+builder.Services.AddScoped<GetVaccinesQuery>();
+builder.Services.AddScoped<CreateVaccineCommand>();
+builder.Services.AddScoped<UpdateVaccineCommand>();
+builder.Services.AddScoped<DeleteVaccineCommand>();
 
 // Swagger pour tester facilement
 builder.Services.AddEndpointsApiExplorer();
