@@ -62,6 +62,14 @@ public class ChildrenRepository : IChildrenRepository
         return children;
     }
 
+    public async Task<bool> ExistsWithFirstNameAsync(string firstName)
+    {
+        string trimmedFirstName = firstName.Trim();
+        bool exists = await _dbContext.Children
+            .AnyAsync(child => child.FirstName == trimmedFirstName);
+        return exists;
+    }
+
     public async Task<Child?> FindByIdAsync(int id)
     {
         Child? child = await _dbContext.Children.FindAsync(id);

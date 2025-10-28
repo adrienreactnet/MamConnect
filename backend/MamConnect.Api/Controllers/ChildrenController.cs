@@ -63,7 +63,18 @@ public class ChildrenController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(Child child, CancellationToken cancellationToken)
     {
-        Child created = await _createChildCommand.ExecuteAsync(child, cancellationToken);
+        CreateChildCommand.Result result = await _createChildCommand.ExecuteAsync(child, cancellationToken);
+        if (result.Status == CreateChildCommand.ResultStatus.DuplicateFirstName)
+        {
+            return Conflict(new { message = "Un enfant portant ce prénom existe déjà." });
+        }
+
+        Child? created = result.Child;
+        if (created == null)
+        {
+            return StatusCode(500);
+        }
+
         return Created($"/children/{created.Id}", created);
     }
 

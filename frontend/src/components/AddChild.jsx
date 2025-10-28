@@ -13,7 +13,12 @@ export default function AddChild({ onChildAdded }) {
         setError("");
         setSuccess("");
         try {
-            await addChild({ firstName, birthDate });
+            const trimmedFirstName = firstName.trim();
+            if (trimmedFirstName.length === 0) {
+                setError("Le prénom est requis.");
+                return;
+            }
+            await addChild({ firstName: trimmedFirstName, birthDate });
             setFirstName("");
             setBirthDate("");
             setSuccess("Enfant ajouté !");

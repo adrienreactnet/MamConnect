@@ -22,12 +22,48 @@ public class CreateChildCommand
     /// </summary>
     /// <param name="child">The child to create.</param>
     /// <param name="cancellationToken">Token allowing the operation to be cancelled.</param>
-    /// <returns>The created child entity.</returns>
-    public async Task<Child> ExecuteAsync(Child child, CancellationToken cancellationToken)
+    /// <returns>The result of the creation attempt.</returns>
+    public async Task<Result> ExecuteAsync(Child child, CancellationToken cancellationToken)
     {
+        string initialFirstName = child.FirstName ?? string.Empty;
+        string trimmedFirstName = initialFirstName.Trim();
+        child.FirstName = trimmedFirstName;
+
+        bool exists = await _childrenRepository.ExistsWithFirstNameAsync(trimmedFirstName);
+        if (exists)
+        {
+            Result duplicateResult = new Result(ResultStatus.DuplicateFirstName, null);
+            return duplicateResult;
+        }
+
         await _childrenRepository.AddAsync(child);
         await _childrenRepository.SaveChangesAsync();
         await _vaccinationService.EnsureChildVaccinesAsync(child.Id, cancellationToken);
-        return child;
+        Result successResult = new Result(ResultStatus.Success, child);
+        return successResult;
+    }
+
+    public enum ResultStatus
+    {
+        Success,
+        DuplicateFirstName
+    }
+
+    public sealed class Result
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Result"/> class.
+        /// </summary>
+        /// <param name="status">The outcome of the creation attempt.</param>
+        /// <param name="child">The created child when the operation succeeds.</param>
+        public Result(ResultStatus status, Child? child)
+        {
+            Status = status;
+            Child = child;
+        }
+
+        public ResultStatus Status { get; }
+
+        public Child? Child { get; }
     }
 }

@@ -34,6 +34,16 @@ export async function addChild(child) {
     });
 
     if (!response.ok) {
+        if (response.status === 409) {
+            let message = "Un enfant portant ce prénom existe déjà.";
+            try {
+                const payload = await response.json();
+                if (payload?.message) {
+                    message = payload.message;
+                }
+            } catch (err) { }
+            throw new Error(message);
+        }
         throw new Error("Erreur lors de l'ajout de l'enfant");
     }
 
