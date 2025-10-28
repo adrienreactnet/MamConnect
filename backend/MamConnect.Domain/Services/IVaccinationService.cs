@@ -9,6 +9,13 @@ public interface IVaccinationService
 {
     Task<Child?> GetChildScheduleAsync(int childId, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Ensures that the specified child has all vaccine entries initialised.
+    /// </summary>
+    /// <param name="childId">The identifier of the child to initialise.</param>
+    /// <param name="cancellationToken">Token allowing the operation to be cancelled.</param>
+    Task EnsureChildVaccinesAsync(int childId, CancellationToken cancellationToken);
+
     Task<ChildVaccine?> UpdateChildVaccineAsync(
         int childId,
         int vaccineId,

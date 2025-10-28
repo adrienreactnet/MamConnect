@@ -19,6 +19,16 @@ public class VaccinationService : IVaccinationService
         this.dbContext = dbContext;
     }
 
+    /// <summary>
+    /// Ensures that the specified child has all vaccine entries initialised.
+    /// </summary>
+    /// <param name="childId">The identifier of the child to initialise.</param>
+    /// <param name="cancellationToken">Token allowing the operation to be cancelled.</param>
+    public async Task EnsureChildVaccinesAsync(int childId, CancellationToken cancellationToken)
+    {
+        await GetChildScheduleAsync(childId, cancellationToken);
+    }
+
     public async Task<Child?> GetChildScheduleAsync(int childId, CancellationToken cancellationToken)
     {
         Child? child = await dbContext.Children

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Text.Json.Serialization;
 
 namespace MamConnect.Domain.Entities;
 
@@ -6,6 +7,8 @@ public class ChildVaccine
 {
     public int Id { get; set; }
     public int ChildId { get; set; }
+
+    [JsonIgnore]
     public Child Child { get; set; } = null!;
     public int VaccineId { get; set; }
     public Vaccine Vaccine { get; set; } = null!;

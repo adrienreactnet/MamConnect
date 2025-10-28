@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using MamConnect.Application.Children.Commands;
 using MamConnect.Application.Children.Queries;
 using MamConnect.Application.Dtos;
@@ -60,9 +61,9 @@ public class ChildrenController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Child child)
+    public async Task<IActionResult> Post(Child child, CancellationToken cancellationToken)
     {
-        Child created = await _createChildCommand.ExecuteAsync(child);
+        Child created = await _createChildCommand.ExecuteAsync(child, cancellationToken);
         return Created($"/children/{created.Id}", created);
     }
 
