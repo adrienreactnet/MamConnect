@@ -37,19 +37,24 @@ public class ChildrenController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Child>> Get()
+    public async Task<ActionResult<IEnumerable<Child>>> Get()
     {
         string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
         string? roleValue = User.FindFirstValue(ClaimTypes.Role);
-        if (userIdValue == null || !Enum.TryParse<UserRole>(roleValue, out UserRole role))
+        if (userIdValue == null || roleValue == null)
         {
-            List<Child> empty = new List<Child>();
-            return empty;
+            return Unauthorized();
         }
 
-        int userId = int.Parse(userIdValue);
+        bool userIdParsed = int.TryParse(userIdValue, out int userId);
+        bool roleParsed = Enum.TryParse<UserRole>(roleValue, out UserRole role);
+        if (!userIdParsed || !roleParsed)
+        {
+            return Unauthorized();
+        }
+
         IReadOnlyCollection<Child> children = await _getChildrenQuery.ExecuteAsync(userId, role);
-        return children;
+        return Ok(children);
     }
 
     [HttpGet("with-relations")]
