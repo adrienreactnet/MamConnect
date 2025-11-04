@@ -28,7 +28,7 @@ export default function AddChild({ onChildAdded }) {
         setBirthDateError("");
         const trimmedFirstName = firstName.trim();
         if (trimmedFirstName.length === 0) {
-            setError("Le prǸnom est requis.");
+            setError("Le prénom est requis.");
             return;
         }
         if (birthDate === "") {
@@ -61,7 +61,7 @@ export default function AddChild({ onChildAdded }) {
                     type="text"
                     value={firstName}
                     onChange={(event) => setFirstName(event.target.value)}
-                    placeholder="PrǸnom"
+                    placeholder="Prénom"
                 />
                 <input
                     type="date"
