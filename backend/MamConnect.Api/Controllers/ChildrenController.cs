@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using MamConnect.Api.Dtos;
+using MamConnect.Api.Mappings;
+using MamConnect.Api.Services;
 using MamConnect.Application.Children.Commands;
 using MamConnect.Application.Children.Queries;
 using MamConnect.Application.Dtos;
-using MamConnect.Api.Services;
 using MamConnect.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +44,7 @@ public class ChildrenController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Child>>> Get()
+    public async Task<ActionResult<IEnumerable<ChildResponseDto>>> Get()
     {
         CurrentUser? currentUser;
         bool userAvailable = _currentUserContext.TryGetCurrentUser(out currentUser);
@@ -50,7 +54,10 @@ public class ChildrenController : ControllerBase
         }
 
         IReadOnlyCollection<Child> children = await _getChildrenQuery.ExecuteAsync(currentUser.UserId, currentUser.Role);
-        return Ok(children);
+        List<ChildResponseDto> response = children
+            .Select(child => child.ToResponseDto())
+            .ToList();
+        return Ok(response);
     }
 
     [HttpGet("with-relations")]
@@ -62,12 +69,13 @@ public class ChildrenController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Child child, CancellationToken cancellationToken)
+    public async Task<ActionResult<ChildResponseDto>> Post(CreateChildRequestDto request, CancellationToken cancellationToken)
     {
+        Child child = request.ToDomainEntity();
         CreateChildCommand.Result result = await _createChildCommand.ExecuteAsync(child, cancellationToken);
         if (result.Status == CreateChildCommand.ResultStatus.DuplicateFirstName)
         {
-            return Conflict(new { message = "Un enfant portant ce prénom existe déjà." });
+            return Conflict(new { message = "Un enfant portant ce prenom existe deja." });
         }
 
         Child? created = result.Child;
@@ -76,12 +84,14 @@ public class ChildrenController : ControllerBase
             return StatusCode(500);
         }
 
-        return Created($"/children/{created.Id}", created);
+        ChildResponseDto response = created.ToResponseDto();
+        return Created($"/children/{created.Id}", response);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, Child input)
+    public async Task<IActionResult> Put(int id, UpdateChildRequestDto request)
     {
+        UpdateChildCommand.Input input = request.ToUpdateInput();
         bool updated = await _updateChildCommand.ExecuteAsync(id, input);
         if (!updated)
         {

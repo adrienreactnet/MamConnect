@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MamConnect.Api.Dtos;
+using MamConnect.Api.Mappings;
 using MamConnect.Application.Parents.Commands;
 using MamConnect.Application.Parents.Queries;
 using MamConnect.Domain.Entities;
@@ -37,37 +38,37 @@ public class ParentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ParentDto>> Get()
+    public async Task<IEnumerable<ParentResponseDto>> Get()
     {
         IReadOnlyCollection<User> parents = await _getParentsQuery.ExecuteAsync();
-        IEnumerable<ParentDto> result = parents.Select(ToDto);
+        IEnumerable<ParentResponseDto> result = parents.Select(parent => parent.ToResponseDto());
         return result;
     }
 
     [HttpPost]
-    public async Task<ActionResult<ParentDto>> Post(ParentDto dto)
+    public async Task<ActionResult<ParentResponseDto>> Post(CreateParentRequestDto request)
     {
-        IReadOnlyCollection<int> childrenIds = dto.ChildrenIds?.ToArray() ?? Array.Empty<int>();
+        IReadOnlyCollection<int> childrenIds = request.ChildrenIds?.ToArray() ?? Array.Empty<int>();
         User parent = await _createParentCommand.ExecuteAsync(
-            dto.Email,
-            dto.FirstName,
-            dto.LastName,
-            dto.PhoneNumber,
+            request.Email,
+            request.FirstName,
+            request.LastName,
+            request.PhoneNumber,
             childrenIds);
 
-        ParentDto result = ToDto(parent);
-        return Created($"/parents/{parent.Id}", result);
+        ParentResponseDto response = parent.ToResponseDto();
+        return Created($"/parents/{parent.Id}", response);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, ParentDto input)
+    public async Task<IActionResult> Put(int id, UpdateParentRequestDto request)
     {
         bool updated = await _updateParentCommand.ExecuteAsync(
             id,
-            input.Email,
-            input.FirstName,
-            input.LastName,
-            input.PhoneNumber);
+            request.Email,
+            request.FirstName,
+            request.LastName,
+            request.PhoneNumber);
         if (!updated)
         {
             return NotFound();
@@ -99,18 +100,5 @@ public class ParentsController : ControllerBase
         }
 
         return NoContent();
-    }
-
-    private static ParentDto ToDto(User user)
-    {
-        IEnumerable<int> childrenIds = user.Children.Select(child => child.Id);
-        ParentDto dto = new ParentDto(
-            user.Id,
-            user.Email,
-            user.FirstName,
-            user.LastName,
-            user.PhoneNumber,
-            childrenIds);
-        return dto;
     }
 }
