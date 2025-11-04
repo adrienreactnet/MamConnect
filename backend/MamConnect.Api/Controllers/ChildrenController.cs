@@ -4,10 +4,10 @@ using System.Threading;
 using MamConnect.Application.Children.Commands;
 using MamConnect.Application.Children.Queries;
 using MamConnect.Application.Dtos;
+using MamConnect.Api.Services;
 using MamConnect.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace MamConnect.Api.Controllers;
 
@@ -21,39 +21,35 @@ public class ChildrenController : ControllerBase
     private readonly CreateChildCommand _createChildCommand;
     private readonly UpdateChildCommand _updateChildCommand;
     private readonly DeleteChildCommand _deleteChildCommand;
+    private readonly ICurrentUserContext _currentUserContext;
 
     public ChildrenController(
         GetChildrenQuery getChildrenQuery,
         GetChildrenWithRelationsQuery getChildrenWithRelationsQuery,
         CreateChildCommand createChildCommand,
         UpdateChildCommand updateChildCommand,
-        DeleteChildCommand deleteChildCommand)
+        DeleteChildCommand deleteChildCommand,
+        ICurrentUserContext currentUserContext)
     {
         _getChildrenQuery = getChildrenQuery;
         _getChildrenWithRelationsQuery = getChildrenWithRelationsQuery;
         _createChildCommand = createChildCommand;
         _updateChildCommand = updateChildCommand;
         _deleteChildCommand = deleteChildCommand;
+        _currentUserContext = currentUserContext;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Child>>> Get()
     {
-        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        string? roleValue = User.FindFirstValue(ClaimTypes.Role);
-        if (userIdValue == null || roleValue == null)
+        CurrentUser? currentUser;
+        bool userAvailable = _currentUserContext.TryGetCurrentUser(out currentUser);
+        if (!userAvailable || currentUser == null)
         {
             return Unauthorized();
         }
 
-        bool userIdParsed = int.TryParse(userIdValue, out int userId);
-        bool roleParsed = Enum.TryParse<UserRole>(roleValue, out UserRole role);
-        if (!userIdParsed || !roleParsed)
-        {
-            return Unauthorized();
-        }
-
-        IReadOnlyCollection<Child> children = await _getChildrenQuery.ExecuteAsync(userId, role);
+        IReadOnlyCollection<Child> children = await _getChildrenQuery.ExecuteAsync(currentUser.UserId, currentUser.Role);
         return Ok(children);
     }
 

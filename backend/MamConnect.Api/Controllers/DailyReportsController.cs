@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using MamConnect.Api.Services;
 using MamConnect.Application.DailyReports.Commands;
 using MamConnect.Application.DailyReports.Queries;
 using MamConnect.Application.Dtos;
@@ -19,43 +19,45 @@ public class DailyReportsController : ControllerBase
     private readonly GetDailyReportsQuery _getDailyReportsQuery;
     private readonly GetChildDailyReportsQuery _getChildDailyReportsQuery;
     private readonly CreateDailyReportCommand _createDailyReportCommand;
+    private readonly ICurrentUserContext _currentUserContext;
 
     public DailyReportsController(
         GetDailyReportsQuery getDailyReportsQuery,
         GetChildDailyReportsQuery getChildDailyReportsQuery,
-        CreateDailyReportCommand createDailyReportCommand)
+        CreateDailyReportCommand createDailyReportCommand,
+        ICurrentUserContext currentUserContext)
     {
         _getDailyReportsQuery = getDailyReportsQuery;
         _getChildDailyReportsQuery = getChildDailyReportsQuery;
         _createDailyReportCommand = createDailyReportCommand;
+        _currentUserContext = currentUserContext;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<DailyReport>> GetAll()
+    public async Task<ActionResult<IEnumerable<DailyReport>>> GetAll()
     {
-        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userIdValue == null)
+        CurrentUser? currentUser;
+        bool userAvailable = _currentUserContext.TryGetCurrentUser(out currentUser);
+        if (!userAvailable || currentUser == null)
         {
-            List<DailyReport> emptyReports = new List<DailyReport>();
-            return emptyReports;
+            return Unauthorized();
         }
 
-        int userId = int.Parse(userIdValue);
-        IReadOnlyCollection<DailyReport> reports = await _getDailyReportsQuery.ExecuteAsync(userId);
-        return reports;
+        IReadOnlyCollection<DailyReport> reports = await _getDailyReportsQuery.ExecuteAsync(currentUser.UserId);
+        return Ok(reports);
     }
 
     [HttpGet("children/{childId}")]
     public async Task<ActionResult<IEnumerable<DailyReport>>> GetByChild(int childId)
     {
-        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userIdValue == null)
+        CurrentUser? currentUser;
+        bool userAvailable = _currentUserContext.TryGetCurrentUser(out currentUser);
+        if (!userAvailable || currentUser == null)
         {
-            return Forbid();
+            return Unauthorized();
         }
 
-        int userId = int.Parse(userIdValue);
-        GetChildDailyReportsQuery.Result result = await _getChildDailyReportsQuery.ExecuteAsync(userId, childId);
+        GetChildDailyReportsQuery.Result result = await _getChildDailyReportsQuery.ExecuteAsync(currentUser.UserId, childId);
         if (!result.IsAuthorized)
         {
             return Forbid();
@@ -67,14 +69,14 @@ public class DailyReportsController : ControllerBase
     [HttpPost("children/{childId}")]
     public async Task<IActionResult> Post(int childId, CreateDailyReportRequest input)
     {
-        string? userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userIdValue == null)
+        CurrentUser? currentUser;
+        bool userAvailable = _currentUserContext.TryGetCurrentUser(out currentUser);
+        if (!userAvailable || currentUser == null)
         {
-            return Forbid();
+            return Unauthorized();
         }
 
-        int userId = int.Parse(userIdValue);
-        CreateDailyReportCommand.Result result = await _createDailyReportCommand.ExecuteAsync(userId, childId, input);
+        CreateDailyReportCommand.Result result = await _createDailyReportCommand.ExecuteAsync(currentUser.UserId, childId, input);
         if (!result.IsAuthorized || result.Report == null)
         {
             return Forbid();
