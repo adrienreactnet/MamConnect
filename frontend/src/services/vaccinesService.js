@@ -1,16 +1,10 @@
 // src/services/vaccinesService.js
-import apiFetch from "./apiFetch";
-
-const API_BASE_URL = "http://localhost:5293";
+import { apiRequest } from "./apiClient";
 
 export async function getVaccines() {
-    const response = await apiFetch(`${API_BASE_URL}/vaccines`);
-
-    if (!response.ok) {
-        throw new Error("Erreur lors du chargement des vaccins");
-    }
-
-    return await response.json();
+    return await apiRequest("/vaccines", {
+        defaultErrorMessage: "Erreur lors du chargement des vaccins",
+    });
 }
 
 function buildPayload(data) {
@@ -21,45 +15,36 @@ function buildPayload(data) {
 }
 
 export async function createVaccine(data) {
-    const response = await apiFetch(`${API_BASE_URL}/vaccines`, {
+    return await apiRequest("/vaccines", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(buildPayload(data)),
+        defaultErrorMessage: "Erreur lors de la création du vaccin",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la création du vaccin");
-    }
-
-    return await response.json();
 }
 
 export async function updateVaccine(id, data) {
-    const response = await apiFetch(`${API_BASE_URL}/vaccines/${id}`, {
+    await apiRequest(`/vaccines/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(buildPayload(data)),
+        expectJson: false,
+        defaultErrorMessage: "Erreur lors de la mise à jour du vaccin",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la mise à jour du vaccin");
-    }
 
     return true;
 }
 
 export async function deleteVaccine(id) {
-    const response = await apiFetch(`${API_BASE_URL}/vaccines/${id}`, {
+    await apiRequest(`/vaccines/${id}`, {
         method: "DELETE",
+        expectJson: false,
+        defaultErrorMessage: "Erreur lors de la suppression du vaccin",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la suppression du vaccin");
-    }
 
     return true;
 }

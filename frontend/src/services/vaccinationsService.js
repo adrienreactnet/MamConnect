@@ -1,55 +1,26 @@
-import apiFetch from "./apiFetch";
+import { apiRequest } from "./apiClient";
 
-const API_BASE_URL = "http://localhost:5293/api/vaccinations";
-
-async function parseJsonSafely(response) {
-    try {
-        return await response.json();
-    } catch {
-        return null;
-    }
-}
-
-function buildError(message, fallback) {
-    return new Error(message ?? fallback);
-}
+const VACCINATIONS_BASE_PATH = "/api/vaccinations";
 
 export async function getChildVaccinationSchedule(childId) {
-    const response = await apiFetch(`${API_BASE_URL}/children/${childId}`);
-    const data = await parseJsonSafely(response);
-
-    if (!response.ok) {
-        throw buildError(data?.detail, "Impossible de charger le calendrier vaccinal de l'enfant.");
-    }
-
-    return data;
+    return await apiRequest(`${VACCINATIONS_BASE_PATH}/children/${childId}`, {
+        defaultErrorMessage: "Impossible de charger le calendrier vaccinal de l'enfant.",
+    });
 }
 
 export async function updateChildVaccine(childId, vaccineId, payload) {
-    const response = await apiFetch(`${API_BASE_URL}/children/${childId}/vaccines/${vaccineId}`, {
+    return await apiRequest(`${VACCINATIONS_BASE_PATH}/children/${childId}/vaccines/${vaccineId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
+        defaultErrorMessage: "La mise à jour du statut vaccinal a échoué.",
     });
-
-    const data = await parseJsonSafely(response);
-
-    if (!response.ok) {
-        throw buildError(data?.detail, "La mise à jour du statut vaccinal a échoué.");
-    }
-
-    return data;
 }
 
 export async function getVaccinationOverview() {
-    const response = await apiFetch(`${API_BASE_URL}/overview`);
-    const data = await parseJsonSafely(response);
-
-    if (!response.ok) {
-        throw buildError(data?.detail, "Impossible de charger l'aperçu vaccinal.");
-    }
-
-    return data;
+    return await apiRequest(`${VACCINATIONS_BASE_PATH}/overview`, {
+        defaultErrorMessage: "Impossible de charger l'aperçu vaccinal.",
+    });
 }

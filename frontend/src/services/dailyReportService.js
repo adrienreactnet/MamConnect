@@ -1,40 +1,25 @@
 // src/services/dailyReportService.js
-import apiFetch from "./apiFetch";
-
-const API_BASE_URL = "http://localhost:5293";
+import { apiRequest } from "./apiClient";
 
 export async function fetchReports() {
-    const response = await apiFetch(`${API_BASE_URL}/reports`);
-
-    if (!response.ok) {
-        throw new Error("Erreur lors du chargement des comptes rendus");
-    }
-
-    return await response.json();
+    return await apiRequest("/reports", {
+        defaultErrorMessage: "Erreur lors du chargement des comptes rendus",
+    });
 }
 
 export async function fetchChildReports(childId) {
-    const response = await apiFetch(`${API_BASE_URL}/reports/children/${childId}`);
-
-    if (!response.ok) {
-        throw new Error("Erreur lors du chargement des comptes rendus");
-    }
-
-    return await response.json();
+    return await apiRequest(`/reports/children/${childId}`, {
+        defaultErrorMessage: "Erreur lors du chargement des comptes rendus",
+    });
 }
 
 export async function createReport(childId, content) {
-    const response = await apiFetch(`${API_BASE_URL}/reports/children/${childId}`, {
+    return await apiRequest(`/reports/children/${childId}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ content }),
+        defaultErrorMessage: "Erreur lors de la création du compte rendu",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la création du compte rendu");
-    }
-
-    return await response.json();
 }

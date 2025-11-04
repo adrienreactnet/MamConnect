@@ -1,58 +1,43 @@
 // src/services/assistantService.js
-import apiFetch from "./apiFetch";
-
-const API_BASE_URL = "http://localhost:5293";
+import { apiRequest } from "./apiClient";
 
 export async function fetchAssistants() {
-    const response = await apiFetch(`${API_BASE_URL}/assistants`);
-
-    if (!response.ok) {
-        throw new Error("Erreur lors du chargement des assistantes");
-    }
-
-    return await response.json();
+    return await apiRequest("/assistants", {
+        defaultErrorMessage: "Erreur lors du chargement des assistantes",
+    });
 }
 
 export async function addAssistant(assistant) {
-    const response = await apiFetch(`${API_BASE_URL}/assistants`, {
+    return await apiRequest("/assistants", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(assistant),
+        defaultErrorMessage: "Erreur lors de l'ajout de l'assistante",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de l'ajout de l'assistante");
-    }
-
-    return await response.json();
 }
 
 export async function updateAssistant(id, payload) {
-    const response = await apiFetch(`${API_BASE_URL}/assistants/${id}`, {
+    await apiRequest(`/assistants/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
+        expectJson: false,
+        defaultErrorMessage: "Erreur lors de la mise à jour de l'assistante",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la mise à jour de l'assistante");
-    }
 
     return true;
 }
 
 export async function deleteAssistant(id) {
-    const response = await apiFetch(`${API_BASE_URL}/assistants/${id}`, {
+    await apiRequest(`/assistants/${id}`, {
         method: "DELETE",
+        expectJson: false,
+        defaultErrorMessage: "Erreur lors de la suppression de l'assistante",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la suppression de l'assistante");
-    }
 
     return true;
 }

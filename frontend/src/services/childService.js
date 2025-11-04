@@ -1,81 +1,56 @@
 // src/services/childService.js
-import apiFetch from "./apiFetch";
-
-const API_BASE_URL = "http://localhost:5293";
+import { apiRequest } from "./apiClient";
 
 export async function fetchChildren() {
-    const response = await apiFetch(`${API_BASE_URL}/children`);
-
-    if (!response.ok) {
-        throw new Error("Erreur lors du chargement des enfants");
-    }
-
-    return await response.json();
+    return await apiRequest("/children", {
+        defaultErrorMessage: "Erreur lors du chargement des enfants",
+    });
 }
 
 export async function fetchChildrenWithRelations() {
-    const response = await apiFetch(`${API_BASE_URL}/children/with-relations`);
-
-    if (!response.ok) {
-        throw new Error("Erreur lors du chargement des enfants avec relations");
-    }
-
-    return await response.json();
+    return await apiRequest("/children/with-relations", {
+        defaultErrorMessage: "Erreur lors du chargement des enfants avec relations",
+    });
 }
 
-
 export async function addChild(child) {
-    const response = await apiFetch(`${API_BASE_URL}/children`, {
+    return await apiRequest("/children", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(child),
-    });
-
-    if (!response.ok) {
-        if (response.status === 409) {
-            let message = "Un enfant portant ce prénom existe déjà.";
-            try {
-                const payload = await response.json();
-                if (payload?.message) {
-                    message = payload.message;
-                }
-            } catch {
-                // Ignorer l'erreur de parsing pour conserver le message par défaut.
+        defaultErrorMessage: "Erreur lors de l'ajout de l'enfant",
+        resolveErrorMessage: (payload, response) => {
+            if (response.status === 409) {
+                return payload?.message ?? "Un enfant portant ce prénom existe déjà.";
             }
-            throw new Error(message);
-        }
-        throw new Error("Erreur lors de l'ajout de l'enfant");
-    }
 
-    return await response.json();
+            return undefined;
+        },
+    });
 }
 
 export async function updateChild(id, payload) {
-    const response = await apiFetch(`${API_BASE_URL}/children/${id}`, {
+    await apiRequest(`/children/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
+        expectJson: false,
+        defaultErrorMessage: "Erreur lors de la mise à jour de l'enfant",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la mise à jour de l'enfant");
-    }
 
     return true;
 }
 
 export async function deleteChild(id) {
-    const response = await apiFetch(`${API_BASE_URL}/children/${id}`, {
+    await apiRequest(`/children/${id}`, {
         method: "DELETE",
+        expectJson: false,
+        defaultErrorMessage: "Erreur lors de la suppression de l'enfant",
     });
-
-    if (!response.ok) {
-        throw new Error("Erreur lors de la suppression de l'enfant");
-    }
 
     return true;
 }
