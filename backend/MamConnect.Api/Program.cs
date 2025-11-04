@@ -1,4 +1,7 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MamConnect.Api.Services;
+using MamConnect.Api.Validators;
 using MamConnect.Application.Assistants.Commands;
 using MamConnect.Application.Assistants.Queries;
 using MamConnect.Application.Auth.Commands;
@@ -30,6 +33,9 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(opts =>
         opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateChildRequestValidator>();
 
 // Brancher EF Core + SQL Server (ici LocalDB)
 builder.Services.AddDbContext<AppDbContext>(opt =>
