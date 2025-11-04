@@ -1,0 +1,32 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Frontend - npm run dev",
+            "cwd": "${workspaceFolder}/frontend",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev"
+            ],
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "pattern": "http://localhost:5173",
+                "uriFormat": "http://localhost:5173",
+                "action": "openExternally"
+            }
+        },
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Ouvrir Chrome sur le front",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/frontend"
+        }
+    ]
+}
