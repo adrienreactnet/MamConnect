@@ -8,6 +8,8 @@ import AddChild from "./AddChild";
 import { fetchChildren, updateChild, deleteChild } from "../services/childService";
 import DataTable from "./DataTable";
 
+const todayIsoDate = new Date().toISOString().split("T")[0];
+
 export default function ChildrenList() {
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +17,7 @@ export default function ChildrenList() {
   const [editingChild, setEditingChild] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [birthDateError, setBirthDateError] = useState("");
   const [open, setOpen] = useState(false);
 
   const loadChildren = async () => {
@@ -22,6 +25,7 @@ export default function ChildrenList() {
     try {
       const data = await fetchChildren();
       setChildren(data);
+      setBirthDateError("");
       setError("");
     } catch (err) {
       setError(err.message);
@@ -38,15 +42,25 @@ export default function ChildrenList() {
     setEditingChild(child.id);
     setFirstName(child.firstName);
     setBirthDate(child.birthDate || "");
+    setBirthDateError("");
   };
 
   const handleUpdate = async (id) => {
+    if (birthDate === "") {
+      setBirthDateError("La date de naissance doit etre renseignee.");
+      return;
+    }
+    if (birthDate > todayIsoDate) {
+      setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
+      return;
+    }
     try {
       await updateChild(id, { firstName, birthDate });
       await loadChildren();
       setEditingChild(null);
       setFirstName("");
       setBirthDate("");
+      setBirthDateError("");
     } catch (err) {
       setError(err.message);
     }
@@ -59,6 +73,15 @@ export default function ChildrenList() {
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  const handleBirthDateChange = (value) => {
+    if (value !== "" && value > todayIsoDate) {
+      setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
+      return;
+    }
+    setBirthDateError("");
+    setBirthDate(value);
   };
 
   return (
@@ -94,7 +117,8 @@ export default function ChildrenList() {
                   <input
                     type="date"
                     value={birthDate}
-                    onChange={(event) => setBirthDate(event.target.value)}
+                    onChange={(event) => handleBirthDateChange(event.target.value)}
+                    max={todayIsoDate}
                   />
                 ) : (
                   child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
@@ -126,6 +150,7 @@ export default function ChildrenList() {
           emptyMessage="Aucun enfant trouvé."
         />
       )}
+      {birthDateError && <p style={{ color: "red" }}>{birthDateError}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <Dialog open={open} onClose={() => setOpen(false)}>

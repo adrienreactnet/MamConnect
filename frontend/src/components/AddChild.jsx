@@ -2,26 +2,49 @@
 import React, { useState } from "react";
 import { addChild } from "../services/childService";
 
+const todayIsoDate = new Date().toISOString().split("T")[0];
+
 export default function AddChild({ onChildAdded }) {
     const [firstName, setFirstName] = useState("");
     const [birthDate, setBirthDate] = useState("");
+    const [birthDateError, setBirthDateError] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleBirthDateChange = (event) => {
+        const selectedDate = event.target.value;
+        if (selectedDate !== "" && selectedDate > todayIsoDate) {
+            setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
+            return;
+        }
+        setBirthDateError("");
+        setBirthDate(selectedDate);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         setError("");
         setSuccess("");
+        setBirthDateError("");
+        const trimmedFirstName = firstName.trim();
+        if (trimmedFirstName.length === 0) {
+            setError("Le prǸnom est requis.");
+            return;
+        }
+        if (birthDate === "") {
+            setBirthDateError("La date de naissance doit etre renseignee.");
+            return;
+        }
+        if (birthDate > todayIsoDate) {
+            setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
+            return;
+        }
         try {
-            const trimmedFirstName = firstName.trim();
-            if (trimmedFirstName.length === 0) {
-                setError("Le prénom est requis.");
-                return;
-            }
             await addChild({ firstName: trimmedFirstName, birthDate });
             setFirstName("");
             setBirthDate("");
-            setSuccess("Enfant ajouté !");
+            setBirthDateError("");
+            setSuccess("Enfant ajoutǸ !");
             if (onChildAdded) {
                 onChildAdded();
             }
@@ -37,14 +60,16 @@ export default function AddChild({ onChildAdded }) {
                 <input
                     type="text"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Prénom"
+                    onChange={(event) => setFirstName(event.target.value)}
+                    placeholder="PrǸnom"
                 />
                 <input
                     type="date"
                     value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
+                    onChange={handleBirthDateChange}
+                    max={todayIsoDate}
                 />
+                {birthDateError && <p style={{ color: "red" }}>{birthDateError}</p>}
                 <button type="submit">Ajouter</button>
             </form>
             {error && <p style={{ color: "red" }}>{error}</p>}

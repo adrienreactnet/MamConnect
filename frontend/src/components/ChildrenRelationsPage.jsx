@@ -15,6 +15,8 @@ import {
 import { addChild, fetchChildrenWithRelations } from "../services/childService";
 import DataTable from "./DataTable";
 
+const todayIsoDate = new Date().toISOString().split("T")[0];
+
 export default function ChildrenRelationsPage() {
     const [relations, setRelations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -22,6 +24,7 @@ export default function ChildrenRelationsPage() {
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [firstName, setFirstName] = useState("");
     const [birthDate, setBirthDate] = useState("");
+    const [birthDateError, setBirthDateError] = useState("");
     const [addError, setAddError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -46,12 +49,22 @@ export default function ChildrenRelationsPage() {
         setIsAddDialogOpen(false);
         setFirstName("");
         setBirthDate("");
+        setBirthDateError("");
         setAddError("");
     };
 
     const handleAddChild = async (event) => {
         event.preventDefault();
         setAddError("");
+        if (birthDate === "") {
+            setBirthDateError("La date de naissance doit etre renseignee.");
+            return;
+        }
+        if (birthDate > todayIsoDate) {
+            setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
+            return;
+        }
+        setBirthDateError("");
         setIsSubmitting(true);
 
         try {
@@ -63,6 +76,16 @@ export default function ChildrenRelationsPage() {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleBirthDateChange = (event) => {
+        const value = event.target.value;
+        if (value !== "" && value > todayIsoDate) {
+            setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
+            return;
+        }
+        setBirthDateError("");
+        setBirthDate(value);
     };
 
     const columns = useMemo(
@@ -140,10 +163,13 @@ export default function ChildrenRelationsPage() {
                             id="child-birth-date"
                             label="Date de naissance"
                             type="date"
+                            error={birthDateError !== ""}
+                            helperText={birthDateError}
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             value={birthDate}
-                            onChange={(event) => setBirthDate(event.target.value)}
+                            onChange={handleBirthDateChange}
+                            inputProps={{ max: todayIsoDate }}
                             required
                         />
                     </DialogContent>
