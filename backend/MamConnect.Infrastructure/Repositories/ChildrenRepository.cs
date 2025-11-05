@@ -21,7 +21,8 @@ public class ChildrenRepository : IChildrenRepository
     {
         List<Child> children = await _dbContext.Children
             .Where(child => child.AssistantId == assistantId)
-            .OrderBy(child => child.FirstName)
+            .OrderBy(child => child.LastName)
+            .ThenBy(child => child.FirstName)
             .ToListAsync();
         return children;
     }
@@ -30,7 +31,8 @@ public class ChildrenRepository : IChildrenRepository
     {
         List<Child> children = await _dbContext.Children
             .Where(child => child.Parents.Any(parent => parent.Id == parentId))
-            .OrderBy(child => child.FirstName)
+            .OrderBy(child => child.LastName)
+            .ThenBy(child => child.FirstName)
             .ToListAsync();
         return children;
     }
@@ -38,7 +40,8 @@ public class ChildrenRepository : IChildrenRepository
     public async Task<IReadOnlyCollection<Child>> GetAllChildrenAsync()
     {
         List<Child> children = await _dbContext.Children
-            .OrderBy(child => child.FirstName)
+            .OrderBy(child => child.LastName)
+            .ThenBy(child => child.FirstName)
             .ToListAsync();
         return children;
     }
@@ -48,7 +51,8 @@ public class ChildrenRepository : IChildrenRepository
         List<Child> children = await _dbContext.Children
             .Include(child => child.Assistant)
             .Include(child => child.Parents)
-            .OrderBy(child => child.FirstName)
+            .OrderBy(child => child.LastName)
+            .ThenBy(child => child.FirstName)
             .ToListAsync();
         return children;
     }
@@ -57,16 +61,18 @@ public class ChildrenRepository : IChildrenRepository
     {
         List<Child> children = await _dbContext.Children
             .Where(child => childIds.Contains(child.Id))
-            .OrderBy(child => child.FirstName)
+            .OrderBy(child => child.LastName)
+            .ThenBy(child => child.FirstName)
             .ToListAsync();
         return children;
     }
 
-    public async Task<bool> ExistsWithFirstNameAsync(string firstName)
+    public async Task<bool> ExistsWithFullNameAsync(string firstName, string lastName)
     {
         string trimmedFirstName = firstName.Trim();
+        string trimmedLastName = lastName.Trim();
         bool exists = await _dbContext.Children
-            .AnyAsync(child => child.FirstName == trimmedFirstName);
+            .AnyAsync(child => child.FirstName == trimmedFirstName && child.LastName == trimmedLastName);
         return exists;
     }
 

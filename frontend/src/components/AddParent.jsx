@@ -67,7 +67,7 @@ export default function AddParent({ onParentAdded }) {
                                 checked={selectedChildren.includes(child.id)}
                                 onChange={() => toggleChild(child.id)}
                             />
-                            {child.firstName}
+                            {`${child.firstName ?? ""} ${child.lastName ?? ""}`.trim()}
                         </label>
                     ))}
                 </div>

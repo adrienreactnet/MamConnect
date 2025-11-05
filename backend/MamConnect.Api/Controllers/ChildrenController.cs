@@ -73,9 +73,9 @@ public class ChildrenController : ControllerBase
     {
         Child child = request.ToDomainEntity();
         CreateChildCommand.Result result = await _createChildCommand.ExecuteAsync(child, cancellationToken);
-        if (result.Status == CreateChildCommand.ResultStatus.DuplicateFirstName)
+        if (result.Status == CreateChildCommand.ResultStatus.DuplicateFullName)
         {
-            return Conflict(new { message = "Un enfant portant ce prenom existe deja." });
+            return Conflict(new { message = "Un enfant portant ce nom existe deja." });
         }
 
         Child? created = result.Child;

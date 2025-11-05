@@ -11,6 +11,7 @@ public static class ChildMappingExtensions
         ChildResponseDto dto = new ChildResponseDto(
             child.Id,
             child.FirstName,
+            child.LastName,
             child.BirthDate,
             child.AssistantId);
         return dto;
@@ -21,6 +22,7 @@ public static class ChildMappingExtensions
         Child child = new Child
         {
             FirstName = request.FirstName,
+            LastName = request.LastName,
             BirthDate = request.BirthDate ?? default,
             AssistantId = request.AssistantId
         };
@@ -31,6 +33,7 @@ public static class ChildMappingExtensions
     {
         UpdateChildCommand.Input input = new UpdateChildCommand.Input(
             request.FirstName,
+            request.LastName,
             request.BirthDate,
             request.AssistantId);
         return input;

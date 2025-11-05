@@ -6,6 +6,7 @@ const todayIsoDate = new Date().toISOString().split("T")[0];
 
 export default function AddChild({ onChildAdded }) {
     const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [birthDate, setBirthDate] = useState("");
     const [birthDateError, setBirthDateError] = useState("");
     const [error, setError] = useState("");
@@ -17,6 +18,7 @@ export default function AddChild({ onChildAdded }) {
             setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
             return;
         }
+
         setBirthDateError("");
         setBirthDate(selectedDate);
     };
@@ -26,25 +28,36 @@ export default function AddChild({ onChildAdded }) {
         setError("");
         setSuccess("");
         setBirthDateError("");
+
         const trimmedFirstName = firstName.trim();
+        const trimmedLastName = lastName.trim();
         if (trimmedFirstName.length === 0) {
-            setError("Le prénom est requis.");
+            setError("Le prenom est requis.");
             return;
         }
+
+        if (trimmedLastName.length === 0) {
+            setError("Le nom est requis.");
+            return;
+        }
+
         if (birthDate === "") {
             setBirthDateError("La date de naissance doit etre renseignee.");
             return;
         }
+
         if (birthDate > todayIsoDate) {
             setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
             return;
         }
+
         try {
-            await addChild({ firstName: trimmedFirstName, birthDate });
+            await addChild({ firstName: trimmedFirstName, lastName: trimmedLastName, birthDate });
             setFirstName("");
+            setLastName("");
             setBirthDate("");
             setBirthDateError("");
-            setSuccess("Enfant ajoutǸ !");
+            setSuccess("Enfant ajoute !");
             if (onChildAdded) {
                 onChildAdded();
             }
@@ -61,7 +74,13 @@ export default function AddChild({ onChildAdded }) {
                     type="text"
                     value={firstName}
                     onChange={(event) => setFirstName(event.target.value)}
-                    placeholder="Prénom"
+                    placeholder="Prenom"
+                />
+                <input
+                    type="text"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    placeholder="Nom"
                 />
                 <input
                     type="date"

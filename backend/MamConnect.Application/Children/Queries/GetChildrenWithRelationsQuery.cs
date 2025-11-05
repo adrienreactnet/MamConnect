@@ -26,6 +26,7 @@ public class GetChildrenWithRelationsQuery
         List<ChildRelationsDto> result = children
             .Select(child => new ChildRelationsDto(
                 child.FirstName,
+                child.LastName,
                 child.Assistant != null ? child.Assistant.FirstName + " " + child.Assistant.LastName : null,
                 child.Parents.Select(parent => parent.FirstName + " " + parent.LastName).ToList()
             ))

@@ -1,4 +1,4 @@
-using MamConnect.Domain.Entities;
+ï»¿using MamConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -93,25 +93,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         Child[] childSeedData = new Child[]
         {
-            new Child { Id = 1, FirstName = "Liam", BirthDate = new DateOnly(2019, 5, 21), AssistantId = 2 },
-            new Child { Id = 2, FirstName = "Emma", BirthDate = new DateOnly(2020, 3, 14), AssistantId = 2 },
-            new Child { Id = 3, FirstName = "Noah", BirthDate = new DateOnly(2020, 11, 2), AssistantId = 2 },
-            new Child { Id = 4, FirstName = "Olivia", BirthDate = new DateOnly(2018, 7, 9), AssistantId = 3 },
-            new Child { Id = 5, FirstName = "Ava", BirthDate = new DateOnly(2019, 1, 30), AssistantId = 3 },
-            new Child { Id = 6, FirstName = "Ethan", BirthDate = new DateOnly(2021, 4, 18), AssistantId = 3 },
-            new Child { Id = 7, FirstName = "Mia", BirthDate = new DateOnly(2020, 9, 5), AssistantId = 3 },
-            new Child { Id = 8, FirstName = "Lucas", BirthDate = new DateOnly(2018, 12, 12), AssistantId = 4 },
-            new Child { Id = 9, FirstName = "Sophia", BirthDate = new DateOnly(2019, 6, 22), AssistantId = 4 },
-            new Child { Id = 10, FirstName = "Mason", BirthDate = new DateOnly(2020, 2, 11), AssistantId = 4 },
-            new Child { Id = 11, FirstName = "Isabella", BirthDate = new DateOnly(2018, 10, 3), AssistantId = 4 },
-            new Child { Id = 12, FirstName = "Harper", BirthDate = new DateOnly(2021, 1, 27), AssistantId = 4 },
-            new Child { Id = 13, FirstName = "James", BirthDate = new DateOnly(2019, 8, 15), AssistantId = 5 },
-            new Child { Id = 14, FirstName = "Amelia", BirthDate = new DateOnly(2020, 5, 16), AssistantId = 5 },
-            new Child { Id = 15, FirstName = "Benjamin", BirthDate = new DateOnly(2018, 4, 7), AssistantId = 5 },
-            new Child { Id = 16, FirstName = "Charlotte", BirthDate = new DateOnly(2019, 12, 1), AssistantId = 6 },
-            new Child { Id = 17, FirstName = "Elijah", BirthDate = new DateOnly(2020, 7, 19), AssistantId = 6 },
-            new Child { Id = 18, FirstName = "Evelyn", BirthDate = new DateOnly(2021, 9, 23), AssistantId = 6 },
-            new Child { Id = 19, FirstName = "Henry", BirthDate = new DateOnly(2018, 3, 13), AssistantId = 6 }
+            new Child { Id = 1, FirstName = "Liam", LastName = "Durand", BirthDate = new DateOnly(2019, 5, 21), AssistantId = 2 },
+            new Child { Id = 2, FirstName = "Emma", LastName = "Durand", BirthDate = new DateOnly(2020, 3, 14), AssistantId = 2 },
+            new Child { Id = 3, FirstName = "Noah", LastName = "Martin", BirthDate = new DateOnly(2020, 11, 2), AssistantId = 2 },
+            new Child { Id = 4, FirstName = "Olivia", LastName = "Lambert", BirthDate = new DateOnly(2018, 7, 9), AssistantId = 3 },
+            new Child { Id = 5, FirstName = "Ava", LastName = "Lambert", BirthDate = new DateOnly(2019, 1, 30), AssistantId = 3 },
+            new Child { Id = 6, FirstName = "Ethan", LastName = "Bernard", BirthDate = new DateOnly(2021, 4, 18), AssistantId = 3 },
+            new Child { Id = 7, FirstName = "Mia", LastName = "Lefevre", BirthDate = new DateOnly(2020, 9, 5), AssistantId = 3 },
+            new Child { Id = 8, FirstName = "Lucas", LastName = "Petit", BirthDate = new DateOnly(2018, 12, 12), AssistantId = 4 },
+            new Child { Id = 9, FirstName = "Sophia", LastName = "Petit", BirthDate = new DateOnly(2019, 6, 22), AssistantId = 4 },
+            new Child { Id = 10, FirstName = "Mason", LastName = "Moreau", BirthDate = new DateOnly(2020, 2, 11), AssistantId = 4 },
+            new Child { Id = 11, FirstName = "Isabella", LastName = "Moreau", BirthDate = new DateOnly(2018, 10, 3), AssistantId = 4 },
+            new Child { Id = 12, FirstName = "Harper", LastName = "Garnier", BirthDate = new DateOnly(2021, 1, 27), AssistantId = 4 },
+            new Child { Id = 13, FirstName = "James", LastName = "Robert", BirthDate = new DateOnly(2019, 8, 15), AssistantId = 5 },
+            new Child { Id = 14, FirstName = "Amelia", LastName = "Robert", BirthDate = new DateOnly(2020, 5, 16), AssistantId = 5 },
+            new Child { Id = 15, FirstName = "Benjamin", LastName = "Caron", BirthDate = new DateOnly(2018, 4, 7), AssistantId = 5 },
+            new Child { Id = 16, FirstName = "Charlotte", LastName = "Marchand", BirthDate = new DateOnly(2019, 12, 1), AssistantId = 6 },
+            new Child { Id = 17, FirstName = "Elijah", LastName = "Marchand", BirthDate = new DateOnly(2020, 7, 19), AssistantId = 6 },
+            new Child { Id = 18, FirstName = "Evelyn", LastName = "Dupont", BirthDate = new DateOnly(2021, 9, 23), AssistantId = 6 },
+            new Child { Id = 19, FirstName = "Henry", LastName = "Renard", BirthDate = new DateOnly(2018, 3, 13), AssistantId = 6 }
         };
 
         modelBuilder.Entity<Child>().HasData(childSeedData);
@@ -141,19 +141,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             new Vaccine { Id = 4, Name = "Hib", AgeInMonths = 2 },
             new Vaccine { Id = 5, Name = "Hib", AgeInMonths = 4 },
             new Vaccine { Id = 6, Name = "Hib", AgeInMonths = 11 },
-            new Vaccine { Id = 7, Name = "Hépatite B", AgeInMonths = 2 },
-            new Vaccine { Id = 8, Name = "Hépatite B", AgeInMonths = 4 },
-            new Vaccine { Id = 9, Name = "Hépatite B", AgeInMonths = 11 },
+            new Vaccine { Id = 7, Name = "HÃ©patite B", AgeInMonths = 2 },
+            new Vaccine { Id = 8, Name = "HÃ©patite B", AgeInMonths = 4 },
+            new Vaccine { Id = 9, Name = "HÃ©patite B", AgeInMonths = 11 },
             new Vaccine { Id = 10, Name = "Pneumocoque", AgeInMonths = 2 },
             new Vaccine { Id = 11, Name = "Pneumocoque", AgeInMonths = 4 },
             new Vaccine { Id = 12, Name = "Pneumocoque", AgeInMonths = 11 },
             new Vaccine { Id = 13, Name = "ROR", AgeInMonths = 12 },
             new Vaccine { Id = 14, Name = "ROR", AgeInMonths = 16 },
-            new Vaccine { Id = 15, Name = "Méningocoques ACWY", AgeInMonths = 6 },
-            new Vaccine { Id = 16, Name = "Méningocoques ACWY", AgeInMonths = 12 },
-            new Vaccine { Id = 17, Name = "Méningocoque B", AgeInMonths = 3 },
-            new Vaccine { Id = 18, Name = "Méningocoque B", AgeInMonths = 5 },
-            new Vaccine { Id = 19, Name = "Méningocoque B", AgeInMonths = 12 }
+            new Vaccine { Id = 15, Name = "MÃ©ningocoques ACWY", AgeInMonths = 6 },
+            new Vaccine { Id = 16, Name = "MÃ©ningocoques ACWY", AgeInMonths = 12 },
+            new Vaccine { Id = 17, Name = "MÃ©ningocoque B", AgeInMonths = 3 },
+            new Vaccine { Id = 18, Name = "MÃ©ningocoque B", AgeInMonths = 5 },
+            new Vaccine { Id = 19, Name = "MÃ©ningocoque B", AgeInMonths = 12 }
         };
 
         modelBuilder.Entity<Vaccine>().HasData(vaccineSeedData);
@@ -172,7 +172,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 Status = VaccineStatus.Completed,
                 ScheduledDate = firstDoseDate,
                 AdministrationDate = firstDoseDate,
-                Comments = "Dose initiale administrée conformément au calendrier.",
+                Comments = "Dose initiale administrÃ©e conformÃ©ment au calendrier.",
                 CreatedAt = defaultCreatedAt,
                 UpdatedAt = defaultCreatedAt
             });
@@ -188,7 +188,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 Status = isSecondDoseScheduled ? VaccineStatus.ToSchedule : VaccineStatus.Completed,
                 ScheduledDate = secondDoseDate,
                 AdministrationDate = isSecondDoseScheduled ? null : secondDoseDate,
-                Comments = isSecondDoseScheduled ? "Dose programmée avec la famille." : "Dose réalisée lors de la visite mensuelle.",
+                Comments = isSecondDoseScheduled ? "Dose programmÃ©e avec la famille." : "Dose rÃ©alisÃ©e lors de la visite mensuelle.",
                 CreatedAt = defaultCreatedAt,
                 UpdatedAt = isSecondDoseScheduled ? null : defaultCreatedAt
             });
@@ -204,7 +204,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 Status = isBoosterOverdue ? VaccineStatus.Overdue : VaccineStatus.ToSchedule,
                 ScheduledDate = boosterDoseDate,
                 AdministrationDate = null,
-                Comments = isBoosterOverdue ? "Relance nécessaire auprès des parents." : "Rappel prévu lors de la prochaine visite médicale.",
+                Comments = isBoosterOverdue ? "Relance nÃ©cessaire auprÃ¨s des parents." : "Rappel prÃ©vu lors de la prochaine visite mÃ©dicale.",
                 CreatedAt = defaultCreatedAt,
                 UpdatedAt = isBoosterOverdue ? new DateTime(2024, 3, 15) : null
             });

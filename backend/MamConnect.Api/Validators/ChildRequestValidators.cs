@@ -14,6 +14,12 @@ public sealed class CreateChildRequestValidator : AbstractValidator<CreateChildR
             .MaximumLength(100)
             .WithMessage("Le prenom ne peut pas depasser 100 caracteres.");
 
+        RuleFor(request => request.LastName)
+            .NotEmpty()
+            .WithMessage("Le nom est requis.")
+            .MaximumLength(100)
+            .WithMessage("Le nom ne peut pas depasser 100 caracteres.");
+
         RuleFor(request => request.BirthDate)
             .NotNull()
             .WithMessage("La date de naissance est requise.")
@@ -36,6 +42,12 @@ public sealed class UpdateChildRequestValidator : AbstractValidator<UpdateChildR
             .WithMessage("Le prenom est requis.")
             .MaximumLength(100)
             .WithMessage("Le prenom ne peut pas depasser 100 caracteres.");
+
+        RuleFor(request => request.LastName)
+            .NotEmpty()
+            .WithMessage("Le nom est requis.")
+            .MaximumLength(100)
+            .WithMessage("Le nom ne peut pas depasser 100 caracteres.");
 
         RuleFor(request => request.BirthDate)
             .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today))

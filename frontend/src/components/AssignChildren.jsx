@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import { fetchAssistants } from "../services/assistantService";
 import { fetchChildren, updateChild } from "../services/childService";
@@ -19,9 +19,11 @@ function ChildItem({ child }) {
             : undefined,
     };
 
+    const childName = `${child.firstName ?? ""} ${child.lastName ?? ""}`.trim();
+
     return (
         <li ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            {child.firstName}
+            {childName}
         </li>
     );
 }
@@ -101,7 +103,7 @@ export default function AssignChildren() {
                 <div style={{ display: "flex", gap: "2rem" }}>
                     <DroppableColumn
                         id="unassigned"
-                        title="Non assignés"
+                        title="Non assignes"
                         childrenNodes={children
                             .filter((c) => !c.assistantId)
                             .map(renderChild)}
@@ -121,3 +123,6 @@ export default function AssignChildren() {
         </DndContext>
     );
 }
+
+
+

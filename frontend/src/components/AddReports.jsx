@@ -18,12 +18,15 @@ export default function AddReports() {
     return (
         <div>
             <h2>Rapports quotidiens</h2>
-            {children.map((child) => (
-                <div key={child.id}>
-                    <h3>{child.firstName}</h3>
-                    <DailyReportForm childId={child.id} />
-                </div>
-            ))}
+            {children.map((child) => {
+                const childName = `${child.firstName ?? ""} ${child.lastName ?? ""}`.trim();
+                return (
+                    <div key={child.id}>
+                        <h3>{childName}</h3>
+                        <DailyReportForm childId={child.id} />
+                    </div>
+                );
+            })}
         </div>
     );
 }

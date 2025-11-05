@@ -26,13 +26,16 @@ public class CreateChildCommand
     public async Task<Result> ExecuteAsync(Child child, CancellationToken cancellationToken)
     {
         string initialFirstName = child.FirstName ?? string.Empty;
+        string initialLastName = child.LastName ?? string.Empty;
         string trimmedFirstName = initialFirstName.Trim();
+        string trimmedLastName = initialLastName.Trim();
         child.FirstName = trimmedFirstName;
+        child.LastName = trimmedLastName;
 
-        bool exists = await _childrenRepository.ExistsWithFirstNameAsync(trimmedFirstName);
+        bool exists = await _childrenRepository.ExistsWithFullNameAsync(trimmedFirstName, trimmedLastName);
         if (exists)
         {
-            Result duplicateResult = new Result(ResultStatus.DuplicateFirstName, null);
+            Result duplicateResult = new Result(ResultStatus.DuplicateFullName, null);
             return duplicateResult;
         }
 
@@ -46,7 +49,7 @@ public class CreateChildCommand
     public enum ResultStatus
     {
         Success,
-        DuplicateFirstName
+        DuplicateFullName
     }
 
     public sealed class Result

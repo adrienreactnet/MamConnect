@@ -23,6 +23,7 @@ export default function ChildrenRelationsPage() {
     const [error, setError] = useState("");
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [birthDate, setBirthDate] = useState("");
     const [birthDateError, setBirthDateError] = useState("");
     const [addError, setAddError] = useState("");
@@ -35,7 +36,7 @@ export default function ChildrenRelationsPage() {
             setRelations(data);
             setError("");
         } catch (err) {
-            setError(err.message || "Erreur lors du chargement des données.");
+            setError(err.message || "Erreur lors du chargement des donnees.");
         } finally {
             setLoading(false);
         }
@@ -48,6 +49,7 @@ export default function ChildrenRelationsPage() {
     const handleDialogClose = () => {
         setIsAddDialogOpen(false);
         setFirstName("");
+        setLastName("");
         setBirthDate("");
         setBirthDateError("");
         setAddError("");
@@ -56,19 +58,34 @@ export default function ChildrenRelationsPage() {
     const handleAddChild = async (event) => {
         event.preventDefault();
         setAddError("");
+
+        const trimmedFirstName = firstName.trim();
+        const trimmedLastName = lastName.trim();
+        if (trimmedFirstName.length === 0) {
+            setAddError("Le prenom est requis.");
+            return;
+        }
+
+        if (trimmedLastName.length === 0) {
+            setAddError("Le nom est requis.");
+            return;
+        }
+
         if (birthDate === "") {
             setBirthDateError("La date de naissance doit etre renseignee.");
             return;
         }
+
         if (birthDate > todayIsoDate) {
             setBirthDateError("La date de naissance ne peut pas depasser la date du jour.");
             return;
         }
+
         setBirthDateError("");
         setIsSubmitting(true);
 
         try {
-            await addChild({ firstName, birthDate });
+            await addChild({ firstName: trimmedFirstName, lastName: trimmedLastName, birthDate });
             handleDialogClose();
             await loadRelations();
         } catch (err) {
@@ -102,9 +119,10 @@ export default function ChildrenRelationsPage() {
         () =>
             relations.map((relation, index) => {
                 const parents = relation.parentNames ?? [];
+                const fullName = `${relation.childFirstName} ${relation.childLastName}`.trim();
                 return {
-                    id: `${relation.childFirstName}-${index}`,
-                    child: relation.childFirstName,
+                    id: `${relation.childFirstName}-${relation.childLastName}-${index}`,
+                    child: fullName,
                     assistant: relation.assistantName ?? "",
                     parent1: parents[0] ?? "",
                     parent2: parents[1] ?? "",
@@ -136,7 +154,7 @@ export default function ChildrenRelationsPage() {
                 </Alert>
             )}
 
-            <DataTable columns={columns} rows={rows} emptyMessage="Aucune relation trouvée." />
+            <DataTable columns={columns} rows={rows} emptyMessage="Aucune relation trouvee." />
 
             <Dialog open={isAddDialogOpen} onClose={handleDialogClose} fullWidth maxWidth="sm">
                 <form onSubmit={handleAddChild} noValidate>
@@ -151,11 +169,21 @@ export default function ChildrenRelationsPage() {
                             autoFocus
                             margin="dense"
                             id="child-first-name"
-                            label="Prénom"
+                            label="Prenom"
                             type="text"
                             fullWidth
                             value={firstName}
                             onChange={(event) => setFirstName(event.target.value)}
+                            required
+                        />
+                        <TextField
+                            margin="dense"
+                            id="child-last-name"
+                            label="Nom"
+                            type="text"
+                            fullWidth
+                            value={lastName}
+                            onChange={(event) => setLastName(event.target.value)}
                             required
                         />
                         <TextField
@@ -178,7 +206,12 @@ export default function ChildrenRelationsPage() {
                         <Button
                             type="submit"
                             variant="contained"
-                            disabled={isSubmitting || firstName.trim() === "" || birthDate === ""}
+                            disabled={
+                                isSubmitting ||
+                                firstName.trim() === "" ||
+                                lastName.trim() === "" ||
+                                birthDate === ""
+                            }
                         >
                             {isSubmitting ? "Ajout..." : "Ajouter"}
                         </Button>

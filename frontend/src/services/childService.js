@@ -1,4 +1,4 @@
-// src/services/childService.js
+﻿// src/services/childService.js
 import { apiRequest } from "./apiClient";
 
 export async function fetchChildren() {
@@ -23,7 +23,7 @@ export async function addChild(child) {
         defaultErrorMessage: "Erreur lors de l'ajout de l'enfant",
         resolveErrorMessage: (payload, response) => {
             if (response.status === 409) {
-                return payload?.message ?? "Un enfant portant ce prénom existe déjà.";
+                return payload?.message ?? "Un enfant portant ce nom existe deja.";
             }
 
             return undefined;
@@ -39,7 +39,7 @@ export async function updateChild(id, payload) {
         },
         body: JSON.stringify(payload),
         expectJson: false,
-        defaultErrorMessage: "Erreur lors de la mise à jour de l'enfant",
+        defaultErrorMessage: "Erreur lors de la mise Ã  jour de l'enfant",
     });
 
     return true;
@@ -54,3 +54,5 @@ export async function deleteChild(id) {
 
     return true;
 }
+
+

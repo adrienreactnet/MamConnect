@@ -12,11 +12,12 @@ public interface IChildrenRepository
     Task<IReadOnlyCollection<Child>> GetChildrenWithRelationsAsync();
     Task<IReadOnlyCollection<Child>> GetChildrenByIdsAsync(IReadOnlyCollection<int> childIds);
     /// <summary>
-    /// Determines whether a child already exists with the provided first name.
+    /// Determines whether a child already exists with the provided full name.
     /// </summary>
     /// <param name="firstName">The first name to check.</param>
-    /// <returns><c>true</c> when a child already has the provided first name; otherwise <c>false</c>.</returns>
-    Task<bool> ExistsWithFirstNameAsync(string firstName);
+    /// <param name="lastName">The last name to check.</param>
+    /// <returns><c>true</c> when a child already has the provided full name; otherwise <c>false</c>.</returns>
+    Task<bool> ExistsWithFullNameAsync(string firstName, string lastName);
     Task<Child?> FindByIdAsync(int id);
     Task<Child?> GetChildWithParentsAsync(int id);
     Task AddAsync(Child child);

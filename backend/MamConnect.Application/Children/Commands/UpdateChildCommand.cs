@@ -28,7 +28,10 @@ public class UpdateChildCommand
             return false;
         }
 
-        child.FirstName = input.FirstName;
+        string trimmedFirstName = input.FirstName?.Trim() ?? string.Empty;
+        string trimmedLastName = input.LastName?.Trim() ?? string.Empty;
+        child.FirstName = trimmedFirstName;
+        child.LastName = trimmedLastName;
         if (input.BirthDate.HasValue)
         {
             child.BirthDate = input.BirthDate.Value;
@@ -45,16 +48,20 @@ public class UpdateChildCommand
         /// Initializes a new instance of the <see cref="Input"/> class.
         /// </summary>
         /// <param name="firstName">The updated first name.</param>
+        /// <param name="lastName">The updated last name.</param>
         /// <param name="birthDate">The updated birth date.</param>
         /// <param name="assistantId">The updated assistant identifier.</param>
-        public Input(string firstName, DateOnly? birthDate, int? assistantId)
+        public Input(string firstName, string lastName, DateOnly? birthDate, int? assistantId)
         {
             FirstName = firstName;
+            LastName = lastName;
             BirthDate = birthDate;
             AssistantId = assistantId;
         }
 
         public string FirstName { get; }
+
+        public string LastName { get; }
 
         public DateOnly? BirthDate { get; }
 
