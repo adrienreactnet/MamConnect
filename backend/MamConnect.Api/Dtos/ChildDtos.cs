@@ -11,6 +11,8 @@ public sealed class CreateChildRequestDto
     public DateOnly? BirthDate { get; set; }
 
     public int? AssistantId { get; set; }
+
+    public string? Allergies { get; set; }
 }
 
 public sealed class UpdateChildRequestDto
@@ -22,17 +24,20 @@ public sealed class UpdateChildRequestDto
     public DateOnly? BirthDate { get; set; }
 
     public int? AssistantId { get; set; }
+
+    public string? Allergies { get; set; }
 }
 
 public sealed class ChildResponseDto
 {
-    public ChildResponseDto(int id, string firstName, string lastName, DateOnly? birthDate, int? assistantId)
+    public ChildResponseDto(int id, string firstName, string lastName, DateOnly? birthDate, int? assistantId, string? allergies)
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
         BirthDate = birthDate;
         AssistantId = assistantId;
+        Allergies = allergies;
     }
 
     public int Id { get; }
@@ -44,4 +49,6 @@ public sealed class ChildResponseDto
     public DateOnly? BirthDate { get; }
 
     public int? AssistantId { get; }
+
+    public string? Allergies { get; }
 }

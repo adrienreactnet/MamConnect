@@ -38,6 +38,8 @@ public class UpdateChildCommand
         }
 
         child.AssistantId = input.AssistantId;
+        string? trimmedAllergies = input.Allergies?.Trim();
+        child.Allergies = string.IsNullOrWhiteSpace(trimmedAllergies) ? null : trimmedAllergies;
         await _childrenRepository.SaveChangesAsync();
         return true;
     }
@@ -51,12 +53,14 @@ public class UpdateChildCommand
         /// <param name="lastName">The updated last name.</param>
         /// <param name="birthDate">The updated birth date.</param>
         /// <param name="assistantId">The updated assistant identifier.</param>
-        public Input(string firstName, string lastName, DateOnly? birthDate, int? assistantId)
+        /// <param name="allergies">The updated allergy description.</param>
+        public Input(string firstName, string lastName, DateOnly? birthDate, int? assistantId, string? allergies)
         {
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
             AssistantId = assistantId;
+            Allergies = allergies;
         }
 
         public string FirstName { get; }
@@ -66,5 +70,7 @@ public class UpdateChildCommand
         public DateOnly? BirthDate { get; }
 
         public int? AssistantId { get; }
+
+        public string? Allergies { get; }
     }
 }

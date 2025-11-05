@@ -11,6 +11,7 @@ export default function AddChild({ onChildAdded }) {
     const [birthDateError, setBirthDateError] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [allergies, setAllergies] = useState("");
 
     const handleBirthDateChange = (event) => {
         const selectedDate = event.target.value;
@@ -31,6 +32,7 @@ export default function AddChild({ onChildAdded }) {
 
         const trimmedFirstName = firstName.trim();
         const trimmedLastName = lastName.trim();
+        const trimmedAllergies = allergies.trim();
         if (trimmedFirstName.length === 0) {
             setError("Le prenom est requis.");
             return;
@@ -52,11 +54,17 @@ export default function AddChild({ onChildAdded }) {
         }
 
         try {
-            await addChild({ firstName: trimmedFirstName, lastName: trimmedLastName, birthDate });
+            await addChild({
+                firstName: trimmedFirstName,
+                lastName: trimmedLastName,
+                birthDate,
+                allergies: trimmedAllergies.length > 0 ? trimmedAllergies : null,
+            });
             setFirstName("");
             setLastName("");
             setBirthDate("");
             setBirthDateError("");
+            setAllergies("");
             setSuccess("Enfant ajoute !");
             if (onChildAdded) {
                 onChildAdded();
@@ -87,6 +95,12 @@ export default function AddChild({ onChildAdded }) {
                     value={birthDate}
                     onChange={handleBirthDateChange}
                     max={todayIsoDate}
+                />
+                <input
+                    type="text"
+                    value={allergies}
+                    onChange={(event) => setAllergies(event.target.value)}
+                    placeholder="Allergies (optionnel)"
                 />
                 {birthDateError && <p style={{ color: "red" }}>{birthDateError}</p>}
                 <button type="submit">Ajouter</button>

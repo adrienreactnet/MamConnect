@@ -20,6 +20,7 @@ export default function ChildrenList() {
     const [birthDate, setBirthDate] = useState("");
     const [birthDateError, setBirthDateError] = useState("");
     const [open, setOpen] = useState(false);
+    const [allergies, setAllergies] = useState("");
 
     const loadChildren = async () => {
         setLoading(true);
@@ -46,6 +47,7 @@ export default function ChildrenList() {
         setBirthDate(child.birthDate || "");
         setBirthDateError("");
         setError("");
+        setAllergies(child.allergies ?? "");
     };
 
     const resetEditingState = () => {
@@ -55,11 +57,13 @@ export default function ChildrenList() {
         setBirthDate("");
         setBirthDateError("");
         setError("");
+        setAllergies("");
     };
 
     const handleUpdate = async (id) => {
         const trimmedFirstName = firstName.trim();
         const trimmedLastName = lastName.trim();
+        const trimmedAllergies = allergies.trim();
         if (trimmedFirstName.length === 0) {
             setError("Le prenom est requis.");
             return;
@@ -88,6 +92,7 @@ export default function ChildrenList() {
                 lastName: trimmedLastName,
                 birthDate,
                 assistantId,
+                allergies: trimmedAllergies.length > 0 ? trimmedAllergies : null,
             });
             await loadChildren();
             resetEditingState();
@@ -166,6 +171,21 @@ export default function ChildrenList() {
                                     />
                                 ) : (
                                     child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
+                                ),
+                        },
+                        {
+                            id: "allergies",
+                            label: "Allergies",
+                            render: (child) =>
+                                editingChild === child.id ? (
+                                    <input
+                                        type="text"
+                                        value={allergies}
+                                        onChange={(event) => setAllergies(event.target.value)}
+                                        placeholder="Allergies (optionnel)"
+                                    />
+                                ) : (
+                                    child.allergies ?? ""
                                 ),
                         },
                         {
