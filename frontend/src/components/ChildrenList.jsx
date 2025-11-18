@@ -125,95 +125,93 @@ export default function ChildrenList() {
             <IconButton aria-label="add" onClick={() => setOpen(true)}>
                 <Add />
             </IconButton>
-            {loading ? (
-                <p>Chargement...</p>
-            ) : (
-                <DataTable
-                    columns={[
-                        {
-                            id: "firstName",
-                            label: "Prenom",
-                            render: (child) =>
-                                editingChild === child.id ? (
-                                    <input
-                                        type="text"
-                                        value={firstName}
-                                        onChange={(event) => setFirstName(event.target.value)}
-                                    />
-                                ) : (
-                                    child.firstName
-                                ),
-                        },
-                        {
-                            id: "lastName",
-                            label: "Nom",
-                            render: (child) =>
-                                editingChild === child.id ? (
-                                    <input
-                                        type="text"
-                                        value={lastName}
-                                        onChange={(event) => setLastName(event.target.value)}
-                                    />
-                                ) : (
-                                    child.lastName
-                                ),
-                        },
-                        {
-                            id: "birthDate",
-                            label: "Date de naissance",
-                            render: (child) =>
-                                editingChild === child.id ? (
-                                    <input
-                                        type="date"
-                                        value={birthDate}
-                                        onChange={(event) => handleBirthDateChange(event.target.value)}
-                                        max={todayIsoDate}
-                                    />
-                                ) : (
-                                    child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
-                                ),
-                        },
-                        {
-                            id: "allergies",
-                            label: "Allergies",
-                            render: (child) =>
-                                editingChild === child.id ? (
-                                    <input
-                                        type="text"
-                                        value={allergies}
-                                        onChange={(event) => setAllergies(event.target.value)}
-                                        placeholder="Allergies (optionnel)"
-                                    />
-                                ) : (
-                                    child.allergies ?? ""
-                                ),
-                        },
-                        {
-                            id: "actions",
-                            label: "Actions",
-                            align: "center",
-                            render: (child) =>
-                                editingChild === child.id ? (
-                                    <IconButton aria-label="validate" onClick={() => handleUpdate(child.id)}>
-                                        <Check />
+            <DataTable
+                columns={[
+                    {
+                        id: "firstName",
+                        label: "Prenom",
+                        render: (child) =>
+                            editingChild === child.id ? (
+                                <input
+                                    type="text"
+                                    value={firstName}
+                                    onChange={(event) => setFirstName(event.target.value)}
+                                />
+                            ) : (
+                                child.firstName
+                            ),
+                    },
+                    {
+                        id: "lastName",
+                        label: "Nom",
+                        render: (child) =>
+                            editingChild === child.id ? (
+                                <input
+                                    type="text"
+                                    value={lastName}
+                                    onChange={(event) => setLastName(event.target.value)}
+                                />
+                            ) : (
+                                child.lastName
+                            ),
+                    },
+                    {
+                        id: "birthDate",
+                        label: "Date de naissance",
+                        render: (child) =>
+                            editingChild === child.id ? (
+                                <input
+                                    type="date"
+                                    value={birthDate}
+                                    onChange={(event) => handleBirthDateChange(event.target.value)}
+                                    max={todayIsoDate}
+                                />
+                            ) : (
+                                child.birthDate ? new Date(child.birthDate).toLocaleDateString() : ""
+                            ),
+                    },
+                    {
+                        id: "allergies",
+                        label: "Allergies",
+                        render: (child) =>
+                            editingChild === child.id ? (
+                                <input
+                                    type="text"
+                                    value={allergies}
+                                    onChange={(event) => setAllergies(event.target.value)}
+                                    placeholder="Allergies (optionnel)"
+                                />
+                            ) : (
+                                child.allergies ?? ""
+                            ),
+                    },
+                    {
+                        id: "actions",
+                        label: "Actions",
+                        align: "center",
+                        render: (child) =>
+                            editingChild === child.id ? (
+                                <IconButton aria-label="validate" onClick={() => handleUpdate(child.id)}>
+                                    <Check />
+                                </IconButton>
+                            ) : (
+                                <>
+                                    <IconButton aria-label="edit" onClick={() => startEditing(child)}>
+                                        <Edit />
                                     </IconButton>
-                                ) : (
-                                    <>
-                                        <IconButton aria-label="edit" onClick={() => startEditing(child)}>
-                                            <Edit />
-                                        </IconButton>
-                                        <IconButton aria-label="delete" onClick={() => handleDelete(child.id)}>
-                                            <Delete />
-                                        </IconButton>
-                                    </>
-                                ),
-                        },
-                    ]}
-                    rows={children}
-                    getRowId={(child) => child.id}
-                    emptyMessage="Aucun enfant trouve."
-                />
-            )}
+                                    <IconButton aria-label="delete" onClick={() => handleDelete(child.id)}>
+                                        <Delete />
+                                    </IconButton>
+                                </>
+                            ),
+                    },
+                ]}
+                rows={children}
+                getRowId={(child) => child.id}
+                emptyMessage="Aucun enfant trouve."
+                loading={loading}
+                stickyHeader
+            />
             {birthDateError && <p style={{ color: "red" }}>{birthDateError}</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
 

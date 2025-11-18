@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -35,7 +37,34 @@ const EmptyStateCell = styled(TableCell)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function DataTable({ columns, rows, getRowId, emptyMessage = "Aucune donnée disponible." }) {
+export default function DataTable({
+    columns,
+    rows,
+    getRowId,
+    emptyMessage = "Aucune donnee disponible.",
+    loading = false,
+    stickyHeader = false,
+    rowActions,
+    actionsHeader = "Actions",
+}) {
+    const safeRows = useMemo(() => (Array.isArray(rows) ? rows : []), [rows]);
+
+    const effectiveColumns = useMemo(() => {
+        if (!rowActions) {
+            return columns;
+        }
+
+        return [
+            ...columns,
+            {
+                id: "__actions",
+                label: actionsHeader,
+                align: "right",
+                isActionColumn: true,
+            },
+        ];
+    }, [actionsHeader, columns, rowActions]);
+
     const renderRowId = (row, index) => {
         if (typeof getRowId === "function") {
             return getRowId(row, index);
@@ -46,14 +75,15 @@ export default function DataTable({ columns, rows, getRowId, emptyMessage = "Auc
         return index;
     };
 
-    const hasRows = Array.isArray(rows) && rows.length > 0;
+    const hasRows = safeRows.length > 0;
+    const columnCount = effectiveColumns.length;
 
     return (
         <StyledTableContainer component={Paper}>
-            <Table>
+            <Table stickyHeader={stickyHeader}>
                 <TableHead>
                     <TableRow>
-                        {columns.map((column) => (
+                        {effectiveColumns.map((column) => (
                             <StyledHeadCell key={column.id} align={column.align ?? "left"}>
                                 {column.label}
                             </StyledHeadCell>
@@ -61,19 +91,32 @@ export default function DataTable({ columns, rows, getRowId, emptyMessage = "Auc
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {hasRows ? (
-                        rows.map((row, index) => (
+                    {loading ? (
+                        <TableRow>
+                            <EmptyStateCell colSpan={columnCount}>
+                                <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
+                                    <CircularProgress size={24} />
+                                    <Typography variant="body2">Chargement...</Typography>
+                                </Box>
+                            </EmptyStateCell>
+                        </TableRow>
+                    ) : hasRows ? (
+                        safeRows.map((row, index) => (
                             <TableRow key={renderRowId(row, index)}>
-                                {columns.map((column) => (
+                                {effectiveColumns.map((column) => (
                                     <StyledBodyCell key={column.id} align={column.align ?? "left"}>
-                                        {typeof column.render === "function" ? column.render(row, index) : row[column.id]}
+                                        {column.isActionColumn && typeof rowActions === "function"
+                                            ? rowActions(row, index)
+                                            : typeof column.render === "function"
+                                                ? column.render(row, index)
+                                                : row[column.id]}
                                     </StyledBodyCell>
                                 ))}
                             </TableRow>
                         ))
                     ) : (
                         <TableRow>
-                            <EmptyStateCell colSpan={columns.length}>
+                            <EmptyStateCell colSpan={columnCount}>
                                 <Typography variant="body2">{emptyMessage}</Typography>
                             </EmptyStateCell>
                         </TableRow>

@@ -4,7 +4,6 @@ import {
     Alert,
     Box,
     Button,
-    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -131,14 +130,6 @@ export default function ChildrenRelationsPage() {
         [relations]
     );
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     return (
         <Box>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -154,7 +145,13 @@ export default function ChildrenRelationsPage() {
                 </Alert>
             )}
 
-            <DataTable columns={columns} rows={rows} emptyMessage="Aucune relation trouvee." />
+            <DataTable
+                columns={columns}
+                rows={rows}
+                emptyMessage="Aucune relation trouvee."
+                loading={loading}
+                stickyHeader
+            />
 
             <Dialog open={isAddDialogOpen} onClose={handleDialogClose} fullWidth maxWidth="sm">
                 <form onSubmit={handleAddChild} noValidate>

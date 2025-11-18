@@ -1,20 +1,20 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
-    Box,
     Chip,
-    CircularProgress,
     FormControl,
     IconButton,
     InputLabel,
     MenuItem,
-    Paper,
     Select,
     Stack,
     TextField,
     Tooltip,
+    Paper,
+    Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DataTable from "./DataTable";
+import { formatDate, formatText } from "../utils/formatting";
 
 const STATUS_LABELS = {
     Completed: "Administre",
@@ -29,18 +29,6 @@ const STATUS_COLORS = {
     ToSchedule: "warning",
     Overdue: "error",
 };
-
-function formatDate(value) {
-    if (!value) {
-        return "-";
-    }
-
-    try {
-        return new Date(value).toLocaleDateString("fr-FR");
-    } catch {
-        return value;
-    }
-}
 
 function getStatusLabel(status) {
     return STATUS_LABELS[status] ?? status;
@@ -123,23 +111,22 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
             {
                 id: "comments",
                 label: "Commentaires",
-                render: (entry) => entry.comments || "-",
-            },
-            {
-                id: "actions",
-                label: "Actions",
-                align: "right",
-                render: (entry) => (
-                    <Tooltip title="Mettre a jour le statut">
-                        <span>
-                            <IconButton onClick={() => onEditEntry(entry)} size="small" color="primary">
-                                <EditIcon fontSize="small" />
-                            </IconButton>
-                        </span>
-                    </Tooltip>
-                ),
+                render: (entry) => formatText(entry.comments),
             },
         ],
+        [],
+    );
+
+    const renderRowActions = useCallback(
+        (entry) => (
+            <Tooltip title="Mettre a jour le statut">
+                <span>
+                    <IconButton onClick={() => onEditEntry(entry)} size="small" color="primary">
+                        <EditIcon fontSize="small" />
+                    </IconButton>
+                </span>
+            </Tooltip>
+        ),
         [onEditEntry],
     );
 
@@ -170,18 +157,15 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                     />
                 </Stack>
 
-                {loading ? (
-                    <Box display="flex" justifyContent="center" py={4}>
-                        <CircularProgress size={24} />
-                    </Box>
-                ) : (
-                    <DataTable
-                        columns={columns}
-                        rows={filteredEntries}
-                        getRowId={(entry) => `${entry.childId}-${entry.vaccineId}`}
-                        emptyMessage="Aucun vaccin ne correspond a vos filtres."
-                    />
-                )}
+                <DataTable
+                    columns={columns}
+                rows={filteredEntries}
+                getRowId={(entry) => `${entry.childId}-${entry.vaccineId}`}
+                emptyMessage="Aucun vaccin ne correspond a vos filtres."
+                loading={loading}
+                stickyHeader
+                rowActions={renderRowActions}
+            />
             </Box>
         </Paper>
     );

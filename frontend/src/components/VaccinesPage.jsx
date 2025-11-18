@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
     Box,
     Button,
-    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -139,50 +138,37 @@ export default function VaccinesPage() {
                 </Typography>
             )}
 
-            {loading ? (
-                <Box display="flex" justifyContent="center" mt={4}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                <DataTable
-                    columns={[
-                        {
-                            id: "name",
-                            label: "Nom du vaccin",
-                        },
-                        {
-                            id: "ageInMonths",
-                            label: "Age (mois)",
-                        },
-                        {
-                            id: "actions",
-                            label: "Actions",
-                            align: "right",
-                            render: (vaccine) => (
-                                <>
-                                    <IconButton
-                                        aria-label="modifier"
-                                        onClick={() => openEditDialog(vaccine)}
-                                        size="small"
-                                    >
-                                        <Edit fontSize="small" />
-                                    </IconButton>
-                                    <IconButton
-                                        aria-label="supprimer"
-                                        onClick={() => handleDelete(vaccine.id)}
-                                        size="small"
-                                    >
-                                        <Delete fontSize="small" />
-                                    </IconButton>
-                                </>
-                            ),
-                        },
-                    ]}
-                    rows={vaccines}
-                    getRowId={(vaccine) => vaccine.id}
-                    emptyMessage="Aucun vaccin enregistre."
-                />
-            )}
+            <DataTable
+                columns={[
+                    {
+                        id: "name",
+                        label: "Nom du vaccin",
+                    },
+                    {
+                        id: "ageInMonths",
+                        label: "Age (mois)",
+                    },
+                ]}
+                rows={vaccines}
+                getRowId={(vaccine) => vaccine.id}
+                emptyMessage="Aucun vaccin enregistre."
+                loading={loading}
+                stickyHeader
+                rowActions={(vaccine) => (
+                    <>
+                        <IconButton
+                            aria-label="modifier"
+                            onClick={() => openEditDialog(vaccine)}
+                            size="small"
+                        >
+                            <Edit fontSize="small" />
+                        </IconButton>
+                        <IconButton aria-label="supprimer" onClick={() => handleDelete(vaccine.id)} size="small">
+                            <Delete fontSize="small" />
+                        </IconButton>
+                    </>
+                )}
+            />
 
             <Dialog open={dialogOpen} onClose={closeDialog} fullWidth maxWidth="xs">
                 <DialogTitle>{editingId === null ? "Ajouter un vaccin" : "Modifier un vaccin"}</DialogTitle>
