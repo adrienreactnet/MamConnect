@@ -4,28 +4,22 @@ import {
     Chip,
     CircularProgress,
     FormControl,
+    IconButton,
     InputLabel,
     MenuItem,
     Paper,
     Select,
     Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     TextField,
     Tooltip,
-    Typography,
-    IconButton,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import DataTable from "./DataTable";
 
 const STATUS_LABELS = {
-    Completed: "Administré",
+    Completed: "Administre",
     Pending: "En attente",
-    ToSchedule: "À planifier",
+    ToSchedule: "A planifier",
     Overdue: "En retard",
 };
 
@@ -38,7 +32,7 @@ const STATUS_COLORS = {
 
 function formatDate(value) {
     if (!value) {
-        return "—";
+        return "-";
     }
 
     try {
@@ -86,9 +80,68 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                     return childCompare;
                 }
 
-               return a.vaccineName.localeCompare(b.vaccineName, "fr");
+                return a.vaccineName.localeCompare(b.vaccineName, "fr");
             });
     }, [entries, search, statusFilter]);
+
+    const columns = useMemo(
+        () => [
+            {
+                id: "childName",
+                label: "Enfant",
+            },
+            {
+                id: "vaccineName",
+                label: "Vaccin",
+            },
+            {
+                id: "ageInMonths",
+                label: "Age (mois)",
+            },
+            {
+                id: "status",
+                label: "Statut",
+                render: (entry) => (
+                    <Chip
+                        label={getStatusLabel(entry.status)}
+                        color={STATUS_COLORS[entry.status] ?? "default"}
+                        variant="outlined"
+                        size="small"
+                    />
+                ),
+            },
+            {
+                id: "scheduledDate",
+                label: "Date preconisee",
+                render: (entry) => formatDate(entry.scheduledDate),
+            },
+            {
+                id: "administrationDate",
+                label: "Date d'administration",
+                render: (entry) => formatDate(entry.administrationDate),
+            },
+            {
+                id: "comments",
+                label: "Commentaires",
+                render: (entry) => entry.comments || "-",
+            },
+            {
+                id: "actions",
+                label: "Actions",
+                align: "right",
+                render: (entry) => (
+                    <Tooltip title="Mettre a jour le statut">
+                        <span>
+                            <IconButton onClick={() => onEditEntry(entry)} size="small" color="primary">
+                                <EditIcon fontSize="small" />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                ),
+            },
+        ],
+        [onEditEntry],
+    );
 
     return (
         <Paper>
@@ -103,82 +156,32 @@ export default function VaccinationStatusTable({ entries, loading, onEditEntry }
                             onChange={(event) => setStatusFilter(event.target.value)}
                         >
                             <MenuItem value="all">Tous les statuts</MenuItem>
-                            <MenuItem value="Completed">Administré</MenuItem>
+                            <MenuItem value="Completed">Administre</MenuItem>
                             <MenuItem value="Pending">En attente</MenuItem>
-                            <MenuItem value="ToSchedule">À planifier</MenuItem>
+                            <MenuItem value="ToSchedule">A planifier</MenuItem>
                             <MenuItem value="Overdue">En retard</MenuItem>
                         </Select>
                     </FormControl>
                     <TextField
-                        label="Rechercher (enfant, vaccin ou âge)"
+                        label="Rechercher (enfant, vaccin ou age)"
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         fullWidth
                     />
                 </Stack>
-                <TableContainer>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Enfant</TableCell>
-                                <TableCell>Vaccin</TableCell>
-                                <TableCell>Âge (mois)</TableCell>
-                                <TableCell>Statut</TableCell>
-                                <TableCell>Date préconisée</TableCell>
-                                <TableCell>Date d'administration</TableCell>
-                                <TableCell>Commentaires</TableCell>
-                                <TableCell align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {loading ? (
-                                <TableRow>
-                                    <TableCell colSpan={8} align="center">
-                                        <CircularProgress size={24} />
-                                    </TableCell>
-                                </TableRow>
-                            ) : filteredEntries.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={8} align="center">
-                                        <Typography variant="body2">Aucun vaccin ne correspond à vos filtres.</Typography>
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                filteredEntries.map((entry) => (
-                                    <TableRow key={`${entry.childId}-${entry.vaccineId}`} hover>
-                                        <TableCell>{entry.childName}</TableCell>
-                                        <TableCell>{entry.vaccineName}</TableCell>
-                                        <TableCell>{entry.ageInMonths}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={getStatusLabel(entry.status)}
-                                                color={STATUS_COLORS[entry.status] ?? "default"}
-                                                variant="outlined"
-                                                size="small"
-                                            />
-                                        </TableCell>
-                                        <TableCell>{formatDate(entry.scheduledDate)}</TableCell>
-                                        <TableCell>{formatDate(entry.administrationDate)}</TableCell>
-                                        <TableCell>{entry.comments || "—"}</TableCell>
-                                        <TableCell align="right">
-                                            <Tooltip title="Mettre à jour le statut">
-                                                <span>
-                                                    <IconButton
-                                                        onClick={() => onEditEntry(entry)}
-                                                        size="small"
-                                                        color="primary"
-                                                    >
-                                                        <EditIcon fontSize="small" />
-                                                    </IconButton>
-                                                </span>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+
+                {loading ? (
+                    <Box display="flex" justifyContent="center" py={4}>
+                        <CircularProgress size={24} />
+                    </Box>
+                ) : (
+                    <DataTable
+                        columns={columns}
+                        rows={filteredEntries}
+                        getRowId={(entry) => `${entry.childId}-${entry.vaccineId}`}
+                        emptyMessage="Aucun vaccin ne correspond a vos filtres."
+                    />
+                )}
             </Box>
         </Paper>
     );

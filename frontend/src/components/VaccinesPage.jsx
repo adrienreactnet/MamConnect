@@ -9,11 +9,6 @@ import {
     DialogTitle,
     IconButton,
     Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
     TextField,
     Typography,
 } from "@mui/material";
@@ -24,6 +19,7 @@ import {
     getVaccines,
     updateVaccine,
 } from "../services/vaccinesService";
+import DataTable from "./DataTable";
 
 const INITIAL_FORM = {
     name: "",
@@ -88,12 +84,12 @@ export default function VaccinesPage() {
         const parsedAge = Number(ageInput);
 
         if (trimmedName.length === 0 || ageInput.length === 0) {
-            setFormError("Le nom et l'âge en mois sont obligatoires.");
+            setFormError("Le nom et l'age en mois sont obligatoires.");
             return;
         }
 
         if (!Number.isInteger(parsedAge) || parsedAge < 0) {
-            setFormError("L'âge en mois doit être un entier positif ou nul.");
+            setFormError("L'age en mois doit etre un entier positif ou nul.");
             return;
         }
 
@@ -147,34 +143,45 @@ export default function VaccinesPage() {
                 <Box display="flex" justifyContent="center" mt={4}>
                     <CircularProgress />
                 </Box>
-            ) : vaccines.length === 0 ? (
-                <Typography>Aucun vaccin enregistré.</Typography>
             ) : (
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Nom du vaccin</TableCell>
-                            <TableCell>Âge (mois)</TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {vaccines.map((vaccine) => (
-                            <TableRow key={vaccine.id}>
-                                <TableCell>{vaccine.name}</TableCell>
-                                <TableCell>{vaccine.ageInMonths}</TableCell>
-                                <TableCell align="right">
-                                    <IconButton aria-label="modifier" onClick={() => openEditDialog(vaccine)}>
-                                        <Edit />
+                <DataTable
+                    columns={[
+                        {
+                            id: "name",
+                            label: "Nom du vaccin",
+                        },
+                        {
+                            id: "ageInMonths",
+                            label: "Age (mois)",
+                        },
+                        {
+                            id: "actions",
+                            label: "Actions",
+                            align: "right",
+                            render: (vaccine) => (
+                                <>
+                                    <IconButton
+                                        aria-label="modifier"
+                                        onClick={() => openEditDialog(vaccine)}
+                                        size="small"
+                                    >
+                                        <Edit fontSize="small" />
                                     </IconButton>
-                                    <IconButton aria-label="supprimer" onClick={() => handleDelete(vaccine.id)}>
-                                        <Delete />
+                                    <IconButton
+                                        aria-label="supprimer"
+                                        onClick={() => handleDelete(vaccine.id)}
+                                        size="small"
+                                    >
+                                        <Delete fontSize="small" />
                                     </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                </>
+                            ),
+                        },
+                    ]}
+                    rows={vaccines}
+                    getRowId={(vaccine) => vaccine.id}
+                    emptyMessage="Aucun vaccin enregistre."
+                />
             )}
 
             <Dialog open={dialogOpen} onClose={closeDialog} fullWidth maxWidth="xs">
@@ -188,7 +195,7 @@ export default function VaccinesPage() {
                             fullWidth
                         />
                         <TextField
-                            label="Âge (mois)"
+                            label="Age (mois)"
                             type="number"
                             inputProps={{ min: 0, step: 1 }}
                             value={formValues.ageInMonths}
