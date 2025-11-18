@@ -97,25 +97,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         Child[] childSeedData = new Child[]
         {
-            new Child { Id = 1, FirstName = "Liam", LastName = "Durand", BirthDate = new DateOnly(2019, 5, 21), AssistantId = 2, Allergies = "Arachides" },
-            new Child { Id = 2, FirstName = "Emma", LastName = "Durand", BirthDate = new DateOnly(2020, 3, 14), AssistantId = 2, Allergies = null },
-            new Child { Id = 3, FirstName = "Noah", LastName = "Martin", BirthDate = new DateOnly(2020, 11, 2), AssistantId = 2, Allergies = "Proteines de lait de vache" },
-            new Child { Id = 4, FirstName = "Olivia", LastName = "Lambert", BirthDate = new DateOnly(2018, 7, 9), AssistantId = 3, Allergies = null },
-            new Child { Id = 5, FirstName = "Ava", LastName = "Lambert", BirthDate = new DateOnly(2019, 1, 30), AssistantId = 3, Allergies = null },
-            new Child { Id = 6, FirstName = "Ethan", LastName = "Bernard", BirthDate = new DateOnly(2021, 4, 18), AssistantId = 3, Allergies = "Oeuf" },
-            new Child { Id = 7, FirstName = "Mia", LastName = "Lefevre", BirthDate = new DateOnly(2020, 9, 5), AssistantId = 3, Allergies = null },
-            new Child { Id = 8, FirstName = "Lucas", LastName = "Petit", BirthDate = new DateOnly(2018, 12, 12), AssistantId = 4, Allergies = null },
-            new Child { Id = 9, FirstName = "Sophia", LastName = "Petit", BirthDate = new DateOnly(2019, 6, 22), AssistantId = 4, Allergies = "Pollen de bouleau" },
-            new Child { Id = 10, FirstName = "Mason", LastName = "Moreau", BirthDate = new DateOnly(2020, 2, 11), AssistantId = 4, Allergies = null },
-            new Child { Id = 11, FirstName = "Isabella", LastName = "Moreau", BirthDate = new DateOnly(2018, 10, 3), AssistantId = 4, Allergies = null },
-            new Child { Id = 12, FirstName = "Harper", LastName = "Garnier", BirthDate = new DateOnly(2021, 1, 27), AssistantId = 4, Allergies = "Fruits a coque" },
-            new Child { Id = 13, FirstName = "James", LastName = "Robert", BirthDate = new DateOnly(2019, 8, 15), AssistantId = 5, Allergies = null },
-            new Child { Id = 14, FirstName = "Amelia", LastName = "Robert", BirthDate = new DateOnly(2020, 5, 16), AssistantId = 5, Allergies = null },
-            new Child { Id = 15, FirstName = "Benjamin", LastName = "Caron", BirthDate = new DateOnly(2018, 4, 7), AssistantId = 5, Allergies = null },
-            new Child { Id = 16, FirstName = "Charlotte", LastName = "Marchand", BirthDate = new DateOnly(2019, 12, 1), AssistantId = 6, Allergies = "Latex" },
-            new Child { Id = 17, FirstName = "Elijah", LastName = "Marchand", BirthDate = new DateOnly(2020, 7, 19), AssistantId = 6, Allergies = null },
-            new Child { Id = 18, FirstName = "Evelyn", LastName = "Dupont", BirthDate = new DateOnly(2021, 9, 23), AssistantId = 6, Allergies = null },
-            new Child { Id = 19, FirstName = "Henry", LastName = "Renard", BirthDate = new DateOnly(2018, 3, 13), AssistantId = 6, Allergies = null }
+            new Child { Id = 1, FirstName = "Liam", LastName = "Durand", BirthDate = new DateOnly(2019, 5, 21), AssistantId = 2, Allergies = "Arachides", HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Liam" },
+            new Child { Id = 2, FirstName = "Emma", LastName = "Durand", BirthDate = new DateOnly(2020, 3, 14), AssistantId = 2, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Emma" },
+            new Child { Id = 3, FirstName = "Noah", LastName = "Martin", BirthDate = new DateOnly(2020, 11, 2), AssistantId = 2, Allergies = "Proteines de lait de vache", HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Noah" },
+            new Child { Id = 4, FirstName = "Olivia", LastName = "Lambert", BirthDate = new DateOnly(2018, 7, 9), AssistantId = 3, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Olivia" },
+            new Child { Id = 5, FirstName = "Ava", LastName = "Lambert", BirthDate = new DateOnly(2019, 1, 30), AssistantId = 3, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Ava" },
+            new Child { Id = 6, FirstName = "Ethan", LastName = "Bernard", BirthDate = new DateOnly(2021, 4, 18), AssistantId = 3, Allergies = "Oeuf", HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Ethan" },
+            new Child { Id = 7, FirstName = "Mia", LastName = "Lefevre", BirthDate = new DateOnly(2020, 9, 5), AssistantId = 3, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Mia" },
+            new Child { Id = 8, FirstName = "Lucas", LastName = "Petit", BirthDate = new DateOnly(2018, 12, 12), AssistantId = 4, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Lucas" },
+            new Child { Id = 9, FirstName = "Sophia", LastName = "Petit", BirthDate = new DateOnly(2019, 6, 22), AssistantId = 4, Allergies = "Pollen de bouleau", HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Sophia" },
+            new Child { Id = 10, FirstName = "Mason", LastName = "Moreau", BirthDate = new DateOnly(2020, 2, 11), AssistantId = 4, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Mason" },
+            new Child { Id = 11, FirstName = "Isabella", LastName = "Moreau", BirthDate = new DateOnly(2018, 10, 3), AssistantId = 4, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Isabella" },
+            new Child { Id = 12, FirstName = "Harper", LastName = "Garnier", BirthDate = new DateOnly(2021, 1, 27), AssistantId = 4, Allergies = "Fruits a coque", HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Harper" },
+            new Child { Id = 13, FirstName = "James", LastName = "Robert", BirthDate = new DateOnly(2019, 8, 15), AssistantId = 5, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=James" },
+            new Child { Id = 14, FirstName = "Amelia", LastName = "Robert", BirthDate = new DateOnly(2020, 5, 16), AssistantId = 5, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Amelia" },
+            new Child { Id = 15, FirstName = "Benjamin", LastName = "Caron", BirthDate = new DateOnly(2018, 4, 7), AssistantId = 5, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Benjamin" },
+            new Child { Id = 16, FirstName = "Charlotte", LastName = "Marchand", BirthDate = new DateOnly(2019, 12, 1), AssistantId = 6, Allergies = "Latex", HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Charlotte" },
+            new Child { Id = 17, FirstName = "Elijah", LastName = "Marchand", BirthDate = new DateOnly(2020, 7, 19), AssistantId = 6, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Elijah" },
+            new Child { Id = 18, FirstName = "Evelyn", LastName = "Dupont", BirthDate = new DateOnly(2021, 9, 23), AssistantId = 6, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Evelyn" },
+            new Child { Id = 19, FirstName = "Henry", LastName = "Renard", BirthDate = new DateOnly(2018, 3, 13), AssistantId = 6, Allergies = null, HeadshotUrl = "https://api.dicebear.com/7.x/thumbs/svg?seed=Henry" }
         };
 
         modelBuilder.Entity<Child>().HasData(childSeedData);

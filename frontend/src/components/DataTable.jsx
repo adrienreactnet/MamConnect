@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -94,10 +93,17 @@ export default function DataTable({
                     {loading ? (
                         <TableRow>
                             <EmptyStateCell colSpan={columnCount}>
-                                <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        gap: "0.75rem",
+                                    }}
+                                >
                                     <CircularProgress size={24} />
                                     <Typography variant="body2">Chargement...</Typography>
-                                </Box>
+                                </div>
                             </EmptyStateCell>
                         </TableRow>
                     ) : hasRows ? (

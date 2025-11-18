@@ -40,6 +40,8 @@ public class UpdateChildCommand
         child.AssistantId = input.AssistantId;
         string? trimmedAllergies = input.Allergies?.Trim();
         child.Allergies = string.IsNullOrWhiteSpace(trimmedAllergies) ? null : trimmedAllergies;
+        string? trimmedHeadshotUrl = input.HeadshotUrl?.Trim();
+        child.HeadshotUrl = string.IsNullOrWhiteSpace(trimmedHeadshotUrl) ? null : trimmedHeadshotUrl;
         await _childrenRepository.SaveChangesAsync();
         return true;
     }
@@ -54,13 +56,15 @@ public class UpdateChildCommand
         /// <param name="birthDate">The updated birth date.</param>
         /// <param name="assistantId">The updated assistant identifier.</param>
         /// <param name="allergies">The updated allergy description.</param>
-        public Input(string firstName, string lastName, DateOnly? birthDate, int? assistantId, string? allergies)
+        /// <param name="headshotUrl">The updated headshot url.</param>
+        public Input(string firstName, string lastName, DateOnly? birthDate, int? assistantId, string? allergies, string? headshotUrl)
         {
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
             AssistantId = assistantId;
             Allergies = allergies;
+            HeadshotUrl = headshotUrl;
         }
 
         public string FirstName { get; }
@@ -72,5 +76,7 @@ public class UpdateChildCommand
         public int? AssistantId { get; }
 
         public string? Allergies { get; }
+
+        public string? HeadshotUrl { get; }
     }
 }

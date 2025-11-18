@@ -33,6 +33,8 @@ public class CreateChildCommand
         child.LastName = trimmedLastName;
         string? trimmedAllergies = child.Allergies?.Trim();
         child.Allergies = string.IsNullOrWhiteSpace(trimmedAllergies) ? null : trimmedAllergies;
+        string? trimmedHeadshotUrl = child.HeadshotUrl?.Trim();
+        child.HeadshotUrl = string.IsNullOrWhiteSpace(trimmedHeadshotUrl) ? null : trimmedHeadshotUrl;
 
         bool exists = await _childrenRepository.ExistsWithFullNameAsync(trimmedFirstName, trimmedLastName);
         if (exists)

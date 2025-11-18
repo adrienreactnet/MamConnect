@@ -1,12 +1,17 @@
 // src/components/ChildrenList.jsx
 import React, { useEffect, useState } from "react";
-import IconButton from "@mui/material/IconButton";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { Edit, Delete, Check, Add } from "@mui/icons-material";
 import AddChild from "./AddChild";
 import { fetchChildren, updateChild, deleteChild } from "../services/childService";
 import DataTable from "./DataTable";
+import { fileToDataUrl } from "../utils/fileUtils";
 
 const todayIsoDate = new Date().toISOString().split("T")[0];
 
@@ -21,6 +26,10 @@ export default function ChildrenList() {
     const [birthDateError, setBirthDateError] = useState("");
     const [open, setOpen] = useState(false);
     const [allergies, setAllergies] = useState("");
+    const [headshotUrl, setHeadshotUrl] = useState("");
+    const [headshotPreview, setHeadshotPreview] = useState("");
+    const [headshotError, setHeadshotError] = useState("");
+    const HEADSHOT_MAX_BYTES = 2 * 1024 * 1024;
 
     const loadChildren = async () => {
         setLoading(true);
@@ -48,6 +57,9 @@ export default function ChildrenList() {
         setBirthDateError("");
         setError("");
         setAllergies(child.allergies ?? "");
+        setHeadshotUrl(child.headshotUrl ?? "");
+        setHeadshotPreview(child.headshotUrl ?? "");
+        setHeadshotError("");
     };
 
     const resetEditingState = () => {
@@ -58,6 +70,9 @@ export default function ChildrenList() {
         setBirthDateError("");
         setError("");
         setAllergies("");
+        setHeadshotUrl("");
+        setHeadshotPreview("");
+        setHeadshotError("");
     };
 
     const handleUpdate = async (id) => {
@@ -84,6 +99,11 @@ export default function ChildrenList() {
             return;
         }
 
+        if (headshotError) {
+            setError("Veuillez corriger la photo avant d'enregistrer.");
+            return;
+        }
+
         try {
             const existingChild = children.find((child) => child.id === id);
             const assistantId = existingChild ? existingChild.assistantId ?? null : null;
@@ -93,6 +113,7 @@ export default function ChildrenList() {
                 birthDate,
                 assistantId,
                 allergies: trimmedAllergies.length > 0 ? trimmedAllergies : null,
+                headshotUrl: headshotUrl.length > 0 ? headshotUrl : null,
             });
             await loadChildren();
             resetEditingState();
@@ -119,6 +140,36 @@ export default function ChildrenList() {
         setBirthDate(value);
     };
 
+    const handleHeadshotChange = async (event) => {
+        setHeadshotError("");
+        const input = event.target;
+        const file = input.files && input.files[0];
+        if (!file) {
+            return;
+        }
+        if (file.size > HEADSHOT_MAX_BYTES) {
+            setHeadshotError("La photo doit peser au maximum 2 Mo.");
+            input.value = "";
+            return;
+        }
+
+        try {
+            const dataUrl = await fileToDataUrl(file);
+            setHeadshotPreview(dataUrl);
+            setHeadshotUrl(dataUrl);
+        } catch (fileError) {
+            setHeadshotError(fileError.message ?? "Impossible de traiter la photo.");
+        } finally {
+            input.value = "";
+        }
+    };
+
+    const clearHeadshot = () => {
+        setHeadshotUrl("");
+        setHeadshotPreview("");
+        setHeadshotError("");
+    };
+
     return (
         <div>
             <h2>Liste des enfants</h2>
@@ -127,6 +178,51 @@ export default function ChildrenList() {
             </IconButton>
             <DataTable
                 columns={[
+                    {
+                        id: "headshot",
+                        label: "Photo",
+                        render: (child) => {
+                            const avatarSource = editingChild === child.id ? headshotPreview : child.headshotUrl ?? "";
+                            return (
+                                <Stack direction="row" spacing={2} alignItems="center">
+                                    <Avatar
+                                        src={avatarSource || undefined}
+                                        alt={`${child.firstName ?? ""} ${child.lastName ?? ""}`}
+                                        sx={{ width: 48, height: 48 }}
+                                    >
+                                        {(child.firstName ?? "?").slice(0, 1).toUpperCase()}
+                                    </Avatar>
+                                    {editingChild === child.id && (
+                                        <Stack spacing={0.5}>
+                                            <Button variant="outlined" size="small" component="label">
+                                                Modifier
+                                                <input
+                                                    hidden
+                                                    type="file"
+                                                    accept="image/png, image/jpeg, image/webp"
+                                                    onChange={handleHeadshotChange}
+                                                />
+                                            </Button>
+                                            <Button
+                                                variant="text"
+                                                size="small"
+                                                onClick={clearHeadshot}
+                                                disabled={!headshotPreview}
+                                                sx={{ alignSelf: "flex-start" }}
+                                            >
+                                                Retirer
+                                            </Button>
+                                            {headshotError && (
+                                                <Typography variant="caption" color="error">
+                                                    {headshotError}
+                                                </Typography>
+                                            )}
+                                        </Stack>
+                                    )}
+                                </Stack>
+                            );
+                        },
+                    },
                     {
                         id: "firstName",
                         label: "Prenom",

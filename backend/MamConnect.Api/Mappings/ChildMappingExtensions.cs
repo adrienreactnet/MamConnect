@@ -14,7 +14,8 @@ public static class ChildMappingExtensions
             child.LastName,
             child.BirthDate,
             child.AssistantId,
-            child.Allergies);
+            child.Allergies,
+            child.HeadshotUrl);
         return dto;
     }
 
@@ -26,7 +27,8 @@ public static class ChildMappingExtensions
             LastName = request.LastName,
             BirthDate = request.BirthDate ?? default,
             AssistantId = request.AssistantId,
-            Allergies = request.Allergies
+            Allergies = request.Allergies,
+            HeadshotUrl = request.HeadshotUrl
         };
         return child;
     }
@@ -38,7 +40,8 @@ public static class ChildMappingExtensions
             request.LastName,
             request.BirthDate,
             request.AssistantId,
-            request.Allergies);
+            request.Allergies,
+            request.HeadshotUrl);
         return input;
     }
 }

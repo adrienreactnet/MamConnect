@@ -10,6 +10,7 @@ public class Child
     public string LastName { get; set; } = "";
     public DateOnly BirthDate { get; set; }
     public string? Allergies { get; set; }
+    public string? HeadshotUrl { get; set; }
 
     public int? AssistantId { get; set; }
     public User? Assistant { get; set; }

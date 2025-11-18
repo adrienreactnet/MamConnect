@@ -13,6 +13,8 @@ public sealed class CreateChildRequestDto
     public int? AssistantId { get; set; }
 
     public string? Allergies { get; set; }
+
+    public string? HeadshotUrl { get; set; }
 }
 
 public sealed class UpdateChildRequestDto
@@ -26,11 +28,20 @@ public sealed class UpdateChildRequestDto
     public int? AssistantId { get; set; }
 
     public string? Allergies { get; set; }
+
+    public string? HeadshotUrl { get; set; }
 }
 
 public sealed class ChildResponseDto
 {
-    public ChildResponseDto(int id, string firstName, string lastName, DateOnly? birthDate, int? assistantId, string? allergies)
+    public ChildResponseDto(
+        int id,
+        string firstName,
+        string lastName,
+        DateOnly? birthDate,
+        int? assistantId,
+        string? allergies,
+        string? headshotUrl)
     {
         Id = id;
         FirstName = firstName;
@@ -38,6 +49,7 @@ public sealed class ChildResponseDto
         BirthDate = birthDate;
         AssistantId = assistantId;
         Allergies = allergies;
+        HeadshotUrl = headshotUrl;
     }
 
     public int Id { get; }
@@ -51,4 +63,6 @@ public sealed class ChildResponseDto
     public int? AssistantId { get; }
 
     public string? Allergies { get; }
+
+    public string? HeadshotUrl { get; }
 }
